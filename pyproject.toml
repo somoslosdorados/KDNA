@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "kdna"
+version = "0.1.0"
+description = ""
+authors = ["D3 2023-2026 <polytech-do3@etu.umontpellier.fr>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+click = "^8.1.7"
+fabric = "^3.2.2"
+pycryptodome = "^3.19.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
