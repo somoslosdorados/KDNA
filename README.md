@@ -22,3 +22,6 @@ poetry run python KDNA/__init__.py
     - click         # Parseur
     - fabric        # SSH client
     - pycryptodome  # Encrypt tool
+    - pylint        # Linter
+    - mypy          # Type checker
+    - pytest        # Test framework

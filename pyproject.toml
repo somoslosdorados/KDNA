@@ -6,10 +6,13 @@ authors = ["D3 2023-2026 <polytech-do3@etu.umontpellier.fr>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.10"
 click = "^8.1.7"
 fabric = "^3.2.2"
 pycryptodome = "^3.19.0"
+pylint = "^3.0.2"
+mypy = "^1.7.1"
+pytest = "^7.4.3"
 
 
 [build-system]
