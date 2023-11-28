@@ -1,0 +1,8 @@
+[servers]
+4, credentials, 25, salut
+3, credentials, 22, test
+2, test, 23, testt
+
+[auto-backups]
+8, daily, okay, 2021-01-02, 3, /home/backup
+4, monthly, okay, 2021-01-01, 3, /home/alisas

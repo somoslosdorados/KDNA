@@ -1,18 +1,133 @@
-# KDNA
+# POC - Faire un CRUD avec le fichier de conf
 
 This is the official repository for the DO2023-2026 python CLI backup project
 
-## Init for dev
+## Documentation
 
-After cloning the repo you will need to install all dependencies
+### Initialiser le fichier de config :
 
 ```bash
-# install deps
-poetry install
+ConfUtils.initialize_config_file()
 ```
 
-## Usage
+Un fichier est créé :
 
+```
+[servers]
+
+[auto-backups]
+
+```
+
+Vous pouvez désormais faire vos commandes dans le fichier `__init__.py`
+
+### Server
+
+1. #### Création
+
+Vous pouvez créer un serveur avec ces différents paramètres :
+
+| Signature : | id_server | credentials |  port  |  alias |
+| :---------- | :-------: | :---------: | :----: | -----: |
+| Type :      |  String   |   String    | String | String |
+
+Comme ceci :
+
+```
+server = Server("18", "credentials", "22", "hello")
+```
+
+2. #### Suppression
+
+Vous pouvez supprimer un serveur avec ces différents paramètres :
+
+| Signature : |  id_server  |   by_alias |
+| :---------- | :---------: | ---------: |
+| Type :      |   String    |    Boolean |
+| Règle :     | Obligatoire | Facultatif |
+
+Vous pouvez supprimer un serveur grâce à son id de cette manière :
+
+```
+Server.delete("18")
+```
+
+Mais vous pouvez aussi supprimer un serveur grâce à son alias de cette manière :
+
+```
+Server.delete("hello", by_alias=True)
+```
+
+À noter que l'attribut `by_alias` possède de base la valeur `False` c'est pourquoi vous n'avez pas besoin de le préciser lorsque vous voulez effectuer une suppresion par id.
+
+3. #### Update
+
+Vous pouvez mettre à jour un serveur grâce à son alias avec ces différents paramètres :
+
+| Signature : |    alias    | credentials |    port    | nouvel alias |
+| :---------- | :---------: | :---------: | :--------: | -----------: |
+| Type :      |   String    |   String    |   String   |       String |
+| Règle :     | Obligatoire | Facultatif  | Facultatif |   Facultatif |
+
+```
+Server.update("test", new_port="25", new_credentials="test", new_alias="ahahah")
+```
+
+À noter que vous n'êtes pas obligé de modifier tous les champs de votre ligne concernant le serveur que vous voulez modifier. Vous pouvez par exemple seulement changer le port en précisant `new_port` en plus de l'`alias` obligatoire dans la signature de votre update.
+
+De plus l'id du serveur n'est pas modifiable, il sera peut être généré automatiquement plus tard.
+
+
+### Auto-Backup
+
+1. #### Création
+
+Vous pouvez créer une auto-backup avec ces différents paramètres :
+
+| Signature : | id_backup | frequency |  name  | timestamp | id_server |   path |
+| :---------- | :-------: | :-------: | :----: | :-------: | :-------: | -----: |
+| Type :      |  String   |  String   | String |  String   |  String   | String |
+
+Comme ceci :
+
+```
+backup = Backup("9", "monthly", "okay", "2021-01-01", "3", "/home/backup")
+```
+
+2. #### Suppression
+
+Vous pouvez supprimer une auto-backup grâce à son id de cette manière :
+
+```
+Server.delete("9")
+```
+
+3. #### Update
+
+Vous pouvez mettre à jour une auto-backup grâce à son id avec ces différents paramètres :
+
+| Signature : |  id_backup  | frequency  |    name    | timestamp  |       path |
+| :---------- | :---------: | :--------: | :--------: | :--------: | ---------: |
+| Type :      |   String    |   String   |   String   |   String   |     String |
+| Règle :     | Obligatoire | Facultatif | Facultatif | Facultatif | Facultatif |
+
+```
+Backup.update("5", new_frequency="daily", new_timestamp="2021-01-02", new_path="/home/backup")
+```
+
+À noter que vous n'êtes pas obligé de modifier tous les champs de votre ligne concernant l'auto-backup que vous voulez modifier. Vous pouvez par exemple seulement changer le nom en précisant `new_name` en plus de l'`id` obligatoire dans la signature de votre update.
+
+De plus l'id relié au serveur n'est pas modifiable, car la back-up est lié à celui-ci
+
+
+### ConfigUtils
+
+1. #### Readall
+
+Vous pouvez faire la commande suivante pour vous afficher le contenu du fichier  `config.txt` simplement :
+
+```
+ConfUtils.readAll()
 
 ### Start the app
 ```bash
@@ -35,6 +150,15 @@ poetry run tox run-parallel -e (env)
 sphinx-apidoc -f -o docs/source kdna/
 sphinx-build -M html docs/source/ docs/build/
 ```
+
+Cette méthode n'est pas poussée car un POC est destiné à la lecture d'un fichier de conf (cf. POC 2)
+
+## TODO :
+
+-   générer un id aléatoire
+-   revoir les timestamp des auto-backups
+-   revoir les frequency des auto-backups
+-   optimiser au maximum le code
 
 ## Package added
     - click             # Parseur
