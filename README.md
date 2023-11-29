@@ -112,7 +112,7 @@ Vous pouvez mettre à jour une auto-backup grâce à son id avec ces différents
 | Règle :     | Obligatoire | Facultatif | Facultatif | Facultatif | Facultatif |
 
 ```
-Backup.update("5", new_frequency="daily", new_timestamp="2021-01-02", new_path="/home/backup")
+Backup.update("9", new_frequency="daily", new_timestamp="2021-01-02", new_path="/home/backup")
 ```
 
 À noter que vous n'êtes pas obligé de modifier tous les champs de votre ligne concernant l'auto-backup que vous voulez modifier. Vous pouvez par exemple seulement changer le nom en précisant `new_name` en plus de l'`id` obligatoire dans la signature de votre update.
