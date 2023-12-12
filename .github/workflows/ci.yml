@@ -22,4 +22,4 @@ jobs:
         python -m pip install poetry
         poetry install
     - name: Test with tox
-      run: poetry run tox
+      run: poetry run tox run-parallel

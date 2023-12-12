@@ -24,11 +24,11 @@ poetry run pytest
 ```
 ### Run the pipeline
 ```bash
-poetry run tox
+poetry run tox run-parallel
 ```
 ```bash
 #run the pipeline with a specific env
-poetry run tox -e (env)
+poetry run tox run-parallel -e (env)
 ```
 ### Build the documentation
 ```bash
