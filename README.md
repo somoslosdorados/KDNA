@@ -175,3 +175,7 @@ Cette méthode n'est pas poussée car un POC est destiné à la lecture d'un fic
     - m2r2              # Markdown to reStructuredText converter
     - pydocstyle        # Docstring style checker
     - chardet           # Encoding detector
+
+### Contribution 
+    - Benoit Planche : Créer un exécutable hello world lançable avec la commande kdna (100%)
+    - Tristan Radulescu : relecteur
