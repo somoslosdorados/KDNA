@@ -3,24 +3,25 @@
 
 ---
 
-## 0. Préambule  
-* Vous êtes connecté en tant que root. Votre dossier home est `/root`.  
-
-## I. Préparer l'environnement sur le serveur  
-1. Créer le dossier `/root/KDNA`  
-2. Placer le fichier main.py à l'emplacement : `/root/KDNA/main.py`  
-3. Placer le fichier kdnaconda.service à l'emplacement `/etc/systemd/system`  
-
-## II. Activer le service  
-1. Lancer la commande `systemctl daemon-reload`  
-2. Lancer la commande `systemctl enable kdnaconda.service`  
-3. Lancer la commande `python3 /root/KDNA/main.py`  
+## 0. Preamble  
+* You are connected as root. Your home folder is `/root`. (Use the `su -` command to substitute as root and update the environment).  
+This POC is about a service which will generate logs as a demonstration.  
+Every step in this documentation is followed by the `init.sh` script.  
 \
-Des logs apparaissent alors dans `/root/KDNA/logs.kdna`  
+## I. Setting up the directories on the server  
+1. Create the directory `/root/kdna_service`.  
+2. Place the `main.py` file in the location: `/root/kdna_service/main.py`.  
+3. Place the `kdnad.service` file in the location: `/etc/systemd/system`.  
+\
+## II. Activate the service  
+1. Run the command: `systemctl daemon-reload`.  
+2. Run the command: `systemctl enable kdnad.service`.  
+3. Run the command: `python3 /root/kdna_service/main.py`.  
+\
+Logs will now appear periodically in `/root/kdna_service/logs.kdna`.  
 
 ---
 
-Si vous avez correctement configuré `pandoc`, vous pouvez utiliser la commande `pandoc doc.md -o doc.pdf -V geometry:margin=2.2cm`
-Mes félicitations. Dieu nous garde.  
-
+If you have configured `pandoc` correctly, you can use the command `pandoc doc.md -o doc.pdf -V geometry:margin=2.2cm` to produce a pdf from this documentation.  
+Congratulations.  
 
