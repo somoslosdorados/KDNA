@@ -15,7 +15,7 @@ def main():
   i=0
   while 1:
     i+=1
-    command = 'echo "Hello les san ! - c le kdna du $(date +%Y%m%d-{})" >> /root/KDNA/logs.kdna'.format(i)  # tty0 au lieu du path vers logs pr afficher sur terminal
+    command = 'echo "Hello les san ! - c le kdna du $(date +%Y%m%d-{})" >> /root/kdna_service/logs.kdna'.format(i)  # tty0 au lieu du path vers logs pr afficher sur terminal
     subprocess.run(command, shell=True, check=True)
     time.sleep(10)
 
