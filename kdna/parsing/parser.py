@@ -3,7 +3,13 @@ from kdna.parsing.autobackup import ParseAutoBackup
 
 lines = {}
 
+
 def parseConfig():
+    """
+    Parse le fichier de configuration
+    Repère les headers et les lignes associées
+    Applique le bon parser en fonction du header si il est présent dans le dictionnaire parsers_strategy
+    """
     line = ""
     header = ""
     previous_header = ""
@@ -36,7 +42,7 @@ def parseConfig():
 
 def line_is_header(line: str) -> str:
     """
-    Checks if a line is a header so it matches the regex [to-return]
+    Verifie si la ligne est un header
     """
     if line.startswith("[") and line.endswith("]\n"):
         return line[1:-2]
@@ -44,7 +50,11 @@ def line_is_header(line: str) -> str:
 
 
 def cb_server_parser(line: str):
+    '''
+    Callback permettant de parser un serveur'''
     return ParseServer(line)
 
 def cb_autobackup_parser(line: str):
+    '''
+    Callback permettant de parser un backup automatique'''
     return ParseAutoBackup(line)
