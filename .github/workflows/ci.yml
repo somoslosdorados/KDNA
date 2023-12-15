@@ -25,6 +25,5 @@ jobs:
       run: poetry run tox run-parallel
     - name: Publish packages to Test PyPI
       run: |
-          setup("Programming Language :: Python :: "+${{ matrix.python-version }},"Operating System :: "+${{ matrix.platform }})
           poetry config pypi-token.pypi ${{ secrets.PYPI_CURLDL_TOKEN }}
           poetry publish --build
