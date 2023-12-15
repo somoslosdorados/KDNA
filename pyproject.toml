@@ -1,15 +1,23 @@
 [tool.poetry]
 name = "kdna"
 version = "0.1.0"
-description = ""
+description = "Project providing a secure way to backup and restore files on a remote server."
 authors = ["D3 2023-2026 <polytech-do3@etu.umontpellier.fr>"]
 readme = "README.md"
+license = "MIT"
+repository = "https://github.com/somoslosdorados/KDNA"
+packages = [
+    { include = "kdna" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
 click = "^8.1.7"
 fabric = "^3.2.2"
 pycryptodome = "^3.19.0"
+
+[tool.poetry.group.dev.dependencies]
+tox-gh-actions = "^3.1.3"
 pylint = "^3.0.2"
 mypy = "^1.7.1"
 pytest = "^7.4.3"
@@ -21,10 +29,11 @@ m2r2 = "^0.3.3.post2"
 pydocstyle = "^6.3.0"
 tox = "^4.11.4"
 
-
-[tool.poetry.group.dev.dependencies]
-tox-gh-actions = "^3.1.3"
-
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[built-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
