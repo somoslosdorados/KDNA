@@ -1,7 +1,7 @@
 class ConfUtils:
     # Fonctions utilitaires pour les fichiers de configuration
     config_file = 'config.txt'
-    
+
     def initialize_config_file():
         config_content = "[servers]\n\n[auto-backups]\n"
 
@@ -22,14 +22,14 @@ class ConfUtils:
             f.write(config_content)
 
         print("Le fichier de configuration a été initialisé avec succès.")
-    
+
     @staticmethod
     def readAll():
         # Fonction pour afficher le fichier de configuration
         lines = ConfUtils.read_file_lines(ConfUtils.config_file)
         for line in lines:
             print(line.strip())
-        
+
     @staticmethod
     def read_file_lines(filename):
         # Fonction pour lire les lignes d'un fichier
@@ -43,20 +43,25 @@ class ConfUtils:
             f.writelines(lines)
 
     @staticmethod
-    def find_auto_backups_index(lines):
-        # Fonction pour trouver l'indice de [auto-backups]
+    def find_section(lines: list, pattern: str) -> int or None:
+        """
+        Fonction pour trouver l'indice d'une section
+        """
         for i, line in enumerate(lines):
-            if "[auto-backups]" in line:
+            if pattern in line:
                 return i
         return None
-    
+
     @staticmethod
-    def find_servers_index(lines):
-        # Fonction pour trouver l'indice de [auto-backups]
-        for i, line in enumerate(lines):
-            if "[servers]" in line:
-                return i
-        return None
+    def find_auto_backups_index(lines):
+        return ConfUtils.find_section(lines, "[auto-backups]")
+
+    @staticmethod
+    def find_servers_index(lines: list) -> int:
+        """
+        Fonction pour trouver l'indice de [servers]
+        """
+        return ConfUtils.find_section(lines, "[servers]")
 
     @staticmethod
     def delete_line(lines, line_to_delete):
