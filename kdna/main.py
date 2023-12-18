@@ -12,6 +12,7 @@ def kdna():
     kdna.add_command(server)
     kdna.add_command(autobackup)
 
+
 def main():
     """main: Fonction principale"""
     encrypt.load_key()
