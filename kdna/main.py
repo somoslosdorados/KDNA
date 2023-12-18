@@ -17,7 +17,10 @@ def main():
     encrypt.load_key()
     encrypt.cyper()
     encrypt.decypher()
+    encrypt.cypher_folders("./out", "./encoded")
+    encrypt.decypher_folders("./encoded", "./decoded")
     kdna()
+
 
 if __name__ == "__main__":
     main()
