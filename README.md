@@ -1,10 +1,10 @@
-# POC - Faire un CRUD avec le fichier de conf
+# KDNA
 
 This is the official repository for the DO2023-2026 python CLI backup project
 
 ## Documentation
 
-### Initialiser le fichier de config :
+After cloning the repo you will need to install all dependencies
 
 ```bash
 ConfUtils.initialize_config_file()
@@ -175,7 +175,3 @@ Cette méthode n'est pas poussée car un POC est destiné à la lecture d'un fic
     - m2r2              # Markdown to reStructuredText converter
     - pydocstyle        # Docstring style checker
     - chardet           # Encoding detector
-
-### Contribution 
-    - Benoit Planche : Créer un exécutable hello world lançable avec la commande kdna (100%)
-    - Tristan Radulescu : relecteur
