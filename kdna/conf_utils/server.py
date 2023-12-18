@@ -1,6 +1,6 @@
 """Server"""
 
-from kdna.conf_utils import ConfUtils
+from kdna.conf_utils.utils import Utils
 
 
 class Server:
@@ -15,11 +15,11 @@ class Server:
     def add(self):
         """Add a new server"""
         # On ouvre le fichier en mode lecture
-        lines = ConfUtils.read_file_lines(ConfUtils.config_file)
+        lines = Utils.read_file_lines(Utils.config_file)
 
         # On cherche la ligne contenant [servers]
-        index_servers = ConfUtils.find_servers_index(lines)
-        index_auto_backups = ConfUtils.find_auto_backups_index(lines)
+        index_servers = Utils.find_servers_index(lines)
+        index_auto_backups = Utils.find_auto_backups_index(lines)
 
         # On regarde si la ligne contenant [servers] a été trouvée
         if index_servers is not None:
@@ -47,7 +47,7 @@ class Server:
             lines.insert(index_servers + 1, new_line)
 
             # Écrire les lignes mises à jour dans le fichier
-            with open(ConfUtils.config_file, 'w', encoding="utf-8") as f:
+            with open(Utils.config_file, 'w', encoding="utf-8") as f:
                 f.writelines(lines)
             confirmation_message = f"Le serveur avec l'id \"{self.id_server}\""
             if self.alias is not None:
@@ -62,8 +62,8 @@ class Server:
     @staticmethod
     def delete(id_or_alias, by_alias=False):
         """Delete a specific server"""
-        lines = ConfUtils.read_file_lines(ConfUtils.config_file)
-        index_servers = ConfUtils.find_servers_index(lines)
+        lines = Utils.read_file_lines(Utils.config_file)
+        index_servers = Utils.find_servers_index(lines)
         element_type = 'alias' if by_alias else 'id'
         if index_servers is None:
             print("Erreur : Section [servers] non trouvée dans le fichier.")
@@ -79,8 +79,8 @@ class Server:
             # On vérifie que la ligne contient au moins 4 éléments et qu'elle n'est pas vide
             if len(line_elements) >= 4 and deleted_line.strip():
                 # On supprime la ligne
-                ConfUtils.delete_line(lines, line_to_delete)
-                ConfUtils.write_file_lines(ConfUtils.config_file, lines)
+                Utils.delete_line(lines, line_to_delete)
+                Utils.write_file_lines(Utils.config_file, lines)
                 # On affiche un message de confirmation
                 print(f"L'élément avec l'{element_type} {id_or_alias} a été supprimé de la "
                       f"section [servers].")
@@ -111,7 +111,7 @@ class Server:
     @staticmethod
     def find_line_to_delete(lines, index_servers, id_or_alias, by_alias=False):
         """Find the line to delete"""
-        index_auto_backups = ConfUtils.find_auto_backups_index(lines)
+        index_auto_backups = Utils.find_auto_backups_index(lines)
         if index_auto_backups is None:
             index_auto_backups = len(lines)
         server_lines = lines[index_servers + 1:index_auto_backups]
@@ -133,10 +133,10 @@ class Server:
     def update(alias_to_update, new_credentials=None, new_port=None, new_alias=None):
         """Update a specific server"""
         # On ouvre le fichier en mode lecture
-        lines = ConfUtils.read_file_lines(ConfUtils.config_file)
+        lines = Utils.read_file_lines(Utils.config_file)
 
         # On cherche la ligne contenant [servers]
-        index_servers = ConfUtils.find_servers_index(lines)
+        index_servers = Utils.find_servers_index(lines)
 
         # On regarde si la ligne contenant [servers] a été trouvée
         if index_servers is not None:
@@ -170,7 +170,7 @@ class Server:
                 lines[line_to_update] = updated_line
 
                 # Écrire les lignes mises à jour dans le fichier
-                with open(ConfUtils.config_file, 'w', encoding="utf-8") as f:
+                with open(Utils.config_file, 'w', encoding="utf-8") as f:
                     f.writelines(lines)
 
                 print(f"Les informations du serveur avec l'alias \"{alias_to_update}\" ont été "
@@ -186,7 +186,7 @@ class Server:
     @staticmethod
     def find_line_to_update(lines, index_servers, alias_to_update):
         """Find the line to update"""
-        index_auto_backups = ConfUtils.find_auto_backups_index(lines)
+        index_auto_backups = Utils.find_auto_backups_index(lines)
         if index_auto_backups is None:
             index_auto_backups = len(lines)
         server_lines = lines[index_servers + 1:index_auto_backups]

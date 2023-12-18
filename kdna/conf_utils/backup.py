@@ -1,5 +1,6 @@
 """Backup"""
-from kdna.conf_utils import ConfUtils
+
+from kdna.conf_utils.utils import Utils
 
 
 class Backup:
@@ -16,11 +17,11 @@ class Backup:
     def add(self):
         """Add a new backup"""
         # On ouvre le fichier en mode lecture
-        lines = ConfUtils.read_file_lines(ConfUtils.config_file)
+        lines = Utils.read_file_lines(Utils.config_file)
 
         # On cherche les indices de [servers] et [auto-backups]
-        index_servers = ConfUtils.find_servers_index(lines)
-        index_auto_backups = ConfUtils.find_auto_backups_index(lines)
+        index_servers = Utils.find_servers_index(lines)
+        index_auto_backups = Utils.find_auto_backups_index(lines)
 
         # Vérification de l'existence de l'id_server dans la section [servers]
         if not self.check_id_server(lines, index_servers, index_auto_backups):
@@ -50,7 +51,7 @@ class Backup:
         lines.insert(index_auto_backups + 1, new_line)
 
         # Écrire les lignes mises à jour dans le fichier
-        with open(ConfUtils.config_file, 'w', encoding="utf-8") as f:
+        with open(Utils.config_file, 'w', encoding="utf-8") as f:
             f.writelines(lines)
 
     def check_id_server(self, lines, index_servers, index_auto_backups):
@@ -73,10 +74,10 @@ class Backup:
     def delete(id_to_delete):
         """Delete a backup"""
         # On ouvre le fichier en mode lecture
-        lines = ConfUtils.read_file_lines(ConfUtils.config_file)
+        lines = Utils.read_file_lines(Utils.config_file)
 
         # On cherche les indices de [servers] et [auto-backups]
-        index_auto_backups = ConfUtils.find_auto_backups_index(lines)
+        index_auto_backups = Utils.find_auto_backups_index(lines)
         if index_auto_backups is None:
             print(
                 "Erreur : Section [auto-backups] non trouvé dans le fichier.")
@@ -87,8 +88,8 @@ class Backup:
             lines, index_auto_backups, id_to_delete)
         # Si la ligne à supprimer a été trouvée, on la supprime
         if line_to_delete is not None:
-            ConfUtils.delete_line(lines, line_to_delete)
-            ConfUtils.write_file_lines(ConfUtils.config_file, lines)
+            Utils.delete_line(lines, line_to_delete)
+            Utils.write_file_lines(Utils.config_file, lines)
             print(
                 f"L'auto backup avec l'id \"{id_to_delete}\" a été supprimé de la section ["
                 f"auto-backups].")
@@ -111,10 +112,10 @@ class Backup:
     def update(id_to_update, new_frequency=None, new_name=None, new_timestamp=None, new_path=None):
         """update a specific backup"""
         # On ouvre le fichier en mode lecture
-        lines = ConfUtils.read_file_lines(ConfUtils.config_file)
+        lines = Utils.read_file_lines(Utils.config_file)
 
         # On cherche les indices de [auto-backups]
-        index_auto_backups = ConfUtils.find_auto_backups_index(lines)
+        index_auto_backups = Utils.find_auto_backups_index(lines)
 
         # On regarde si la section [auto-backups] existe
         if index_auto_backups is not None:
@@ -148,7 +149,7 @@ class Backup:
                 lines[line_to_update] = updated_line
 
                 # Écrire les lignes mises à jour dans le fichier
-                with open(ConfUtils.config_file, 'w', encoding="utf-8") as f:
+                with open(Utils.config_file, 'w', encoding="utf-8") as f:
                     f.writelines(lines)
 
                 print(

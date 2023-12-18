@@ -1,12 +1,11 @@
-"""ConfUtils"""
+"""Utils"""
+
+CONFIG_TXT = 'knda.conf'
 
 
-CONFIG_TXT = 'config.txt'
-
-
-class ConfUtils:
+class Utils:
     """Fonctions utilitaires pour les fichiers de configuration"""
-    config_file = 'config.txt'
+    config_file = 'knda.conf'
 
     @staticmethod
     def initialize_config_file():
@@ -36,7 +35,7 @@ class ConfUtils:
     def read_all():
         """Read all the configurations"""
         # Fonction pour afficher le fichier de configuration
-        lines = ConfUtils.read_file_lines(ConfUtils.config_file)
+        lines = Utils.read_file_lines(Utils.config_file)
         for line in lines:
             print(line.strip())
 
@@ -65,12 +64,12 @@ class ConfUtils:
     @staticmethod
     def find_auto_backups_index(lines):
         """Find the index of a specific autobackup"""
-        return ConfUtils.find_section(lines, "[auto-backups]")
+        return Utils.find_section(lines, "[auto-backups]")
 
     @staticmethod
     def find_servers_index(lines: list) -> int:
         """Find the index of a specific [servers]"""
-        return ConfUtils.find_section(lines, "[servers]")
+        return Utils.find_section(lines, "[servers]")
 
     @staticmethod
     def delete_line(lines, line_to_delete):
