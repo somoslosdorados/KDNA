@@ -1,29 +1,54 @@
 import click
 
+# Creation du groupe de commande autobackup
 @click.group(name='auto-backup')
 def autobackup():
-    """backup: Commande pour mettre en place un daemon de sauvegarde"""
+    """Commande pour mettre en place un daemon de sauvegarde"""
 
+# Création des commandes du groupe autobackup
+
+# Création de la commande schedule
 @autobackup.command()
-@click.option('-n', '--nameofcron', nargs=1, help="entrer le nom du cron")
-@click.option('-t', '--tag', nargs=1, help="entrer le tag")
+@click.option('-n', '--nameofcron', nargs=1, required=True, help="entrer le nom du cron")
+@click.option('-t', '--tag', nargs=1, required=True, help="entrer le tag")
 @click.argument('cron_schedule', type=click.Choice(['daily', 'monthly', 'weekly',
                                                     'custom']), required=True)
 @click.argument('custom_cron', nargs=-1)
 def schedule(nameofcron, tag, cron_schedule, custom_cron):
-    """schedule: Commande pour prévoir une backup régulière
-        --nameofcron: option pour entrer le nom du cron
-        --tag: option pour saisir un tag pour le cron
-        --schedule: option pour choisir le schedule du cron
-        --custom-cron: option pour entrer un cron personnalisé"""
+    """Commande pour prévoir une backup régulière\n
+    :param nameofcron: -n le nom du cron\n
+    :type nameofcron: str\n
+    :param tag: -t le tag du cron\n
+    :type tag: str\n
+    :param cron_schedule: le schedule de l'auto-backup ['daily', 'monthly', 'weekly', 'custom']\n
+    :type cron_schedule: str\n
+    :param custom_cron: le schedule personnalisé de l'auto-backup\n
+    :type custom_cron: str, optional\n
+    :return: un message de confirmation ou d'erreur\n
+    :rtype: str"""
     click.echo(f"Name of cron : \"{nameofcron}\"")
     click.echo(f"Cron tag and schedule : \"{tag}\" \"{cron_schedule}\"")
     if cron_schedule == 'custom':
-        click.echo(f"Custom cron : \"{custom_cron}\"")
+        if not custom_cron:
+            click.echo("L'argument custom_cron doit être suivi d'un schedule de cron personnalisé.")
+        else:
+            click.echo(f"Custom cron : \"{custom_cron}\"")
 
+# Création de la commande stop
 @autobackup.command()
-@click.option('-n', '--nameofcron', nargs=1, help="entrer le nom du cron à stopper")
+@click.option('-n', '--nameofcron', nargs=1, required=True, help="entrer le nom du cron à stopper")
 def stop(nameofcron):
-    """schedule: Commande pour stopper une backup régulière
-        --nameofcron: option pour entrer le nom du cron à stopper"""
+    """Commande pour stopper une backup régulière\n
+    :param nameofcron: -n le nom du cron à stopper\n
+    :type nameofcron: str\n
+    :return: un message de confirmation ou d'erreur\n
+    :rtype: str"""
     click.echo(f"Stopped cron : \"{nameofcron}\"")
+
+# Création de la commande list
+@autobackup.command()
+def list():
+    """Commande pour lister les autobackups
+    :return: Liste des autobackups : class: `str`\n
+    :rtype: list"""
+    click.echo(f"List of autobackups : \n...\n...")
