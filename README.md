@@ -2,9 +2,10 @@
 
 This is the official repository for the DO2023-2026 python CLI backup project
 
-## Documentation
+## Documentation - CRUD fichier de config
 
-After cloning the repo you will need to install all dependencies
+Après avoir cloné le dépôt, vous devrez installer toutes les dépendances
+
 
 ```bash
 Utils.initialize_config_file()
@@ -19,7 +20,7 @@ Un fichier est créé :
 
 ```
 
-Vous pouvez désormais faire vos commandes dans le fichier `__init__.py`
+Vous pouvez désormais faire vos commandes dans le fichier `main.py`
 
 ### Server
 
@@ -27,14 +28,14 @@ Vous pouvez désormais faire vos commandes dans le fichier `__init__.py`
 
 Vous pouvez créer un serveur avec ces différents paramètres :
 
-| Signature : | id_server | credentials |  port  |  alias |
-| :---------- | :-------: | :---------: | :----: | -----: |
-| Type :      |  String   |   String    | String | String |
+| Signature : | id_server | address | credentials |  port  |  alias |
+| :---------- | :-------: | :-----: | :---------: | :----: | -----: |
+| Type :      |  String   | String  |   String    | String | String |
 
 Comme ceci :
 
 ```
-server = Server("18", "credentials", "22", "hello")
+server = Server("S4", "dgrasset@32.432.43.56", "/path/ssh", "5432", "hello")
 ```
 
 2. #### Suppression
@@ -64,13 +65,13 @@ Server.delete("hello", by_alias=True)
 
 Vous pouvez mettre à jour un serveur grâce à son alias avec ces différents paramètres :
 
-| Signature : |    alias    | credentials |    port    | nouvel alias |
-| :---------- | :---------: | :---------: | :--------: | -----------: |
-| Type :      |   String    |   String    |   String   |       String |
-| Règle :     | Obligatoire | Facultatif  | Facultatif |   Facultatif |
+| Signature : |    alias    | address    | credentials |    port    | nouvel alias |
+| :---------- | :---------: | :--------: | :---------: | :--------: | -----------: |
+| Type :      |   String    | String     | String      |   String   |       String |
+| Règle :     | Obligatoire | Facultatif | Facultatif  | Facultatif |   Facultatif |
 
 ```
-Server.update("test", new_port="25", new_credentials="test", new_alias="ahahah")
+Server.update("S4", new_port="25", new_address="bplanche@10.0.432.43", new_credentials=".ssh/path", new_alias="SS4")
 ```
 
 À noter que vous n'êtes pas obligé de modifier tous les champs de votre ligne concernant le serveur que vous voulez modifier. Vous pouvez par exemple seulement changer le port en précisant `new_port` en plus de l'`alias` obligatoire dans la signature de votre update.
@@ -99,7 +100,7 @@ backup = Backup("9", "monthly", "okay", "2021-01-01", "3", "/home/backup")
 Vous pouvez supprimer une auto-backup grâce à son id de cette manière :
 
 ```
-Server.delete("9")
+Backup.delete("9")
 ```
 
 3. #### Update
@@ -124,10 +125,14 @@ De plus l'id relié au serveur n'est pas modifiable, car la back-up est lié à 
 
 1. #### Readall
 
-Vous pouvez faire la commande suivante pour vous afficher le contenu du fichier  `config.txt` simplement :
+Vous pouvez faire la commande suivante pour vous afficher le contenu du fichier  `kdna.conf` simplement :
 
 ```
 Utils.read_all()
+```
+
+## Others
+
 
 ### Start the app
 ```bash
@@ -152,13 +157,6 @@ sphinx-build -M html docs/source/ docs/build/
 ```
 
 Cette méthode n'est pas poussée car un POC est destiné à la lecture d'un fichier de conf (cf. POC 2)
-
-## TODO :
-
--   générer un id aléatoire
--   revoir les timestamp des auto-backups
--   revoir les frequency des auto-backups
--   optimiser au maximum le code
 
 ## Package added
     - click             # Parseur
