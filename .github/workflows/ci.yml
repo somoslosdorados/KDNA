@@ -23,7 +23,3 @@ jobs:
         poetry install
     - name: Test with tox
       run: poetry run tox run-parallel
-    - name: Publish packages to Test PyPI
-      run: |
-          poetry config pypi-token.pypi ${{ secrets.PYPI_CURLDL_TOKEN }}
-          poetry publish --build

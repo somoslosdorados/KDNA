@@ -1,8 +1,8 @@
 import click
-from commands.backup import backup
-from commands.server import server
-from commands.autobackup import autobackup
-from encrypt import encrypt
+from kdna.commands.backup import backup
+from kdna.commands.server import server
+from kdna.commands.autobackup import autobackup
+from kdna.encrypt import encrypt
 
 
 """

@@ -1,5 +1,5 @@
 import json
-from fabric import Connection
+from fabric import Connection # type: ignore
 from typing import Union
 import subprocess
 
@@ -70,7 +70,7 @@ def get_json_connection_informations() -> Union[None, dict]:
         print("Veuillez créer un fichier '" + json_file_name + "'.")
         return None
 
-def list_folders(connection: any, path: str) -> Union[None, list]:
+def list_folders(connection: Connection, path: str) -> Union[None, list]:
     """
     list all files and folders in a specific path.
     """
@@ -80,7 +80,7 @@ def list_folders(connection: any, path: str) -> Union[None, list]:
     except:
         return None
 
-def create_folder(connection: any, path: str, folder_name: str) -> bool:
+def create_folder(connection: Connection, path: str, folder_name: str) -> bool:
     """
     create a file on a specific path in the remote server.
     """
@@ -90,7 +90,7 @@ def create_folder(connection: any, path: str, folder_name: str) -> bool:
     except:
         return False
 
-def send_file(connection: any, local_path: str, local_file_name: str, remote_path: str) -> bool:
+def send_file(connection: Connection, local_path: str, local_file_name: str, remote_path: str) -> bool:
     """
     send a file on a specific path in the remote server.
     """

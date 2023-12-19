@@ -9,11 +9,9 @@
 # Hostname 162.38.111.241
 # User user_sur_melomys
 
-from fabric import Connection
-from dotenv import load_dotenv
+from fabric import Connection # type: ignore
 import os
 
-load_dotenv()
 host = os.getenv('HOST')
 
 # Lancer une commande à distance et récupérer son résultat :
