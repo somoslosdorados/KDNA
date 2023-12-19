@@ -5,8 +5,9 @@ from kdna.conf_utils.utils import Utils
 
 class Server:
     """Class representing a server"""
-    def __init__(self, id_server, credentials, port, alias):
+    def __init__(self, id_server, address, credentials, port, alias):
         self.id_server = id_server
+        self.address = address
         self.credentials = credentials
         self.port = port
         self.alias = alias
@@ -41,7 +42,7 @@ class Server:
                     return
 
             # Construction de la nouvelle ligne
-            new_line = f"{self.id_server}, {self.credentials}, {self.port}, {self.alias}\n"
+            new_line = f"{self.id_server}, {self.address}, {self.credentials}, {self.port}, {self.alias}\n"
 
             # Ajout de la ligne seulement si l'id_server et l'alias sont uniques
             lines.insert(index_servers + 1, new_line)
@@ -100,12 +101,12 @@ class Server:
     def extract_existing_servers(lines, index_servers, index_auto_backups):
         """Extract the id of th server"""
         return [line.split(',')[0].strip() for line in lines[index_servers + 1:index_auto_backups]
-                if len(line.split(',')) >= 4 and line.strip()]
+                if len(line.split(',')) >= 5 and line.strip()]
 
     @staticmethod
     def extract_existing_aliases(lines, index_servers, index_auto_backups):
         """Extract the aliases in the server section"""
-        return [line.split(',')[3].strip() if len(line.split(',')) >= 4 else None for line in
+        return [line.split(',')[4].strip() if len(line.split(',')) >= 5 else None for line in
                 lines[index_servers + 1:index_auto_backups] if line.strip()]
 
     @staticmethod
@@ -117,20 +118,20 @@ class Server:
         server_lines = lines[index_servers + 1:index_auto_backups]
 
         for i, line in enumerate(server_lines):
-            if len(line.split(',')) >= 4 and line.strip():
+            if len(line.split(',')) >= 5 and line.strip():
                 line_id = line.split(',')[0].strip()
-                line_alias = line.split(',')[3].strip() if len(line.split(',')) >= 4 else None
+                line_alias = line.split(',')[4].strip() if len(line.split(',')) >= 5 else None
 
                 if (by_alias and line_alias == id_or_alias or not by_alias
                         and line_id == str(id_or_alias)):
                     return i + index_servers + 1
         print(
-            f"Erreur : Aucun élément trouvé avec"
+            f"Erreur : Aucun élément trouvé avec "
             f"l'{'alias' if by_alias else 'id'} \"{id_or_alias}\" dans la section [servers].")
         return None
 
     @staticmethod
-    def update(alias_to_update, new_credentials=None, new_port=None, new_alias=None):
+    def update(alias_to_update, new_credentials=None, new_port=None, new_address=None, new_alias=None):
         """Update a specific server"""
         # On ouvre le fichier en mode lecture
         lines = Utils.read_file_lines(Utils.config_file)
@@ -148,14 +149,15 @@ class Server:
                 # Récupérer les informations existantes
                 existing_line = lines[line_to_update].strip().split(',')
                 existing_id = existing_line[0].strip()
-                existing_credentials = existing_line[1].strip()
-                existing_port = existing_line[2].strip()
-                existing_alias = existing_line[3].strip() if len(existing_line) >= 4 else None
+                existing_address = existing_line[1].strip()
+                existing_credentials = existing_line[2].strip()
+                existing_port = existing_line[3].strip()
+                existing_alias = existing_line[4].strip() if len(existing_line) >= 5 else None
 
                 # Mettre à jour les informations si de nouvelles valeurs sont fournies
-                new_credentials = (
-                    new_credentials) if new_credentials is not None else existing_credentials
+                new_credentials = new_credentials if new_credentials is not None else existing_credentials
                 new_port = new_port if new_port is not None else existing_port
+                new_address = new_address if new_address is not None else existing_address
 
                 # Vérifier si le nouvel alias existe déjà
                 if (new_alias is not None and new_alias != existing_alias and new_alias in
@@ -164,7 +166,7 @@ class Server:
                     return
 
                 # Construire la nouvelle ligne mise à jour
-                updated_line = f"{existing_id}, {new_credentials}, {new_port}, {new_alias}\n"
+                updated_line = f"{existing_id}, {new_address}, {new_credentials}, {new_port}, {new_alias}\n"
 
                 # Mettre à jour la ligne
                 lines[line_to_update] = updated_line
@@ -192,9 +194,9 @@ class Server:
         server_lines = lines[index_servers + 1:index_auto_backups]
 
         for i, line in enumerate(server_lines):
-            if len(line.split(',')) >= 4 and line.strip():
+            if len(line.split(',')) >= 5 and line.strip():
                 line.split(',')[0].strip()
-                line_alias = line.split(',')[3].strip() if len(line.split(',')) >= 4 else None
+                line_alias = line.split(',')[4].strip() if len(line.split(',')) >= 5 else None
 
                 # Si l'alias correspond à celui à mettre à jour
                 if line_alias == alias_to_update:
