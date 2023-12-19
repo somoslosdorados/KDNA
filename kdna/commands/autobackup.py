@@ -9,6 +9,7 @@ def autobackup():
 
 # Création de la commande schedule
 @autobackup.command()
+@click.option('-i', '--idcron', nargs=1, required=True, help="entrer l'id du cron")
 @click.option('-n', '--nameofcron', nargs=1, required=True, help="entrer le nom du cron")
 @click.option('-t', '--tag', nargs=1, required=True, help="entrer le tag")
 @click.argument('cron_schedule', type=click.Choice(['daily', 'monthly', 'weekly',
@@ -19,6 +20,8 @@ def autobackup():
 @click.option('-p', '--path', nargs=1, required=True, help="entrer le chemin de la backup")
 def schedule(nameofcron, tag, cron_schedule, custom_cron):
     """Commande pour prévoir une backup régulière\n
+    :param idcron: -i l'id du cron\n
+    :type idcron: str\n
     :param nameofcron: -n le nom du cron\n
     :type nameofcron: str\n
     :param tag: -t le tag du cron\n
