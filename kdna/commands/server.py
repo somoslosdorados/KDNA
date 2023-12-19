@@ -23,7 +23,7 @@ def delete(id, alias):
     click.echo(f"Id {id} - supprimé par alias : {alias}")
     Server.delete(id, alias)
 
-# Création de la commande delete
+# Création de la commande update
 @server.command()
 @click.argument('alias', required=True)
 @click.option('-c', 'credentials', default='', required=False, help="entrer les nouvelles credentials")
