@@ -14,6 +14,9 @@ def autobackup():
 @click.argument('cron_schedule', type=click.Choice(['daily', 'monthly', 'weekly',
                                                     'custom']), required=True)
 @click.argument('custom_cron', nargs=-1)
+@click.option('-d', '--date', nargs=1, required=True, help="entrer la date de la première backup [ xxxx-xx-xx ]")
+@click.option('-s', '--server', nargs=1, required=True, help="entrer l'id du serveur")
+@click.option('-p', '--path', nargs=1, required=True, help="entrer le chemin de la backup")
 def schedule(nameofcron, tag, cron_schedule, custom_cron):
     """Commande pour prévoir une backup régulière\n
     :param nameofcron: -n le nom du cron\n
@@ -24,9 +27,55 @@ def schedule(nameofcron, tag, cron_schedule, custom_cron):
     :type cron_schedule: str\n
     :param custom_cron: le schedule personnalisé de l'auto-backup\n
     :type custom_cron: str, optional\n
+    :param date: -d [ xxxx-xx-xx ] la date de la première backup\n
+    :type date: str\n
+    :param server: -s l'id du serveur\n
+    :type server: str\n
+    :param path: -p le chemin de la backup\n
+    :type path: str\n
     :return: un message de confirmation ou d'erreur\n
     :rtype: str"""
     click.echo(f"Name of cron : \"{nameofcron}\"")
+    click.echo(f"Cron tag and schedule : \"{tag}\" \"{cron_schedule}\"")
+    if cron_schedule == 'custom':
+        if not custom_cron:
+            click.echo("L'argument custom_cron doit être suivi d'un schedule de cron personnalisé.")
+        else:
+            click.echo(f"Custom cron : \"{custom_cron}\"")
+
+# Création de la commande delete
+@autobackup.command()
+@click.option('-i', '--idcron', nargs=1, required=True, help="entrer l'id du cron à supprimer")
+def delete(idcron):
+    """Commande pour supprimer une backup régulière\n
+    :param idcron: -n l'id du cron à supprimer\n
+    :type idcron: str\n
+    :return: un message de confirmation ou d'erreur\n
+    :rtype: str"""
+    click.echo(f"Deleted cron : \"{idcron}\"")
+
+@autobackup.command()
+@click.option('-i', '--idcron', nargs=1, required=True, help="entrer l'id du cron à mettre à jour")
+@click.argument('cron_schedule', type=click.Choice(['daily', 'monthly', 'weekly',
+                                                    'custom']), required=False)
+@click.argument('custom_cron', nargs=-1, required=False)
+@click.option('-d', '--date', nargs=1, required=False, help="entrer la nouvelle date de la première backup [ xxxx-xx-xx ]")
+@click.option('-p', '--path', nargs=1, required=False, help="entrer le chemin de la nouvelle backup")
+def update(idcron, tag, cron_schedule, custom_cron):
+    """Commande pour mettre à jour une backup régulière\n
+    :param idcron: -i l'id du cron\n
+    :type idcron: str\n
+    :param cron_schedule: le schedule de l'auto-backup ['daily', 'monthly', 'weekly', 'custom']\n
+    :type cron_schedule: str\n
+    :param custom_cron: le schedule personnalisé de l'auto-backup\n
+    :type custom_cron: str, optional\n
+    :param date: -d [ xxxx-xx-xx ] la date de la première backup\n
+    :type date: str\n
+    :param path: -p le chemin de la backup\n
+    :type path: str\n
+    :return: un message de confirmation ou d'erreur\n
+    :rtype: str"""
+    click.echo(f"Name of cron : \"{idcron}\"")
     click.echo(f"Cron tag and schedule : \"{tag}\" \"{cron_schedule}\"")
     if cron_schedule == 'custom':
         if not custom_cron:
