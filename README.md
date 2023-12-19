@@ -7,7 +7,7 @@ This is the official repository for the DO2023-2026 python CLI backup project
 After cloning the repo you will need to install all dependencies
 
 ```bash
-ConfUtils.initialize_config_file()
+Utils.initialize_config_file()
 ```
 
 Un fichier est créé :
@@ -120,14 +120,14 @@ Backup.update("9", new_frequency="daily", new_timestamp="2021-01-02", new_path="
 De plus l'id relié au serveur n'est pas modifiable, car la back-up est lié à celui-ci
 
 
-### ConfigUtils
+### Utils
 
 1. #### Readall
 
 Vous pouvez faire la commande suivante pour vous afficher le contenu du fichier  `config.txt` simplement :
 
 ```
-ConfUtils.readAll()
+Utils.read_all()
 
 ### Start the app
 ```bash
