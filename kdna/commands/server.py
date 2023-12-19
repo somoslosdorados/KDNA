@@ -6,10 +6,18 @@ def server():
 
 @server.command()
 @click.argument('name')
-def set(name):
+@click.option('--alias', is_flag=True, default=False)
+def set(name, alias):
     """set: Commande pour sélectionner un serveur
         --name: option pour entrer le nom du serveur"""
-    click.echo(f"Name {name}")
-    server = Server("18", "creds", "22", "draco")
-    server.add()
-    print(server)
+    if alias:
+        click.echo(f"Sélection du server {name} par l'alias")
+    else:
+        click.echo(f"Sélection du server {name} par l'id")
+
+@server.command()
+@click.argument('id')
+@click.option('--alias', is_flag=True, default=False)
+def delete(id, alias):
+    click.echo(f"Id {id} - supprimé par alias : {alias}")
+    Server.delete(id, alias)
