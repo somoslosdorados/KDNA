@@ -1,11 +1,11 @@
 """Utils"""
 
-CONFIG_TXT = 'knda.conf'
+CONFIG_TXT = 'kdna.conf'
 
 
 class Utils:
     """Fonctions utilitaires pour les fichiers de configuration"""
-    config_file = 'knda.conf'
+    config_file = 'kdna.conf'
 
     @staticmethod
     def initialize_config_file():
