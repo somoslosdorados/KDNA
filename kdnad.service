@@ -1,0 +1,8 @@
+[Unit]
+Description=KDNA project's Python daemon service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /root/kdna_service/main.py 10
+Restart=on-failure
+RemainAfterExit=true
