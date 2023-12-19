@@ -21,104 +21,252 @@ Un fichier est créé :
 
 Vous pouvez désormais faire vos commandes dans le fichier `__init__.py`
 
+
+### Aide
+Obtenir les informations nécessaires à l'utilisation de chaque commande
+```
+# kdna <commande> --help
+# kdna <commande> <sous-commande> --help
+```
+
 ### Server
+
+---
+
+#### Description
+Gérer un serveur pour les backups
+```
+kdna server <commande> <sous-commande> [options] [arguments]
+```
+---
 
 1. #### Création
 
-Vous pouvez créer un serveur avec ces différents paramètres :
-
-| Signature : | id_server | credentials |  port  |  alias |
-| :---------- | :-------: | :---------: | :----: | -----: |
-| Type :      |  String   |   String    | String | String |
-
-Comme ceci :
+#### Usage
+```
+kdna server set -i <id_serveur> -a <alias_serveur> -c <credentials> -p <port_serveur>
+```
+Exemple
 
 ```
-server = Server("18", "credentials", "22", "hello")
+kdna server set -i 1 -a alias -c test_credentials -p 22
 ```
+
+#### Options
+| Options |  Type  | Description | Required |
+| :------ |:------:| :---------: |:--------:|
+| -i      | String |   id_server |   Vrai   |
+| -a      | String |   alias     |   Vrai   |
+| -c      | String |   credentials |   Vrai   |
+| -p      | String |   port      |   Vrai   |
+
 
 2. #### Suppression
 
-Vous pouvez supprimer un serveur avec ces différents paramètres :
-
-| Signature : |  id_server  |   by_alias |
-| :---------- | :---------: | ---------: |
-| Type :      |   String    |    Boolean |
-| Règle :     | Obligatoire | Facultatif |
-
-Vous pouvez supprimer un serveur grâce à son id de cette manière :
+#### Usage
+```
+kdna server delete -a <alias_serveur> -i <id_serveur>
+```
+Exemple
 
 ```
-Server.delete("18")
+kdna server delete -i 1
 ```
 
-Mais vous pouvez aussi supprimer un serveur grâce à son alias de cette manière :
+#### Options
+| Options |  Type  | Description | Required |
+| :------ |:------:| :---------: |:--------:|
+| -i      | String |   id_server |   Faux   |
+| -a      | String |   alias     |   Faux   |
 
-```
-Server.delete("hello", by_alias=True)
-```
-
-À noter que l'attribut `by_alias` possède de base la valeur `False` c'est pourquoi vous n'avez pas besoin de le préciser lorsque vous voulez effectuer une suppresion par id.
+A noter : au moins une des deux options doit être choisie
 
 3. #### Update
 
-Vous pouvez mettre à jour un serveur grâce à son alias avec ces différents paramètres :
-
-| Signature : |    alias    | credentials |    port    | nouvel alias |
-| :---------- | :---------: | :---------: | :--------: | -----------: |
-| Type :      |   String    |   String    |   String   |       String |
-| Règle :     | Obligatoire | Facultatif  | Facultatif |   Facultatif |
+#### Usage
+```
+kdna server update -a <alias_serveur> -c <credentials> -p <port_serveur> -a <new_alias>
+```
+Exemple
 
 ```
-Server.update("test", new_port="25", new_credentials="test", new_alias="ahahah")
+kdna server update alias_serveur -c new_credentials
 ```
 
-À noter que vous n'êtes pas obligé de modifier tous les champs de votre ligne concernant le serveur que vous voulez modifier. Vous pouvez par exemple seulement changer le port en précisant `new_port` en plus de l'`alias` obligatoire dans la signature de votre update.
+#### Options
+| Options |  Type  | Description | Required |
+|:--------|:------:| :---------: |:--------:|
+|         | String |   alias     |   Vrai   |
+| -c      | String |   credentials |   Faux   |
+| -p      | String |   port      |   Faux   |
+| -a      | String |   new_alias |   Faux   |
 
-De plus l'id du serveur n'est pas modifiable, il sera peut être généré automatiquement plus tard.
+3. #### List
 
+#### Usage
+```
+kdna server list
+```
 
 ### Auto-Backup
 
+---
+
+#### Description
+Gérer des backups régulières
+```
+kdna auto-backup <commande> <sous-commande> [options] [arguments]
+```
+---
+
 1. #### Création
 
-Vous pouvez créer une auto-backup avec ces différents paramètres :
+#### Usage
+```
+kdna auto-backup schedule -i <id_backup> -n <nom_backup> -t <tag> cron_schedule <<custom_schedule>> -d <date_debut> -s <id_server> -p <path_backup>
+``` 
 
-| Signature : | id_backup | frequency |  name  | timestamp | id_server |   path |
-| :---------- | :-------: | :-------: | :----: | :-------: | :-------: | -----: |
-| Type :      |  String   |  String   | String |  String   |  String   | String |
-
-Comme ceci :
+Exemple
 
 ```
-backup = Backup("9", "monthly", "okay", "2021-01-01", "3", "/home/backup")
+kdna auto-backup schedule -i 1 -n backup -t tag -d 2021-01-01 -s 1 -p /home
 ```
+
+#### Options
+| Options |  Type  | Description | Required |
+| :------ |:------:| :---------: |:--------:|
+| -i      | String |   id_backup |   Vrai   |
+| -n      | String |   nom_backup|   Vrai   |
+| -t      | String |   tag       |   Vrai   |
+|         | String |cron_schedule|   Vrai   |
+|         | String |custom_schedule|   Faux   |
+| -d      | String |   date_debut|   Vrai   |
+| -s      | String |   id_server |   Vrai   |
+| -p      | String |   path_backup|   Vrai   |
+
 
 2. #### Suppression
 
-Vous pouvez supprimer une auto-backup grâce à son id de cette manière :
+#### Usage
+```
+kdna auto-backup delete -i <id_backup>
+```
+Exemple
 
 ```
-Server.delete("9")
+kdna auto-backup delete -i 1
 ```
+
+#### Options
+| Options |  Type  | Description | Required |
+| :------ |:------:| :---------: |:--------:|
+| -i      | String |   id_server |   Vrai   |
 
 3. #### Update
 
-Vous pouvez mettre à jour une auto-backup grâce à son id avec ces différents paramètres :
-
-| Signature : |  id_backup  | frequency  |    name    | timestamp  |       path |
-| :---------- | :---------: | :--------: | :--------: | :--------: | ---------: |
-| Type :      |   String    |   String   |   String   |   String   |     String |
-| Règle :     | Obligatoire | Facultatif | Facultatif | Facultatif | Facultatif |
+#### Usage
+```
+kdna auto-backup update -i <id_backup> cron_schedule <<custom_schedule>> -d <date_debut> -p <path_backup>
+```
+Exemple
 
 ```
-Backup.update("9", new_frequency="daily", new_timestamp="2021-01-02", new_path="/home/backup")
+kdna auto-backup update -i 1 -d 2021-01-01 -p /home
 ```
 
-À noter que vous n'êtes pas obligé de modifier tous les champs de votre ligne concernant l'auto-backup que vous voulez modifier. Vous pouvez par exemple seulement changer le nom en précisant `new_name` en plus de l'`id` obligatoire dans la signature de votre update.
+#### Options
+| Options |  Type  | Description |                  Required                  |
+|:--------|:------:| :---------: |:------------------------------------------:|
+| -i      | String |   id_backup |                    Vrai                    |
+|         | String |cron_schedule|                    Faux                    |
+|         | String |custom_schedule| Faux (vrai si le cron_schedule est custom) |
+| -d      | String |   date_debut|                    Faux                    |
+| -p      | String |   path_backup|                    Faux                    |
 
-De plus l'id relié au serveur n'est pas modifiable, car la back-up est lié à celui-ci
+A noter: on ne peut pas modifier l'id du serveur car la backup est liée à celui-ci
 
+3. #### List
+
+#### Usage
+```
+kdna auto-backup list
+```
+
+### Backup
+
+---
+
+#### Description
+Gérer des backups manuelles
+```
+kdna backup <commande> <sous-commande> [options] [arguments]
+```
+---
+
+1. #### Création
+
+#### Usage
+```
+kdna backup add <nom_backup> <path_backup>
+``` 
+
+Exemple
+
+```
+kdna backup add backup /home
+```
+
+#### Options
+| Options |  Type  | Description | Required |
+|:--------|:------:| :---------: |:--------:|
+|         | String |   nom_backup|   Vrai   |
+|       | String |   path_backup|   Vrai   |
+
+
+2. #### Suppression
+
+#### Usage
+```
+kdna backup delete -t <path:tag>
+```
+Exemple
+
+```
+kdna backup delete -t /home:tag
+```
+
+#### Options
+| Options |  Type  | Description | Required |
+| :------ |:------:| :---------: |:--------:|
+| -t      | String |   path:tag  |   Vrai   |
+
+3. #### Restore
+
+#### Usage
+```
+kdna backup restore -t <name:tag> <path_backup>
+```
+Exemple
+
+```
+kdna backup restore -t backup:tag /home
+```
+
+#### Options
+| Options |  Type  | Description |                  Required                  |
+|:--------|:------:| :---------: |:------------------------------------------:|
+| -t      | String |   name:tag  |                    Vrai                    |
+|         | String |   path_backup|                    Faux                    |
+
+4. #### List
+
+#### Usage
+```
+kdna backup list
+```
+
+
+---
 
 ### Utils
 

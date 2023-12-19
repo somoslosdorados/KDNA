@@ -50,7 +50,7 @@ def delete(alias, id):
         else:
             click.echo("L'argument alias ou id doit être renseigné.")
 
-# Création de la commande delete
+# Création de la commande update
 @server.command()
 @click.argument('alias', required=True)
 @click.option('-c', 'credentials', default='', required=False, help="entrer les nouvelles credentials")
