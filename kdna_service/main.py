@@ -19,10 +19,9 @@ def main():
     :raises [ValueError]: [this error may occur during type conversion]
     :raises [IndexError]: [this error may occur during sys.argv list traversal]
     :return: [no errors or exceptions]
-        0 -> no errors or exceptions.
-        1 -> Generic error 'Exception'.
-        2 -> 'ValueError' (e.g. during type conversion).
-        3 -> 'IndexError' (e.g. during sys.argv list traversal).
+    :return: [Generic error 'Exception' raised]
+    :return: ['ValueError' raised]
+    :return: ['IndexError' raised]
     """
 
     try:
