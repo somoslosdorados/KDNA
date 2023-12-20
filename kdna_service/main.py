@@ -1,9 +1,9 @@
 """
     This program is started by the kdna daemon. It generates a log every x seconds to demonstrate the python service.
 
-    Inputs:
-        This program takes one command-line argument x, an integer interpreted as the time in seconds between logs.
-    Outputs:
+    This program takes one command-line argument x, an integer interpreted as the time in seconds between logs.
+    
+    This program writes logs.
 """
 
 
@@ -14,12 +14,11 @@ import sys
 
 def main():
     """
-    Main function.
+    Main script function.
 
-    Inputs:
-        No parameters.
-        This function takes one command-line argument x, an integer interpreted as the time in seconds between logs.
-    Ouputs:
+    :raises [ValueError]: [this error may occur during type conversion]
+    :raises [IndexError]: [this error may occur during sys.argv list traversal]
+    :return: [no errors or exceptions]
         0 -> no errors or exceptions.
         1 -> Generic error 'Exception'.
         2 -> 'ValueError' (e.g. during type conversion).
