@@ -39,18 +39,18 @@ def deleteTags(connexionInstance,project,oldTag):
         print(f"Le tag {oldTag} associé au fichier {file} a été supprimé")
     connexionInstance.put("tags.conf",pathToConfTag)
     os.remove('tags.conf')
-    return
 
 def readTags(connexionInstance,project):
     pathToConfTag="./kdna/"+project+"/tags.conf"
     connexionInstance.get(pathToConfTag)
     with open('tags.conf',"r") as tagFile:
         tagLines=tagFile.readlines()
+    tagLines.pop(0)
     print("Voici les tags de vos fichiers")
     for line in tagLines:
         tagFileCouple=line.split(", ")
-        print("")
+        print('{:>8} {:>8}'.format(tagFileCouple[0],tagFileCouple[1]))
+    os.remove('tags.conf')
     
-    return
 
-deleteTags(client,'project1','a')
+readTags(client,"project1")
