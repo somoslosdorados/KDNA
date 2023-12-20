@@ -1,20 +1,32 @@
 """We will use connexion instance gathered by the module
     If the service is running the tags.conf file could change"""
-from fabric import Connection
+
 import os
 
-client = Connection('test@192.168.122.226')
-def addTags(connexionInstance,project,newTag,newFile):
+
+def addTags(connexionInstance,project,newTag,FileToTag):
     """arguments: ssh instance / name of the project / name of the tags
     In the file tag.conf we must identify the tag [tags] to write tags at the end 
     of the file"""
-    newTaggedBackup=newTag+", "+newFile+"\n"
+    newTaggedBackup=newTag+", "+FileToTag+"\n"
     pathToConfTag="./kdna/"+project+"/tags.conf"
     connexionInstance.get(pathToConfTag)
+    
+    with open('tags.conf',"r") as tagFile:
+        tagLines=tagFile.readlines()
+    tagLines.pop(0)
+
+    for line in tagLines:
+        tagFileCouple=line.split(", ")
+        if(newTag == tagFileCouple[0]):
+            print(f"Le tag {tagFileCouple[0]} est déjà associé la backup {tagFileCouple[1]}")
+            os.remove('tags.conf')
+            return
+
     with open('tags.conf',"a") as tagFile:
         tagFile.write(newTaggedBackup)
     connexionInstance.put("tags.conf",pathToConfTag)
-    print(f"Le fichier {newFile} est maintenant taggé par {newTag}")
+    print(f"Le fichier {FileToTag} est maintenant taggé par {newTag}")
     os.remove('tags.conf')
 
 def deleteTags(connexionInstance,project,oldTag):
@@ -51,6 +63,3 @@ def readTags(connexionInstance,project):
         tagFileCouple=line.split(", ")
         print('{:>8} {:>8}'.format(tagFileCouple[0],tagFileCouple[1]))
     os.remove('tags.conf')
-    
-
-readTags(client,"project1")
