@@ -5,16 +5,37 @@ class ServerService:
     pass
 
   def find_all(self):
-    pass
+    lines = Utils.read_file_lines(Utils.config_file)
+    i = Utils.find_servers_index(lines) + 1
+    index_autobackup = Utils.find_auto_backups_index(lines)
+    while(i != index_autobackup):
+        print(lines[i].strip())
+        i += 1
+        
 
-  def find_by_id(self):
-    pass
+  def find_by_alias(self, alias):
+    lines = Utils.read_file_lines(Utils.config_file)
+    index_servers = Utils.find_servers_index(lines)
+    index_auto_backups = Utils.find_auto_backups_index(lines)
+
+    existing_aliases = self.extract_existing_aliases(
+      lines,
+      index_servers,
+      index_auto_backups
+    )
+    if alias in existing_aliases:
+      line_to_print = self.find_line_to_delete(lines, index_servers, alias, by_alias=True)
+      print(lines[line_to_print].strip())
+    else:
+      print(f"Erreur : Aucun serveur trouvé avec l'alias \"{alias}\" dans la "
+            f"section [server].")
+    
 
   def create_server(self, id, address, credentials, port, alias):
     # On ouvre le fichier en mode lecture
     lines = Utils.read_file_lines(Utils.config_file)
 
-    # On cherche la ligne contenant [servers]
+    # On cherche la ligne contenant [server]
     index_servers = Utils.find_servers_index(lines)
     index_auto_backups = Utils.find_auto_backups_index(lines)
 
@@ -27,7 +48,7 @@ class ServerService:
 
       if str(id) in existing_servers:
         print(f"Erreur : L'id du serveur \"{id}\" existe déjà dans la "
-              f"section [servers].")
+              f"section [server].")
         return
 
       # On vérifie de l'unicité de l'alias
@@ -53,17 +74,17 @@ class ServerService:
       confirmation_message = f"Le server avec l'id \"{id}\""
       if alias is not None:
         confirmation_message += f"et l'alias \"{alias}\""
-      confirmation_message += " a été ajouté dans la section [servers]."
+      confirmation_message += " a été ajouté dans la section [server]."
       print(confirmation_message)
     else:
-      print("Erreur : Section [servers] non trouvé dans le fichier.")
+      print("Erreur : Section [server] non trouvé dans le fichier.")
 
   def delete_server(self, id: str, by_alias=False):
     lines = Utils.read_file_lines(Utils.config_file)
     index_servers = Utils.find_servers_index(lines)
     element_type = 'alias' if by_alias else 'id'
     if index_servers is None:
-      print("Erreur : Section [servers] non trouvée dans le fichier.")
+      print("Erreur : Section [server] non trouvée dans le fichier.")
       return
 
     line_to_delete = self.find_line_to_delete(lines, index_servers, id, by_alias)
@@ -79,18 +100,18 @@ class ServerService:
         Utils.write_file_lines(Utils.config_file, lines)
         # On affiche un message de confirmation
         print(f"L'élément avec l'{element_type} {id} a été supprimé de la "
-              f"section [servers].")
+              f"section [server].")
       # Sinon on affiche un message d'erreur
       else:
         print(
           f"Erreur : Aucun élément trouvé avec l'{element_type} \"{id}\" dans "
-          f"la section [servers].")
+          f"la section [server].")
     # Sinon on affiche un message d'erreur
     else:
       if not by_alias and id == 'None':
         print(
           f"Erreur : Aucun élément trouvé avec l'{element_type} \"{id}\" dans "
-          f"la section [servers].")
+          f"la section [server].")
 
   def update_server(self, alias_to_update, new_credentials=None, new_port=None, new_address=None, new_alias=None):
     lines = Utils.read_file_lines(Utils.config_file)
@@ -141,10 +162,10 @@ class ServerService:
       # Sinon, afficher un message d'erreur
       else:
         print(f"Erreur : Aucun serveur trouvé avec l'alias \"{alias_to_update}\" dans la "
-              f"section [servers].")
+              f"section [server].")
     # Sinon, afficher un message d'erreur
     else:
-      print("Erreur : Section [servers] non trouvée dans le fichier.")
+      print("Erreur : Section [server] non trouvée dans le fichier.")
 
 
 
@@ -157,7 +178,7 @@ class ServerService:
   @staticmethod
   def extract_existing_aliases(lines, index_servers, index_auto_backups):
     """Extract the aliases in the server section"""
-    return [line.split(',')[3].strip() if len(line.split(',')) >= 4 else None for line in
+    return [line.split(',')[4].strip() if len(line.split(',')) >= 5 else None for line in
             lines[index_servers + 1:index_auto_backups] if line.strip()]
 
   @staticmethod
@@ -178,7 +199,7 @@ class ServerService:
           return i + index_servers + 1
     print(
       f"Erreur : Aucun élément trouvé avec "
-      f"l'{'alias' if by_alias else 'id'} \"{id}\" dans la section [servers].")
+      f"l'{'alias' if by_alias else 'id'} \"{id}\" dans la section [server].")
     return None
 
   @staticmethod
