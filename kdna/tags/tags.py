@@ -16,11 +16,22 @@ def addTags(connexionInstance,project,newTag,newFile):
     connexionInstance.put("tags.conf",pathToConfTag)
     os.remove('tags.conf')
 
-def deleteTags(connexionInstance,project,oldTag,newFile):
-    """arguments: """
+def deleteTags(connexionInstance,project,oldTag):
+    """arguments: oldTag """
+    pathToConfTag="./kdna/"+project+"/tags.conf"
+    connexionInstance.get(pathToConfTag)
+    with open('tags.conf',"r") as tagFile:
+        tagLines=tagFile.readlines()
+    with open('tags.conf',"w") as tagFile:
+        for line in tagLines:
+            tag=line.split(", ")[0]
+            if(tag!=oldTag):
+                tagFile.write(line)
+    connexionInstance.put("tags.conf",pathToConfTag)
+    os.remove('tags.conf')
     return
 
 def readTags():
     return
 
-addTags(client,'project1','superTag','hey.zip')
+deleteTags(client,'project1','a')
