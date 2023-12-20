@@ -21,7 +21,22 @@ def argv_getter():
     return nameofcron, tag, schedule, cron_schedule
         
 
+"""
+VOICI DE LA DOC POUR FAIRE LES CRON :
+man crontab
 
+format de crontab -e :
+    Minute (0 - 59)
+    Hour (0 - 23)
+    Day of month (1 - 31)
+    Month (1 - 12)
+    Day of week (0 - 6) (Sunday is 0 or 7)
+
+idée : faire des scripts qui vont CRUD le cron.
+Ces scripts sont lancés par les fonctions de ce fichier.
+Ce fichier est lancé par une commande du CLI. (Ce fichier est appelé avec ses arguments, tels que nameofcron, ...)
+Ce fichier transmet aux scripts ces arguments pour que le cron soit créé.
+"""
 
 
 def delay_reformatter(delay):
