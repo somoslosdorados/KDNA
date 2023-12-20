@@ -90,15 +90,17 @@ import subprocess
 #     except:
 #         return False
 
-def send_file(connection: Connection, local_path: str, remote_path: str) -> bool:
+def upload_file(connection: Connection, local_path: str, remote_path: str) -> Union[None, Exception]:
     """
-    send a file on a specific path in the remote server.
+    Send a file on a specific path in the remote server. Might throw an exception if the arguments are incorrect.
     """
-    try:
-        connection.put(local_path, remote=remote_path)
-        return True
-    except:
-        return False
+    connection.put(local_path, remote=remote_path)
+
+def download_file(connection: Connection, remote_path: str, local_path: str) -> Union[None, Exception]:
+    """
+    Get a file on a specific path in the remote server. Might throw an exception if the arguments are incorrect.
+    """
+    connection.get(remote_path, local_path)
 
 # def main():
 #     connection_param = get_json_connection_informations()
@@ -129,7 +131,8 @@ def send_file(connection: Connection, local_path: str, remote_path: str) -> bool
 
 def main ():
     with Connection("bbronsin@168.38.112.136") as c:
-        send_file(c, "/home/baptiste/Bureau/toto.txt", "/kdna/projet1/")
+        upload_file(c, "/home/baptiste/Bureau/toto.txt", "/kdna/projet1/")
+
 
 if __name__ == '__main__':
     main()
