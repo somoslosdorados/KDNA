@@ -21,3 +21,7 @@ def set(name, alias):
 def delete(id, alias):
     click.echo(f"Id {id} - supprimé par alias : {alias}")
     Server.delete(id, alias)
+
+@server.command()
+def status():
+    click.echo("Server Status")
