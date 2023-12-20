@@ -12,6 +12,7 @@ def argv_getter():
     """
     """
     # mettre dans un module de fonctions auxilliaires ?
+    pass
     nameofcron = sys.argv[1]
     tag = sys.argv[2]
     schedule = sys.argv[3]  # pre-made dates at which cron crons
@@ -28,11 +29,13 @@ def delay_reformatter(delay):
     """
     # mettre dans un module de fonctions auxilliaires ?
     # récupère la date de l'appel de la commande de paupau et la formatte pour le cron.
+    pass
 
 
 def cron_igniter(nameofcron:str, tag:str, cron_schedule:str, custom_cron:str):
     """
     Starts a cron
     """
+    pass
     command = "./cronstart.sh"
     subprocess.run(command, shell=True, check=True)
