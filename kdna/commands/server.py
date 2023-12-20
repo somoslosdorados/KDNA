@@ -1,5 +1,7 @@
 import click
 from kdna.conf_utils.server import Server
+from kdna.server.server_service import ServerService
+
 @click.group()
 def server():
     """server: Commande pour lancer le serveur"""
@@ -17,38 +19,31 @@ def set(name, alias):
 
 
 @server.command()
-@click.argument('id')
-@click.option('--alias', is_flag=True, default=False)
-def delete(id, alias):
-    click.echo(f"Id {id} - supprimé par alias : {alias}")
-    Server.delete(id, alias)
+@click.argument('name')
+def add(name):
+    #Todo ServerService create
+    click.echo("FAUT IMPLEMENTER LES GARS")
 
-# Création de la commande update
 @server.command()
-@click.argument('alias', required=True)
-@click.option('-c', 'credentials', default='', required=False, help="entrer les nouvelles credentials")
-@click.option('-p', 'port', default='', required=False, help="entrer le nouveau port")
-@click.option('-a', 'new_alias', default='', required=False, help="entrer le nouvel alias")
-def update(alias, credentials, port, new_alias):
-    """Commande pour mettre à jour un serveur.\n
-    :param alias: l'alias du serveur à mettre à jour\n
-    :type alias: str\n
-    :param credentials: -c les nouvelles credentials\n
-    :type credentials: str\n
-    :param port: -p le nouveau port\n
-    :type port: str\n
-    :param new_alias: -a le nouvel alias\n
-    :type new_alias: str\n
-    :return: un message de confirmation ou d'erreur\n
-    :rtype: str"""
-    if alias:
-        click.echo(f"Serveur mis à jour : \"{alias}\"")
 @click.argument('id')
 @click.option('--alias', is_flag=True, default=False)
 def delete(id, alias):
+    serverService = ServerService()
+    serverService.delete_server(id, alias)
     click.echo(f"Id {id} - supprimé par alias : {alias}")
-    Server.delete(id, alias)
 
 @server.command()
 def status():
     click.echo("Server Status")
+
+
+@server.command()
+@click.argument('id')
+@click.option('--address', '-a')
+@click.option('--credentials', '-c')
+@click.option('--port', '-p')
+@click.option('--alias', '-na')
+def update(id, address, credentials, port, alias):
+    click.echo(f"old alias {id}, {address}, {credentials}, {port}, {alias}")
+    serverService = ServerService()
+    serverService.update_server(id, credentials, port, address, alias)
