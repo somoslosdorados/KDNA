@@ -16,6 +16,8 @@ click = "^8.1.7"
 fabric = "^3.2.2"
 pycryptodome = "^3.19.0"
 pyzipper = "^0.3.6"
+injector = "^0.21.0"
+dependency-injector = "^4.41.0"
 
 [tool.poetry.group.dev.dependencies]
 tox-gh-actions = "^3.1.3"
