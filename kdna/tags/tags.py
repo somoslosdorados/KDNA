@@ -46,9 +46,10 @@ def readTags(connexionInstance,project):
     connexionInstance.get(pathToConfTag)
     with open('tags.conf',"r") as tagFile:
         tagLines=tagFile.readlines()
+    print("Voici les tags de vos fichiers")
     for line in tagLines:
         tagFileCouple=line.split(", ")
-        
+        print("")
     
     return
 
