@@ -10,7 +10,7 @@ class Utils:
     @staticmethod
     def initialize_config_file():
         """Initialize the config file"""
-        config_content = "[servers]\n\n[auto-backups]\n"
+        config_content = "[servers]\n[auto-backups]\n"
 
         # On vérifie si le fichier existe déjà
         try:
@@ -64,12 +64,12 @@ class Utils:
     @staticmethod
     def find_auto_backups_index(lines):
         """Find the index of a specific autobackup"""
-        return Utils.find_section(lines, "[auto-backups]")
+        return Utils.find_section(lines, "[auto-backup]")
 
     @staticmethod
     def find_servers_index(lines: list) -> int:
         """Find the index of a specific [servers]"""
-        return Utils.find_section(lines, "[servers]")
+        return Utils.find_section(lines, "[server]")
 
     @staticmethod
     def delete_line(lines, line_to_delete):
