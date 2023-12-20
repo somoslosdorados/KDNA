@@ -7,7 +7,7 @@ Every step in this documentation is followed by the `init.sh` script.
 ---
 
 ## 0. Preamble  
-* You are connected as root. Your home folder is `/root`. (Use the `su -` command to substitute as root and update the environment).  
+* You are connected as root. Your home folder is `/root`.
 
 ## I. Setting up the directories on the server  
 1. Create the directory `/root/kdna_service`.  
