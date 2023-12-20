@@ -10,14 +10,14 @@ class Utils:
     @staticmethod
     def initialize_config_file():
         """Initialize the config file"""
-        config_content = "[servers]\n[auto-backups]\n"
+        config_content = "[server]\n[auto-backup]\n"
 
         # On vérifie si le fichier existe déjà
         try:
             with open(CONFIG_TXT, 'r', encoding="utf-8") as f:
                 content = f.read()
                 # Si le fichier existe déjà et qu'il est correctement initialisé, on ne fait rien
-                if "[servers]" in content and "[auto-backups]" in content:
+                if "[server]" in content and "[auto-backup]" in content:
                     return
         # On récupère l'erreur si le fichier n'existe pas
         except FileNotFoundError:
@@ -68,7 +68,7 @@ class Utils:
 
     @staticmethod
     def find_servers_index(lines: list) -> int:
-        """Find the index of a specific [servers]"""
+        """Find the index of a specific [server]"""
         return Utils.find_section(lines, "[server]")
 
     @staticmethod
