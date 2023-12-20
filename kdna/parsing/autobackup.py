@@ -16,21 +16,13 @@ class AutoBackup:
         self.id_server = id_server
         self.path = path
 
-
     def __str__(self):
         '''Methode d'affichage de la classe'''
         return f"AutoBackup: {self.id_backup} {self.frequency} {self.alias} {self.timestamp} {self.id_server} {self.path}"
 
-class ParseAutoBackup:
-    '''Classe permettant de parser un backup automatique
-    line: str
-    '''
-    def __init__(self, line: str):
-        '''Constructeur de la classe'''
-        self.line = line
 
-    def parse(self) -> AutoBackup:
-        '''Methode permettant de parser un backup automatique'''
-        values = self.line.strip().split(', ')
-        id_backup, frequency, alias, timestamp, id_server, path = values
-        return AutoBackup(id_backup, frequency, alias, timestamp, id_server, path)
+def parse(line):
+    '''Methode permettant de parser un backup automatique'''
+    values = line.strip().split(', ')
+    id_backup, frequency, alias, timestamp, id_server, path = values
+    return AutoBackup(id_backup, frequency, alias, timestamp, id_server, path)

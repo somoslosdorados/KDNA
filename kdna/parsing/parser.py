@@ -1,7 +1,9 @@
-from kdna.parsing.server import ParseServer
-from kdna.parsing.autobackup import ParseAutoBackup
+from kdna.parsing.server import parseServer
+from kdna.parsing.autobackup import parse
 
 lines = {}
+listServers = []
+listAutoBackups = []
 
 
 def parseConfig():
@@ -10,13 +12,11 @@ def parseConfig():
     Repère les headers et les lignes associées
     Applique le bon parser en fonction du header si il est présent dans le dictionnaire parsers_strategy
     """
-    line = ""
-    header = ""
     previous_header = ""
 
     parsers_strategy = {
-        "server": cb_server_parser,
-        "auto-backup": cb_autobackup_parser
+        "servers": cb_server_parser,
+        "auto-backups": cb_autobackup_parser
     }
 
     with open("kdna.conf", "r") as f:
@@ -35,9 +35,19 @@ def parseConfig():
         if header in parsers_strategy:
             parser = parsers_strategy[header]
             for line in lines[header]:
-                print(parser(line).parse())
+                parsed = parser(line)
+                #Store in right list (servers, autobackups, etc.)
+                if header == "servers":
+                    listServers.append(parsed)
+                elif header == "auto-backups":
+                    listAutoBackups.append(parsed)
         else:
             print(f"Unknown header: {header}")
+
+    for server in listServers:
+        print(server)
+    for autobackup in listAutoBackups:
+        print(autobackup)
 
 
 def line_is_header(line: str) -> str:
@@ -52,9 +62,10 @@ def line_is_header(line: str) -> str:
 def cb_server_parser(line: str):
     '''
     Callback permettant de parser un serveur'''
-    return ParseServer(line)
+    return parseServer(line)
+
 
 def cb_autobackup_parser(line: str):
     '''
     Callback permettant de parser un backup automatique'''
-    return ParseAutoBackup(line)
+    return parse(line)
