@@ -1,5 +1,20 @@
 from kdna.conf_utils.utils import Utils
 
+
+def create_dic_server(data):
+  li = []
+  for ligne in data:
+    dic = {
+      'id': ligne[0].strip(),
+      'host': ligne[1].strip(),
+      'path': ligne[2].strip(),
+      'port': ligne[3].strip(),
+      'alias': ligne[4].strip()
+    }
+    li.append(dic)
+  return li
+
+
 class ServerService:
   def __int__(self):
     pass
@@ -8,10 +23,11 @@ class ServerService:
     lines = Utils.read_file_lines(Utils.config_file)
     i = Utils.find_servers_index(lines) + 1
     index_autobackup = Utils.find_auto_backups_index(lines)
-    while(i != index_autobackup):
-        print(lines[i].strip())
-        i += 1
-        
+    data = [v.split(',') for v in lines[i::index_autobackup]]
+    li = create_dic_server(data)
+
+    return li
+
 
   def find_by_alias(self, alias):
     lines = Utils.read_file_lines(Utils.config_file)
