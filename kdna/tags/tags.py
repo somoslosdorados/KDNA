@@ -4,11 +4,11 @@
 import os
 
 
-def addTags(connexionInstance,project,newTag,FileToTag):
+def addTags(connexionInstance,project,newTag,fileToTag):
     """arguments: ssh instance / name of the project / name of the tags
     In the file tag.conf we must identify the tag [tags] to write tags at the end 
     of the file"""
-    newTaggedBackup=newTag+", "+FileToTag+"\n"
+    newTaggedBackup=newTag+", "+fileToTag+"\n"
     pathToConfTag="./kdna/"+project+"/tags.conf"
     connexionInstance.get(pathToConfTag)
     
@@ -19,19 +19,18 @@ def addTags(connexionInstance,project,newTag,FileToTag):
     for line in tagLines:
         tagFileCouple=line.split(", ")
         if(newTag == tagFileCouple[0]):
-            print(f"Le tag {tagFileCouple[0]} est déjà associé la backup {tagFileCouple[1]}")
             os.remove('tags.conf')
-            return
+            raise Exception(f"Le tag {tagFileCouple[0]} est déjà associé la backup {tagFileCouple[1]}")
 
     with open('tags.conf',"a") as tagFile:
         tagFile.write(newTaggedBackup)
     connexionInstance.put("tags.conf",pathToConfTag)
-    print(f"Le fichier {FileToTag} est maintenant taggé par {newTag}")
+    print(f"Le fichier {fileToTag} est maintenant taggé par {newTag}")
     os.remove('tags.conf')
 
 def deleteTags(connexionInstance,project,oldTag):
     """arguments: oldTag """
-    removed=True
+    removed=False
     pathToConfTag="./kdna/"+project+"/tags.conf"
     connexionInstance.get(pathToConfTag)
     with open('tags.conf',"r") as tagFile:
@@ -43,14 +42,30 @@ def deleteTags(connexionInstance,project,oldTag):
                 tagFile.write(line)
             else:
                 file=line.split(", ")[1].strip('\n')
-                removed=False
-                break
-    if(removed):
-        print(f"Aucun tag {oldTag} n'a été trouvé pour la supression")
+                removed=True
+                
+    if(not removed):
+        os.remove('tags.conf')
+        raise Exception(f"Aucun tag {oldTag} n'a été trouvé pour la supression")
     else:
         print(f"Le tag {oldTag} associé au fichier {file} a été supprimé")
     connexionInstance.put("tags.conf",pathToConfTag)
     os.remove('tags.conf')
+
+def updateTags(connexionInstance, project, oldTag, newTag, fileToTag):
+    try:
+        deleteTags(connexionInstance, project, oldTag)
+    except:
+        raise Exception("Une erreur est survenue lors de la tentative de suppression du tag")
+
+    try:
+        addTags(connexionInstance, project, newTag, fileToTag)
+    except:
+        raise Exception("Une erreur est survenue lors de la tentative de création du tag")
+    
+    print(f"Le tag {oldTag} a été modifié en {newTag}")
+    
+    
 
 def readTags(connexionInstance,project):
     pathToConfTag="./kdna/"+project+"/tags.conf"
