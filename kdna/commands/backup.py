@@ -1,9 +1,14 @@
 import click
+import os
 from kdna.parsing.parser import serversCredential
 from kdna.encrypt.encrypt import package
 from kdna.parsing.parser import kdna_path
+from kdna.ssh.ssh_client import SSHClient
+from kdna.server.server import upload_file
 
 # Creation du groupe de commande backup
+
+
 @click.group()
 def backup():
     """Commande pour sauvegarder un fichier"""
@@ -24,7 +29,7 @@ def display(path):
 
     except PermissionError as exc:
         raise PermissionError("Oups, Pas les droits") from exc
-    
+
 
 # Création des commandes du groupe backup
 
@@ -40,20 +45,25 @@ def add(name, path):
     :type path: str\n
     :return: un message de confirmation ou d'erreur\n
     :rtype: str"""
-    click.echo(f"Created backup \"{name}\":v1.1.2")
+    click.echo(f"Creating backup \"{name}\":v1.1.2")
     click.echo("Contains :")
+    name_of_temp_backup = package(path, name, kdna_path, False)
+    path_to_local_backup = os.path.join(kdna_path, name_of_temp_backup)
+
     try:
-        click.echo(display(path))
-    except FileNotFoundError as exc:
-        click.echo("Le fichier n'a pas été trouvé")
-    except PermissionError as exc:
-        click.echo("Vous n'avez pas les droits")
+        instance = SSHClient(serversCredential[0]).connect()
+    except Exception as e:
+        print("error2 = "+e.__str__())
 
-
-    package(path,name,kdna_path,False)
-
+    try:
+        upload_file(instance.connection, path_to_local_backup, "kdna")
+        os.remove(path_to_local_backup)
+    except Exception as e:
+        print("error = "+e.__str__())
 
 # Création de la commande delete
+
+
 @backup.command()
 @click.option('-t', 'pathtag', nargs=1, required=True, help="entrer le path du fichier et le tag [ path:tag ]")
 def delete(pathtag):

@@ -2,9 +2,10 @@ from fabric import Connection
 
 class SSHClient:
 
-  def __init__(self, host, user, key_path=None):
-    self.host = host
-    self.user = user
+  def __init__(self, credentials, key_path=None):
+    split = credentials.split("@")
+    self.host = split[1]
+    self.user = split[0]
     self.connection = None
     self.key_path = key_path
 
