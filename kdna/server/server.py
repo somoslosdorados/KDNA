@@ -2,13 +2,13 @@ from fabric import Connection
 
 def upload_file(connection: Connection, local_path: str, remote_path: str) -> None:
     """
-    Send a file on a specific path in the remote server. Migth throw an exception.
+    Send a file on a specific path in the remote server. Might throw an exception.
     """
     connection.put(local_path, remote=remote_path)
 
 def download_file(connection: Connection, local_path: str, remote_path: str) -> None:
     """
-    Receive a file on a specific path from the remote server. Migth throw an exception.
+    Receive a file on a specific path from the remote server. Might throw an exception.
     """
     connection.get(remote_path, local=local_path)
 
