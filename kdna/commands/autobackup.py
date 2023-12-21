@@ -4,36 +4,7 @@ import click
 # Creation du groupe de commande autobackup
 @click.group(name='auto-backup')
 def autobackup():
-    """Commande pour mettre en place un daemon de sauvegarde"""
-
-
-def get_type_cron(cron):
-    for char in cron:
-        if char == ':':
-            return ':'
-        elif char == '-':
-            return '-'
-    return -1
-
-
-def is_valid_cron(cron):
-    print(get_type_cron(cron)) #test pour voir à quoi ressemble la variable cron
-    if get_type_cron(cron) == ':':
-        cron_parts = cron.split(':')
-        if len(cron_parts) != 5:
-            return False
-        if 0 >= cron_parts[0] <= 59 and 0 >= cron_parts[1] <= 23 and 1 >= cron_parts[2] <= 31 and 1 >= cron_parts[3] <= 12:
-            return True
-        return False
-    elif get_type_cron(cron) == '-':
-            cron_parts = cron.split(':')
-            if len(cron_parts) != 5:
-                return False
-            if 0 >= cron_parts[0] <= 59 and 0 >= cron_parts[1] <= 23 and 1 >= cron_parts[2] <= 31 and 1 >= cron_parts[3] <= 12:
-                return True
-            return False
-    else:
-        return False
+    """backup: Commande pour mettre en place un daemon de sauvegarde"""
 
 
 def get_custom_cron(sched_part_type:str, cond_inf:int, cond_sup:int):
@@ -52,7 +23,7 @@ def get_custom_cron(sched_part_type:str, cond_inf:int, cond_sup:int):
             incorrect = False
         else:
             print("Entrée invalide, réessayez S.V.P")
-            
+
     return schedule_part+':'
 
 
