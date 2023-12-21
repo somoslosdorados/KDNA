@@ -55,7 +55,7 @@ def clean_after_test():
 @pytest.mark.skip(reason="Not implemented yet")
 def test_backup():
     gen_file_structure_bin()
-    file_out = encrypt.backup(
+    file_out = encrypt.package(
         DATA_PATH+"/test", "backup", DATA_PATH+"/test/backup", False)
     assert os.path.exists(file_out)
     assert file_out == DATA_PATH+"/test/backup.tar.gz"
@@ -65,7 +65,7 @@ def test_backup():
 @pytest.mark.skip(reason="Not implemented yet")
 def test_backup_encrypted():
     gen_file_structure_bin()
-    file_out = encrypt.backup(
+    file_out = encrypt.package(
         DATA_PATH+"/test", "backup", DATA_PATH+"/test/backup", True)
     print(file_out)
     assert os.path.exists(file_out)
@@ -76,7 +76,7 @@ def test_backup_encrypted():
 @pytest.mark.skip(reason="Not implemented yet")
 def test_backup_decrypted():
     backup_content = gen_file_structure_bin()
-    file_out = encrypt.backup(
+    file_out = encrypt.package(
         DATA_PATH+"/test", "backup", DATA_PATH+"/test/backup", True)
     restore_out = encrypt.restore(file_out,
                                   DATA_PATH+"/test/backup_decrypted", True)
@@ -91,7 +91,7 @@ def test_backup_decrypted():
 @pytest.mark.skip(reason="Not implemented yet")
 def test_backup_encrypted_deeper():
     gen_deeper_file_structure_bin()
-    file_out = encrypt.backup(
+    file_out = encrypt.package(
         DATA_PATH+"/test", DATA_PATH+"/test/backup", True)
     print(file_out)
     assert os.path.exists(file_out)
@@ -102,7 +102,7 @@ def test_backup_encrypted_deeper():
 @pytest.mark.skip(reason="Not implemented yet")
 def test_backup_decrypted_deeper():
     backup_content = gen_deeper_file_structure_bin()
-    file_out = encrypt.backup(
+    file_out = encrypt.package(
         DATA_PATH+"/test", DATA_PATH+"/test/backup", True)
     restore_out = encrypt.restore(file_out,
                                   DATA_PATH+"/test/backup_decrypted", True)

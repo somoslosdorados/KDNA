@@ -49,7 +49,7 @@ def load_key() -> bytes:
     return key
 
 
-def backup(path: str, name: str, out: str, encrypt: bool) -> str:
+def package(path: str, name: str, out: str, encrypt: bool) -> str:
     """
     :param path: path to folder to backup
     :param out: path to output file
