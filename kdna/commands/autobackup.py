@@ -74,25 +74,6 @@ def schedule(idcron, nameofcron, tag, cron_schedule, custom_cron, date, server, 
     :type path: str\n
     :return: un message de confirmation ou d'erreur\n
     :rtype: str"""
-    """Commande pour prévoir une backup régulière\n
-    :param idcron: -i l'id du cron\n
-    :type idcron: str\n
-    :param nameofcron: -n le nom du cron\n
-    :type nameofcron: str\n
-    :param tag: -t le tag du cron\n
-    :type tag: str\n
-    :param cron_schedule: le schedule de l'auto-backup ['daily', 'monthly', 'weekly', 'custom']\n
-    :type cron_schedule: str\n
-    :param custom_cron: le schedule personnalisé de l'auto-backup\n
-    :type custom_cron: str, optional\n
-    :param date: -d [ xxxx-xx-xx ] la date de la première backup\n
-    :type date: str\n
-    :param server: -s l'id du serveur\n
-    :type server: str\n
-    :param path: -p le chemin de la backup\n
-    :type path: str\n
-    :return: un message de confirmation ou d'erreur\n
-    :rtype: str"""
     click.echo(f"Name of cron : \"{nameofcron}\"")
     click.echo(f"Cron tag and schedule : \"{tag}\" \"{cron_schedule}\"")
     if cron_schedule == 'custom':
@@ -152,7 +133,6 @@ def update(idcron, tag, cron_schedule, custom_cron):
 
 # Création de la commande stop
 @autobackup.command()
-@click.option('-n', '--nameofcron', nargs=1, required=True, help="entrer le nom du cron à stopper")
 @click.option('-n', '--nameofcron', nargs=1, required=True, help="entrer le nom du cron à stopper")
 def stop(nameofcron):
     """Commande pour stopper une backup régulière\n
