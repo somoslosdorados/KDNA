@@ -24,13 +24,12 @@ def generate_key(key_path: str = kdna_default_path) -> str:
         os.mkdir(os.path.join(os.path.expanduser('~'), '.kdna'))
 
     if key_path != kdna_default_path:
-        with open(kdna_path_to_path, 'w') as file:
+        with open(kdna_path_to_path, 'w', encoding='utf-8') as file:
             file.write(os.path.join(os.getcwd(), key_path))
 
     key = Fernet.generate_key()
-    file = open(key_path, 'wb')
-    file.write(key)
-    file.close()
+    with open(key_path, 'wb') as file:
+        file.write(key)
     return key_path
 
 
@@ -42,7 +41,7 @@ def load_key() -> bytes:
     """
     key_path = os.path.join(os.path.expanduser('~'), '.kdna/key.key')
     if os.path.exists(kdna_path_to_path):
-        with open(kdna_path_to_path, 'r') as file:
+        with open(kdna_path_to_path, 'r', encoding='utf-8') as file:
             key_path = file.read()
 
     with open(key_path, 'rb') as file:
@@ -50,7 +49,7 @@ def load_key() -> bytes:
     return key
 
 
-def backup(path: str, out: str, encrypt: bool) -> str:
+def backup(path: str, name: str, out: str, encrypt: bool) -> str:
     """
     :param path: path to folder to backup
     :param out: path to output file
@@ -58,17 +57,19 @@ def backup(path: str, out: str, encrypt: bool) -> str:
     file will be a .enc file else it will be a .tar.gz file
     :return: path to output file
     """
-
+    old_path = os.path.abspath(os.getcwd())
+    abs_out = os.path.join(os.path.abspath(out), name + ".tar.gz")
+    abs_enc_out = os.path.join(os.path.abspath(out), name + ".enc")
+    os.chdir(path)  # go to the folder to backup
+    with tarfile.open(abs_out, "w:gz") as tar:
+        tar.add('.')
     if encrypt:
-        with tarfile.open(out+"_temp.tar.gz", "w:gz") as tar:
-            tar.add(path)
-        cypher(out+"_temp.tar.gz", out+".enc")
-        os.remove(out+"_temp.tar.gz")
-        return out+".tar.gz"
-    with tarfile.open(out+".tar.gz", "w:gz") as tar:
-        tar.add(path)
-
-    return out+".tar.gz"
+        cypher(abs_out, abs_enc_out)
+        os.remove(abs_out)
+        os.chdir(old_path)
+        return name+".enc"
+    os.chdir(old_path)
+    return name+".tar.gz"
 
 
 def restore(path: str, out: str) -> str:
@@ -78,14 +79,17 @@ def restore(path: str, out: str) -> str:
     :param encrypted: is the file encrypted
     :return: path to output folder
     """
+    print(os.getcwd())
     encrypted = path.endswith(".enc")
     tar_name = path
     if encrypted:
         decypher(path, out+".tar.gz")
         tar_name = out+".tar.gz"
-    file = tarfile.open(tar_name, "r:gz")
-    file.extractall(out)
-    return out+"/"+file.getnames()[0]
+    file_name = ""
+    with tarfile.open(tar_name, "r:gz") as file:
+        file.extractall(out)
+        file_name = file.getnames()[0]
+    return out+"/"+file_name
 
 
 def cypher(path: str, out: str) -> bytes:
