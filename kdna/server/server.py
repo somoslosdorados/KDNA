@@ -1,7 +1,4 @@
-import json
 from fabric import Connection # type: ignore
-from typing import Union
-import subprocess
 
 # def get_json_connection_informations() -> Union[None, dict]:
 #     """
@@ -90,17 +87,15 @@ import subprocess
 #     except:
 #         return False
 
-def upload_file(connection: Connection, local_path: str, remote_path: str) -> Union[None, Exception]:
+def send_file(connection: Connection, local_path: str, remote_path: str) -> bool:
     """
-    Send a file on a specific path in the remote server. Might throw an exception if the arguments are incorrect.
+    send a file on a specific path in the remote server.
     """
-    connection.put(local_path, remote=remote_path)
-
-def download_file(connection: Connection, remote_path: str, local_path: str) -> Union[None, Exception]:
-    """
-    Get a file on a specific path in the remote server. Might throw an exception if the arguments are incorrect.
-    """
-    connection.get(remote_path, local_path)
+    try:
+        connection.put(local_path, remote=remote_path)
+        return True
+    except:
+        return False
 
 # def main():
 #     connection_param = get_json_connection_informations()
@@ -131,8 +126,7 @@ def download_file(connection: Connection, remote_path: str, local_path: str) -> 
 
 def main ():
     with Connection("bbronsin@168.38.112.136") as c:
-        upload_file(c, "/home/baptiste/Bureau/toto.txt", "/kdna/projet1/")
-
+        send_file(c, "/home/baptiste/Bureau/toto.txt", "/kdna/projet1/")
 
 if __name__ == '__main__':
     main()
