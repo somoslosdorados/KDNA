@@ -1,4 +1,6 @@
 import click
+from kdna.server.server_service import ServerService
+from tabulate import tabulate
 
 @click.group()
 def server():
@@ -74,7 +76,13 @@ def update(alias, credentials, port, new_alias):
 # Création de la commande list
 @server.command()
 def list():
-    """Commande pour lister les serveurs\n
-    :return: Liste des serveurs : class: `str`\n
-    :rtype: list"""
-    click.echo(f"List of server : \n...\n...")
+    """Commande pour lister les serveurs"""
+    serverService = ServerService()
+    servers = serverService.find_all()
+
+    table = tabulate(
+        [[data for data in server.values()] for server in servers],
+        ['id', 'host', 'credentials', 'port', 'alias'],
+        tablefmt="grid"
+    )
+    click.echo(table)
