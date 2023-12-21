@@ -4,7 +4,7 @@
 import os
 from fabric import Connection
 
-def addTags(connexionInstance: Connection,project: str,newTag: str,fileToTag: str):
+def addTags(connexionInstance: Connection,project: str,newTag: str,fileToTag: str,verbose=False):
     """arguments: ssh instance / name of the project / name of the tags
     In the file tag.conf we must identify the tag [tags] to write tags at the end 
     of the file"""
@@ -51,12 +51,13 @@ def addTags(connexionInstance: Connection,project: str,newTag: str,fileToTag: st
         raise Exception("Erreur lors du renvoie du fichier sur le serveur")
     
     #Print+clean du fichier local
-    print(f"Le fichier {fileToTag} est maintenant taggé par {newTag}")
+    if(verbose):
+        print(f"Le fichier {fileToTag} est maintenant taggé par {newTag}")
     os.remove('tags.conf')
 
 
 
-def deleteTags(connexionInstance: Connection,project: str,oldTag: str):
+def deleteTags(connexionInstance: Connection,project: str,oldTag: str,verbose=False):
     """arguments: oldTag """
 
     #Validateur
@@ -89,7 +90,8 @@ def deleteTags(connexionInstance: Connection,project: str,oldTag: str):
         os.remove('tags.conf')
         raise Exception(f"Aucun tag {oldTag} n'a été trouvé pour la supression")
     else:
-        print(f"Le tag {oldTag} associé au fichier {file} a été supprimé")
+        if(verbose):
+            print(f"Le tag {oldTag} associé au fichier {file} a été supprimé")
     
     try:
         connexionInstance.put("tags.conf",pathToConfTag)
@@ -98,7 +100,7 @@ def deleteTags(connexionInstance: Connection,project: str,oldTag: str):
         os.remove('tags.conf')
         raise Exception("La deletion de tag n'a pas été appliqué sur le server")
 
-def updateTags(connexionInstance: Connection, project: str, oldTag: str, newTag: str, fileToTag: str):
+def updateTags(connexionInstance: Connection, project: str, oldTag: str, newTag: str, fileToTag: str,verbose=False):
     try:
         deleteTags(connexionInstance, project, oldTag)
     except:
@@ -108,8 +110,8 @@ def updateTags(connexionInstance: Connection, project: str, oldTag: str, newTag:
         addTags(connexionInstance, project, newTag, fileToTag)
     except:
         raise Exception("Une erreur est survenue lors de la tentative de création du tag")
-    
-    print(f"Le tag {oldTag} a été modifié en {newTag}")
+    if(verbose):
+        print(f"Le tag {oldTag} a été modifié en {newTag}")
     
     
 
