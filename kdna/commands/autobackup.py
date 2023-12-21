@@ -1,3 +1,7 @@
+"""
+Groupe de commandes auto-backup : permet de gérer les auto-backups : schedule, delete, update
+"""
+
 import click
 
 
