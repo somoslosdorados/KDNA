@@ -43,6 +43,8 @@ def concatenate_custom_cron():
 
 # Création de la commande schedule
 @autobackup.command()
+@click.option('-n', '--nameofcron', nargs=1, required=True, help="entrer le nom du cron")
+@click.option('-t', '--tag', nargs=1, required=True, help="entrer le tag")
 @click.option('-i', '--idcron', nargs=1, required=True, help="entrer l'id du cron")
 @click.option('-n', '--nameofcron', nargs=1, required=True, help="entrer le nom du cron")
 @click.option('-t', '--tag', nargs=1, required=True, help="entrer le tag")
@@ -52,6 +54,17 @@ def concatenate_custom_cron():
 @click.option('-s', '--server', nargs=1, required=True, help="entrer l'id du serveur")
 @click.option('-p', '--path', nargs=1, required=True, help="entrer le chemin de la backup")
 def schedule(idcron, nameofcron, tag, cron_schedule, custom_cron, date, server, path):
+    """Commande pour prévoir une backup régulière\n
+    :param nameofcron: -n le nom du cron\n
+    :type nameofcron: str\n
+    :param tag: -t le tag du cron\n
+    :type tag: str\n
+    :param cron_schedule: le schedule de l'auto-backup ['daily', 'monthly', 'weekly', 'custom']\n
+    :type cron_schedule: str\n
+    :param custom_cron: le schedule personnalisé de l'auto-backup\n
+    :type custom_cron: str, optional\n
+    :return: un message de confirmation ou d'erreur\n
+    :rtype: str"""
     """Commande pour prévoir une backup régulière\n
     :param idcron: -i l'id du cron\n
     :type idcron: str\n
@@ -130,6 +143,7 @@ def update(idcron, tag, cron_schedule, custom_cron):
 
 # Création de la commande stop
 @autobackup.command()
+@click.option('-n', '--nameofcron', nargs=1, required=True, help="entrer le nom du cron à stopper")
 @click.option('-n', '--nameofcron', nargs=1, required=True, help="entrer le nom du cron à stopper")
 def stop(nameofcron):
     """Commande pour stopper une backup régulière\n

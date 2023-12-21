@@ -1,5 +1,7 @@
 import click
 from kdna.conf_utils.server import Server
+from kdna.server.server_service import ServerService
+
 @click.group()
 def server():
     """Commande pour lancer le serveur"""
