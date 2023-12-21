@@ -2,47 +2,90 @@
     If the service is running the tags.conf file could change"""
 
 import os
+from fabric import Connection
 
-
-def addTags(connexionInstance,project,newTag,fileToTag):
+def addTags(connexionInstance: Connection,project: str,newTag: str,fileToTag: str):
     """arguments: ssh instance / name of the project / name of the tags
     In the file tag.conf we must identify the tag [tags] to write tags at the end 
     of the file"""
+
     newTaggedBackup=newTag+", "+fileToTag+"\n"
     pathToConfTag="./kdna/"+project+"/tags.conf"
-    connexionInstance.get(pathToConfTag)
-    
-    with open('tags.conf',"r") as tagFile:
-        tagLines=tagFile.readlines()
-    tagLines.pop(0)
 
+    #Récupération en local du fichier de config sur les tags
+    try:
+        connexionInstance.get(pathToConfTag)
+    except:
+        raise Exception("Erreur lors de l'accès au fichier de configuration des tags")
+    
+    #Ouverture du fichier de conf en lecture
+    try:
+        with open('tags.conf',"r") as tagFile:
+            tagLines=tagFile.readlines()
+        tagLines.pop(0)
+    except:
+        raise Exception("Erreur de permission: read sur tags.conf")
+
+    #Vérification que le tag n'est pas déjà utilisé
     for line in tagLines:
         tagFileCouple=line.split(", ")
         if(newTag == tagFileCouple[0]):
             os.remove('tags.conf')
             raise Exception(f"Le tag {tagFileCouple[0]} est déjà associé la backup {tagFileCouple[1]}")
+        
+    #Vérification que la sauvegarde existe sur le serveur
+    try:
+        if connexionInstance.run(f"find ./kdna/{project}/{fileToTag}"):
+            pass
+    except:
+        raise Exception(f"Erreur: la sauvegarde {fileToTag} n'existe pas")
 
-    with open('tags.conf',"a") as tagFile:
-        tagFile.write(newTaggedBackup)
-    connexionInstance.put("tags.conf",pathToConfTag)
+    #Ouverture du fichier de conf en append
+    try:
+        with open('tags.conf',"a") as tagFile:
+            tagFile.write(newTaggedBackup)
+    except:
+        raise Exception(f"Erreur de permission: append sur tags.conf")
+    
+    #Renvoie du fichier sur le serveur
+    try:
+        connexionInstance.put("tags.conf",pathToConfTag)
+    except:
+        raise Exception("Erreur lors du renvoie du fichier sur le serveur")
+    
+    #Print+clean du fichier local
     print(f"Le fichier {fileToTag} est maintenant taggé par {newTag}")
     os.remove('tags.conf')
 
-def deleteTags(connexionInstance,project,oldTag):
+
+
+def deleteTags(connexionInstance: Connection,project: str,oldTag: str):
     """arguments: oldTag """
+
+    #Validateur
     removed=False
     pathToConfTag="./kdna/"+project+"/tags.conf"
     connexionInstance.get(pathToConfTag)
-    with open('tags.conf',"r") as tagFile:
-        tagLines=tagFile.readlines()
-    with open('tags.conf',"w") as tagFile:
-        for line in tagLines:
-            tag=line.split(", ")[0]
-            if(tag!=oldTag):
-                tagFile.write(line)
-            else:
-                file=line.split(", ")[1].strip('\n')
-                removed=True
+
+    #Ouverture du fichier de conf en lecture
+    try:
+        with open('tags.conf',"r") as tagFile:
+            tagLines=tagFile.readlines()
+    except:
+        raise Exception("Erreur de permission: read sur tags.conf")
+    
+    #Ouverture du fichier conf en écriture
+    try:
+        with open('tags.conf',"w") as tagFile:
+            for line in tagLines:
+                tag=line.split(", ")[0]
+                if(tag!=oldTag):
+                    tagFile.write(line)
+                else:
+                    file=line.split(", ")[1].strip('\n')
+                    removed=True
+    except:
+        raise Exception("Erreur de permission: write sur tags.conf")
                 
     if(not removed):
         os.remove('tags.conf')
@@ -52,7 +95,7 @@ def deleteTags(connexionInstance,project,oldTag):
     connexionInstance.put("tags.conf",pathToConfTag)
     os.remove('tags.conf')
 
-def updateTags(connexionInstance, project, oldTag, newTag, fileToTag):
+def updateTags(connexionInstance: Connection, project: str, oldTag: str, newTag: str, fileToTag: str):
     try:
         deleteTags(connexionInstance, project, oldTag)
     except:
@@ -67,7 +110,7 @@ def updateTags(connexionInstance, project, oldTag, newTag, fileToTag):
     
     
 
-def readTags(connexionInstance,project):
+def readTags(connexionInstance: Connection,project: str):
     pathToConfTag="./kdna/"+project+"/tags.conf"
     connexionInstance.get(pathToConfTag)
     with open('tags.conf',"r") as tagFile:
