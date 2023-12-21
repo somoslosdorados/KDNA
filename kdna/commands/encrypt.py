@@ -6,7 +6,6 @@ This module contains the commands for encryption managing in kdna.
 :date: 2023-12-20
 """
 import click
-from kdna.conf_utils.server import Server
 
 
 @click.group()

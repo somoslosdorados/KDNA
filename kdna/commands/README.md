@@ -15,10 +15,10 @@ kdna <commande> <sous-commande> --help
 
 ### Description
 
-Gérer un serveur pour les backups
+Gérer un serveur de backups
 
 ```
-kdna server <commande> <sous-commande> [options] [arguments]
+kdna server <commande> [options] [arguments]
 ```
 
 ---
@@ -26,6 +26,8 @@ kdna server <commande> <sous-commande> [options] [arguments]
 ### Sélection
 
 #### Usage
+
+Sélectionner un serveur de backup
 
 ```
 kdna server set -i <id_serveur> -a <alias_serveur> -c <credentials> -p <port_serveur>
@@ -52,6 +54,8 @@ kdna server set -i 1 -a alias -c test_credentials -p 22
 
 #### Usage
 
+Retirer un serveur de backup
+
 ```
 kdna server delete -a <alias_serveur> -i <id_serveur>
 ```
@@ -76,6 +80,8 @@ A noter : Une seule des deux options doit être impérativement choisie
 ### Update
 
 #### Usage
+
+Mettre à jour un serveur
 
 ```
 kdna server update <alias_serveur> -c <new_credentials> -p <new_port_serveur> -a <new_alias>
@@ -102,6 +108,8 @@ kdna server update alias_serveur -c new_credentials
 
 #### Usage
 
+Lister les serveurs de backup
+
 ```
 kdna server list
 ```
@@ -117,7 +125,7 @@ kdna server list
 Gérer des backups régulières
 
 ```
-kdna auto-backup <commande> <sous-commande> [options] [arguments]
+kdna auto-backup <commande> [options] [arguments]
 ```
 
 ---
@@ -125,6 +133,8 @@ kdna auto-backup <commande> <sous-commande> [options] [arguments]
 ### Création
 
 #### Usage
+
+Créer une backup régulière
 
 ```
 kdna auto-backup schedule -i <id_backup> -n <nom_backup> -t <tag> <cron_schedule> <custom_schedule> -d <date_debut> -s <id_server> -p <path_fichier/dossier_backup>
@@ -155,6 +165,8 @@ kdna auto-backup schedule -i 1 -n backup -t tag -d 2021-01-01 -s 1 -p /home
 
 #### Usage
 
+Supprimer une backup régulière
+
 ```
 kdna auto-backup delete -i <id_backup>
 ```
@@ -176,6 +188,8 @@ kdna auto-backup delete -i 1
 ### Update
 
 #### Usage
+
+Mettre à jour une backup régulière
 
 ```
 kdna auto-backup update -i <id_backup> cron_schedule <<custom_schedule>> -d <date_debut> -p <path_backup>
@@ -205,6 +219,8 @@ A noter: on ne peut pas modifier l'id du serveur car la backup est liée à celu
 
 #### Usage
 
+Lister les backups régulières
+
 ```
 kdna auto-backup list
 ```
@@ -220,30 +236,32 @@ kdna auto-backup list
 Gérer des backups manuelles
 
 ```
-kdna backup <commande> <sous-commande> [options] [arguments]
+kdna backup <commande> [options] [arguments]
 ```
 
 ---
 
 ### Création
 
+Créer une backup
+
 #### Usage
 
 ```
-kdna backup add <nom_backup> <path_backup>
+kdna backup add <nom:tag_backup> <path_backup>
 ``` 
 
 #### Exemple
 
 ```
-kdna backup add backup /home
+kdna backup add backup:tag /home
 ```
 
 #### Options
 
 | Options |  Type  | Description | Required |
 |:--------|:------:|:-----------:|:--------:|
-|         | String | nom_backup  |   Vrai   |
+|         | String | nom:tag_backup  |   Vrai   |
 |         | String | path_backup |   Vrai   |
 
 ---
@@ -251,6 +269,8 @@ kdna backup add backup /home
 ### Suppression
 
 #### Usage
+
+Supprimer une backup
 
 ```
 kdna backup delete -t <path:tag>
@@ -273,6 +293,8 @@ kdna backup delete -t /home:tag
 ### Restore
 
 #### Usage
+
+Restaurer une backup
 
 ```
 kdna backup restore -t <name:tag> <path_backup>
@@ -297,6 +319,71 @@ kdna backup restore -t backup:tag /home
 
 #### Usage
 
+Lister les backups
+
 ```
 kdna backup list
+```
+
+---
+
+## Encrypt
+
+---
+
+### Description
+
+Gérer l'encryption des backups
+
+```
+kdna encrypt <commande> [options]
+```
+
+---
+
+### Génération
+
+Générer une clé de cryptage
+
+#### Usage
+
+```
+kdna encrypt keygen <path>
+``` 
+
+#### Exemple
+
+```
+kdna encrypt keygen /home
+```
+
+#### Options
+
+| Options |  Type  | Description | Required |
+|:--------|:------:|:-----------:|:--------:|
+|         | String |    path     |   Vrai   |
+
+---
+
+### Activation
+
+#### Usage
+
+Activer l'encryption
+
+```
+kdna encrypt activate
+```
+
+
+---
+
+### Désactivation
+
+#### Usage
+
+Désactiver l'encryption
+
+```
+kdna encrypt deactivate
 ```
