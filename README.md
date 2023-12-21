@@ -20,7 +20,7 @@ Un fichier est créé :
 
 ```
 
-Vous pouvez désormais faire vos commandes dans le fichier `__init__.py`
+Vous pouvez désormais faire vos commandes dans le fichier `main.py`
 
 ### Server
 
@@ -35,7 +35,7 @@ Vous pouvez créer un serveur avec ces différents paramètres :
 Comme ceci :
 
 ```
-server = Server("18", "credentials", "22", "hello")
+server = Server("S4", "dgrasset@32.432.43.56", "/path/ssh", "5432", "hello")
 ```
 
 2. #### Suppression

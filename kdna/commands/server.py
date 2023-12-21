@@ -30,6 +30,13 @@ def set(id, alias, credentials, port):
         click.echo(f"ID du serveur : \"{id}\"")
 
 
+@server.command()
+@click.argument('id')
+@click.option('--alias', is_flag=True, default=False)
+def delete(id, alias):
+    click.echo(f"Id {id} - supprimé par alias : {alias}")
+    Server.delete(id, alias)
+
 # Création de la commande delete
 @server.command()
 @click.option('-a', '--alias', required=False, help="entrer l'alias du serveur à supprimer")
