@@ -2,16 +2,24 @@ from kdna.parsing.server import parseServer
 from kdna.parsing.autobackup import parse
 
 lines = {}
-listServers = []
-listAutoBackups = []
 
+serversCredential =[
+    {
+        "name": "root",
+        "ip": "debian.local"
+    }
+]
 
+kdna_path = os.path.join(os.path.expanduser('~'), '.kdna')
+# os.path.join(kdna_path, 'temp')
 def parseConfig():
     """
     Parse le fichier de configuration
     Repère les headers et les lignes associées
     Applique le bon parser en fonction du header si il est présent dans le dictionnaire parsers_strategy
     """
+    line = ""
+    header = ""
     previous_header = ""
 
     parsers_strategy = {

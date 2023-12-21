@@ -1,5 +1,7 @@
 import click
-
+from kdna.parsing.parser import serversCredential
+from kdna.encrypt.encrypt import package
+from kdna.parsing.parser import kdna_path
 
 # Creation du groupe de commande backup
 @click.group()
@@ -22,7 +24,7 @@ def display(path):
 
     except PermissionError as exc:
         raise PermissionError("Oups, Pas les droits") from exc
-
+    
 
 # Création des commandes du groupe backup
 
@@ -47,6 +49,8 @@ def add(name, path):
     except PermissionError as exc:
         click.echo("Vous n'avez pas les droits")
 
+
+    package(path,name,kdna_path,False)
 
 
 # Création de la commande delete
