@@ -63,6 +63,12 @@ def schedule(idcron, nameofcron, tag, cron_schedule, custom_cron, date, server, 
     :type cron_schedule: str\n
     :param custom_cron: le schedule personnalisé de l'auto-backup\n
     :type custom_cron: str, optional\n
+    :param date: -d [ xxxx-xx-xx ] la date de la première backup\n
+    :type date: str\n
+    :param server: -s l'id du serveur\n
+    :type server: str\n
+    :param path: -p le chemin de la backup\n
+    :type path: str\n
     :return: un message de confirmation ou d'erreur\n
     :rtype: str"""
     """Commande pour prévoir une backup régulière\n
