@@ -13,10 +13,7 @@ def addTags(connexionInstance: Connection,project: str,newTag: str,fileToTag: st
     pathToConfTag="./kdna/"+project+"/tags.conf"
 
     #Récupération en local du fichier de config sur les tags
-    try:
-        connexionInstance.get(pathToConfTag)
-    except:
-        raise Exception("Erreur lors de l'accès au fichier de configuration des tags")
+    getTagConf(pathToConfTag,connexionInstance)
     
     #Ouverture du fichier de conf en lecture
     try:
@@ -65,7 +62,8 @@ def deleteTags(connexionInstance: Connection,project: str,oldTag: str):
     #Validateur
     removed=False
     pathToConfTag="./kdna/"+project+"/tags.conf"
-    connexionInstance.get(pathToConfTag)
+    #Récupération en local du fichier de config sur les tags
+    getTagConf(pathToConfTag,connexionInstance)
 
     #Ouverture du fichier de conf en lecture
     try:
@@ -92,8 +90,13 @@ def deleteTags(connexionInstance: Connection,project: str,oldTag: str):
         raise Exception(f"Aucun tag {oldTag} n'a été trouvé pour la supression")
     else:
         print(f"Le tag {oldTag} associé au fichier {file} a été supprimé")
-    connexionInstance.put("tags.conf",pathToConfTag)
-    os.remove('tags.conf')
+    
+    try:
+        connexionInstance.put("tags.conf",pathToConfTag)
+        os.remove('tags.conf')
+    except:
+        os.remove('tags.conf')
+        raise Exception("La deletion de tag n'a pas été appliqué sur le server")
 
 def updateTags(connexionInstance: Connection, project: str, oldTag: str, newTag: str, fileToTag: str):
     try:
@@ -112,12 +115,26 @@ def updateTags(connexionInstance: Connection, project: str, oldTag: str, newTag:
 
 def readTags(connexionInstance: Connection,project: str):
     pathToConfTag="./kdna/"+project+"/tags.conf"
-    connexionInstance.get(pathToConfTag)
+
+    #Récupération en local du fichier de config sur les tags
+    getTagConf(pathToConfTag,connexionInstance)
+
+    #Sélection des couples Tag, Fichier
     with open('tags.conf',"r") as tagFile:
         tagLines=tagFile.readlines()
     tagLines.pop(0)
+
+    #Affichage des Tags dans la console
     print("Voici les tags de vos fichiers")
     for line in tagLines:
         tagFileCouple=line.split(", ")
         print('{:>8} {:>8}'.format(tagFileCouple[0],tagFileCouple[1]))
     os.remove('tags.conf')
+
+def getTagConf(pathToConfTag:str,connexionInstance: Connection):
+    try:
+        connexionInstance.get(pathToConfTag)
+    except:
+        raise Exception("Erreur lors de l'accès au fichier de configuration des tags")
+
+readTags(Connection('test'),'projects')
