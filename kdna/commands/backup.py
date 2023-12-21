@@ -29,7 +29,7 @@ def display(path):
 # Création de la commande add
 @backup.command()
 @click.argument('name', nargs=1, required=True)
-@click.argument('path', nargs=1, required=True) #remotepath + localpath + tag
+@click.argument('path', nargs=1, required=True)
 def add(name, path):
     """Commande pour sauvegarder un fichier\n
     :param name: le nom du fichier à sauvegarder\n
@@ -40,7 +40,13 @@ def add(name, path):
     :rtype: str"""
     click.echo(f"Created backup \"{name}\":v1.1.2")
     click.echo("Contains :")
-    click.echo(display(path))
+    try:
+        click.echo(display(path))
+    except FileNotFoundError as exc:
+        click.echo("Le fichier n'a pas été trouvé")
+    except PermissionError as exc:
+        click.echo("Vous n'avez pas les droits")
+
 
 
 # Création de la commande delete
