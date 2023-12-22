@@ -1,10 +1,11 @@
 import click
 import os
+import kdna.tags.tags as tags
 from kdna.parsing.parser import serversCredential
 from kdna.encrypt.encrypt import package
 from kdna.parsing.parser import kdna_path
 from kdna.ssh.ssh_client import SSHClient
-from kdna.server.server import upload_file
+from kdna.server.server import upload_file, download_file
 
 # Creation du groupe de commande backup
 
@@ -37,7 +38,8 @@ def display(path):
 @backup.command()
 @click.argument('name', nargs=1, required=True)
 @click.argument('path', nargs=1, required=True)
-def add(name, path):
+@click.argument('tag', nargs=1, required=True)
+def add(name, path, tag):
     """Commande pour sauvegarder un fichier\n
     :param name: le nom du fichier à sauvegarder\n
     :type name: str\n
@@ -45,19 +47,21 @@ def add(name, path):
     :type path: str\n
     :return: un message de confirmation ou d'erreur\n
     :rtype: str"""
-    click.echo(f"Creating backup \"{name}\":v1.1.2")
-    click.echo("Contains :")
-    name_of_temp_backup = package(path, name, kdna_path, False)
+    click.echo(f"Creating backup \"{name}\":\n{tag}")
+    name_of_temp_backup = package(path, name, kdna_path, True)
     path_to_local_backup = os.path.join(kdna_path, name_of_temp_backup)
-
+    path_to_remote_backup = os.path.join("kdna", "project")
     try:
         instance = SSHClient(serversCredential[0]).connect()
     except Exception as e:
         print("error2 = "+e.__str__())
 
     try:
-        upload_file(instance.connection, path_to_local_backup, "kdna")
+        upload_file(instance.connection, path_to_local_backup,
+                    path_to_remote_backup)
         os.remove(path_to_local_backup)
+        tags.addTags(instance.connection, "project",
+                     tag, name_of_temp_backup, True)
     except Exception as e:
         print("error = "+e.__str__())
 
@@ -98,3 +102,13 @@ def restore(nametag, path):
     :return: un message de confirmation ou d'erreur\n
     :rtype: str"""
     click.echo(f"Restauration du fichier : \"{nametag}\"")
+    try:
+        instance = SSHClient(serversCredential[0]).connect()
+    except Exception as e:
+        print(e)
+
+    remote_path = os.path.join("kdna", "project", nametag.split(":")[0])
+    local_temp_path = os.path.join(kdna_path, "temp", nametag.split(":")[0])
+
+    try:
+        download_file(instance.connection, path, remote_path)
