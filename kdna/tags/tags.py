@@ -134,13 +134,14 @@ def readTags(connexionInstance: Connection,project: str):
     os.remove('tags.conf')
 
 def getFileNameByTag(connexionInstance: Connection,project: str,tag:str):
-    pathToTag=f"/kdna/{project}/tags.conf"
+    pathToTag=f"./kdna/{project}/tags.conf"
     found = False
     #récupération du fichier tag.conf
     getTagConf(pathToTag,connexionInstance)
     #Recherche dans le fichier si un tag correspond a un fichier
-    with open("tag.conf","r") as tagFile:
-        for line in tag:
+    with open("tags.conf","r") as tagFile:
+        
+        for line in tagFile:
             tagFileCouple= line.split(", ")
             if(tagFileCouple[0]==tag):
                 found=True
@@ -159,4 +160,3 @@ def getTagConf(pathToConfTag:str,connexionInstance: Connection):
 
 
 
-readTags(Connection('test'),'projects')
