@@ -19,7 +19,7 @@ def upload_file(connection: Connection, local_path: str, remote_path: str) -> No
     connection.put(local_path, remote=remote_path)
 
 
-def download_file(connection: Connection, local_path: str, remote_path: str) -> None:
+def download_file(connection: Connection, local_path: str, remote_path: str) -> str:
     """
     Receive a file on a specific path from the remote server. Might throw an exception.
     """
@@ -30,9 +30,10 @@ def download_file(connection: Connection, local_path: str, remote_path: str) -> 
     for file in files:
         file_name = file.split("/")[-1]
         if file_name.endswith(".enc"):
-            connection.get(file, local=local_path)
-            return
-    connection.get(remote_path, local=local_path)
+            connection.get(file, local=local_path+".enc")
+            return file_name
+    connection.get(remote_path, local=local_path+".tar.gz")
+    return files[0].split("/")[-1]
 
 # méthode pour trouver le path d'un backup à partir d'un tag et d'un nom de projet
 def find_path(connection: Connection, tag: str, project_name: str) -> str:

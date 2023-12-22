@@ -1,15 +1,10 @@
 from kdna.parsing.server import parseServer
 from kdna.parsing.autobackup import parse
+import os
 
 lines = {}
 listServers = []
-
-serversCredential =[
-    {
-        "name": "root",
-        "ip": "debian.local"
-    }
-]
+listAutoBackups = []
 
 kdna_path = os.path.join(os.path.expanduser('~'), '.kdna')
 # os.path.join(kdna_path, 'temp')
@@ -27,8 +22,9 @@ def parseConfig():
         "servers": cb_server_parser,
         "auto-backups": cb_autobackup_parser
     }
+    path_to_config = os.path.join(kdna_path, "kdna.conf")
 
-    with open("kdna.conf", "r") as f:
+    with open(path_to_config, "r") as f:
         line = f.readline()
         while line:
             header = line_is_header(line)

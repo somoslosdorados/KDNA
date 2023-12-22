@@ -2,7 +2,7 @@ import click
 import os
 import kdna.tags.tags as tags
 from kdna.parsing.parser import listServers
-from kdna.encrypt.encrypt import package
+from kdna.encrypt import encrypt
 from kdna.parsing.parser import kdna_path
 from kdna.ssh.ssh_client import SSHClient
 from kdna.server.server import upload_file, download_file
@@ -48,10 +48,11 @@ def add(name, path, tag):
     :return: un message de confirmation ou d'erreur\n
     :rtype: str"""
     click.echo(f"Creating backup \"{name}\":\n{tag}")
-    name_of_temp_backup = package(path, name, kdna_path, True)
+    name_of_temp_backup = encrypt.package(path, name, kdna_path, True)
     path_to_local_backup = os.path.join(kdna_path, name_of_temp_backup)
     path_to_remote_backup = os.path.join("kdna", "project")
     serversCredential = listServers[0].credentials
+    print(serversCredential)
     try:
         instance = SSHClient(serversCredential).connect()
     except Exception as e:
@@ -109,7 +110,20 @@ def restore(nametag, path):
         print(e)
 
     remote_path = os.path.join("kdna", "project", nametag.split(":")[0])
-    local_temp_path = os.path.join(kdna_path, "temp", nametag.split(":")[0])
+    local_temp_path = os.path.join(kdna_path, "temp")
 
     try:
-        download_file(instance.connection, path, remote_path)
+        file_name = download_file(instance.connection, local_temp_path, remote_path)
+    except Exception as e:
+        print(e)
+
+    try:
+        if file_name.endswith(".enc"):
+            restored_path = encrypt.restore(local_temp_path+".enc",path)
+        else:
+            restored_path = encrypt.restore(local_temp_path+".tar.gz",path)
+    except Exception as e:
+        print(e)
+
+    click.echo(f"Restauration faite : \"{restored_path}\"")
+    # os.remove(local_temp_path)
