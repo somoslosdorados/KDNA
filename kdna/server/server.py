@@ -37,11 +37,3 @@ def find_path(connection: Connection, tag: str, project_name: str) -> str:
     
     # renvoie le path du backup
     return f"./kdna/{project_name}/{backup_name}"
-
-
-def main ():
-    with Connection("test@192.168.122.226") as c:
-       print( getFileNameByTag(c,'project1','a'))
-
-if __name__ == '__main__':
-    main()
