@@ -25,9 +25,8 @@ def write_log(msg, path, log_path="logs/logs.txt"):
     :return: returns file.write output (that is, number of characters written)\n
     :rtype: int
     """
-    lt = time.localtime()  # local time
-    timestamp = "on " + lt(lt.tm_year + " " + str(lt.tm_mon) + " " + str(lt.tm_mday) + " at " + str(lt.tm_hour) + "h " + str(lt.min) + "m " + str(lt.sec) + "s")
-    # local time is formatted as follows : "on year month day at hour minute second"
+    timestamp = "on " + time.strftime("%Y-%m-%d") + " at " + time.strftime("%Hh %Mm %Ss")
+    # local time is formatted as follows : "on year-month-day at hour minute second"
     text = msg+':'+path+':'+timestamp+'\n'
     with open("logs/logs.txt", 'a') as file:
         res = file.write(text)
