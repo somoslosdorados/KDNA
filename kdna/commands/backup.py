@@ -99,13 +99,15 @@ def list(project_name):
 
     try:
         backups = list_backups(instance.connection, project_name)
+        tags.readTags(instance.connection, project_name)
     except Exception as e:
         print("error2 = "+e.__str__())
 
     if backups is None:
         click.echo(f'Project {project_name} not found')
-    else:
-        click.echo('Backups : ' + str(backups))
+    # else:
+        # click.echo('Backups : ' + str(backups))
+        # click.echo('Tags : ' + str(backups))
 
 
 # Création de la commande restore
