@@ -1,4 +1,4 @@
-from fabric import Connection
+from fabric import Connection  # type: ignore
 from kdna.tags.tags import getFileNameByTag
 
 
@@ -36,6 +36,8 @@ def download_file(connection: Connection, local_path: str, remote_path: str) -> 
     return files[0].split("/")[-1]
 
 # méthode pour trouver le path d'un backup à partir d'un tag et d'un nom de projet
+
+
 def find_path(connection: Connection, tag: str, project_name: str) -> str:
     """
     Find a path in the remote server. Might throw an exception.
@@ -43,17 +45,17 @@ def find_path(connection: Connection, tag: str, project_name: str) -> str:
 
     # vérifier que le dossier du projet existe
     try:
-        connection.run(f"ls ./kdna/{project_name}") 
-    except:
+        connection.run(f"ls ./kdna/{project_name}")
+    except Exception:
         raise Exception(f"Project {project_name} not found")
-    
+
     # récupérer le nom du backup à partir du tag
     backup_name = getFileNameByTag(connection, tag, project_name)
-     
-     # vérifie que le backup_name existe dans le projet
+
+    # vérifie que le backup_name existe dans le projet
     try:
         connection.run(f"find ./kdna/{project_name}/{backup_name}")
-    except:
+    except Exception:
         raise Exception(f"Tag {tag} not found in project {project_name}")
     # renvoie le path du backup
     return f"./kdna/{project_name}/{backup_name}"

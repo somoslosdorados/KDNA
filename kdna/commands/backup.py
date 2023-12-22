@@ -6,6 +6,7 @@ from kdna.encrypt import encrypt
 from kdna.parsing.parser import kdna_path
 from kdna.ssh.ssh_client import SSHClient
 from kdna.server.server import upload_file, download_file
+from kdna.server.server import list_backups
 
 # Creation du groupe de commande backup
 
@@ -83,11 +84,27 @@ def delete(pathtag):
 
 # Création de la commande list
 @backup.command()
-def list():
+@click.argument('project_name', nargs=1, required=True, help="saisissez le nom du projet où se trouvent les backups")
+def list(project_name: str):
     """Commande pour lister les fichiers sauvegardés
     :return: Liste des fichiers sauvegardés : class: `str`\n
     :rtype: list"""
-    click.echo(f"List of backup : \n...\n...")
+    try:
+        instance = SSHClient(listServers[0].credentials).connect()
+    except Exception as e:
+        print("error = "+e.__str__())
+
+    backups = []
+
+    try:
+        backups = list_backups(instance, project_name)
+    except Exception as e:
+        print("error2 = "+e.__str__())
+
+    if not backups:
+        click.echo(f'Project {project_name} not found')
+    else:
+        click.echo('Backups : ' + str(backups))
 
 
 # Création de la commande restore
