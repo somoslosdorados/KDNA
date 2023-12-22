@@ -1,5 +1,6 @@
-from fabric import Connection # type: ignore
+from fabric import Connection  # type: ignore
 from kdna.server.server import directory_exists
+
 
 def list_projects(connection: Connection) -> list | None:
     """
@@ -14,7 +15,8 @@ def list_projects(connection: Connection) -> list | None:
     except:
         print("An error as occured")
         return None
-    
+
+
 def list_backups(connection: Connection, project_name: str) -> list | None:
     """
     Retourne toutes les backups pour un projet donné.
@@ -25,8 +27,9 @@ def list_backups(connection: Connection, project_name: str) -> list | None:
         if not directory_exists(connection, "kdna/" + project_name):
             print("The directory 'kdna/" + project_name + "' doesn't exist.")
             return None
-        
-        result = connection.run(f"ls -l kdna/{project_name} | grep '^\-'", hide=True)
+
+        result = connection.run(
+            f"ls -l kdna/{project_name} | grep '^\-'", hide=True)
 
         backups = []
         for line in result.stdout.split('\n')[:-1]:
@@ -36,6 +39,7 @@ def list_backups(connection: Connection, project_name: str) -> list | None:
                 backups.append(file_name)
 
         return backups
-    except:
+    except Exception as e:
+        print(e)
         print("An error as occured")
         return None
