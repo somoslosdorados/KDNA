@@ -24,16 +24,11 @@ def download_file(connection: Connection, local_path: str, remote_path: str) -> 
     Receive a file on a specific path from the remote server. Might throw an exception.
     """
     # check if there is a file like remote_path.enc or remote_path.tar.gz
-    files = connection.run(f"ls {remote_path}.*", warn=True).stdout.split("\n")
+    files = connection.run(f"ls {remote_path}", warn=True).stdout.split("\n")
     if len(files) == 0:
         raise Exception(f"Error: no file found on {remote_path}")
     for file in files:
-        file_name = file.split("/")[-1]
-        if file_name.endswith(".enc"):
-            connection.get(file, local=local_path+".enc")
-            return file_name
-    connection.get(remote_path, local=local_path+".tar.gz")
-    return files[0].split("/")[-1]
+        connection.get(file, local=local_path)
 
 # méthode pour trouver le path d'un backup à partir d'un tag et d'un nom de projet
 
@@ -42,6 +37,7 @@ def find_path(connection: Connection, tag: str, project_name: str) -> str:
     """
     Find a path in the remote server. Might throw an exception.
     """
+    print(f"find_path: tag={tag}, project_name={project_name}")
 
     # vérifier que le dossier du projet existe
     try:
@@ -50,7 +46,8 @@ def find_path(connection: Connection, tag: str, project_name: str) -> str:
         raise Exception(f"Project {project_name} not found")
 
     # récupérer le nom du backup à partir du tag
-    backup_name = getFileNameByTag(connection, tag, project_name)
+    backup_name = getFileNameByTag(
+        connection, project_name, tag).removesuffix("\n")
 
     # vérifie que le backup_name existe dans le projet
     try:

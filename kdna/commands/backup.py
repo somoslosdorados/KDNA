@@ -1,11 +1,12 @@
 import click
+import uuid
 import os
 import kdna.tags.tags as tags
 from kdna.parsing.parser import listServers
 from kdna.encrypt import encrypt
 from kdna.parsing.parser import kdna_path
 from kdna.ssh.ssh_client import SSHClient
-from kdna.server.server import upload_file, download_file
+from kdna.server.server import upload_file, download_file, find_path
 from kdna.read_backups.agent import list_backups
 
 # Creation du groupe de commande backup
@@ -120,26 +121,27 @@ def restore(nametag, path):
     :return: un message de confirmation ou d'erreur\n
     :rtype: str"""
     click.echo(f"Restauration du fichier : \"{nametag}\"")
+
     try:
         instance = SSHClient(listServers[0].credentials).connect()
     except Exception as e:
         print(e)
 
-    remote_path = os.path.join("kdna", "project", nametag.split(":")[0])
-    local_temp_path = os.path.join(kdna_path, "temp")
+    remote_path = find_path(instance.connection, nametag, "project")
+
+    local_temp_path = os.path.join(
+        kdna_path, "temp", remote_path.split("/")[-1])
 
     try:
-        file_name = download_file(instance.connection, local_temp_path, remote_path)
+        download_file(
+            instance.connection, local_temp_path, remote_path)
     except Exception as e:
         print(e)
 
     try:
-        if file_name.endswith(".enc"):
-            restored_path = encrypt.restore(local_temp_path+".enc",path)
-        else:
-            restored_path = encrypt.restore(local_temp_path+".tar.gz",path)
+        restored_path = encrypt.restore(local_temp_path, path)
     except Exception as e:
         print(e)
 
     click.echo(f"Restauration faite : \"{restored_path}\"")
-    # os.remove(local_temp_path)
+    os.remove(local_temp_path)
