@@ -23,7 +23,8 @@ class ServerService:
     lines = Utils.read_file_lines(Utils.config_file)
     i = Utils.find_servers_index(lines) + 1
     index_autobackup = Utils.find_auto_backups_index(lines)
-    data = [v.split(',') for v in lines[i::index_autobackup]]
+
+    data = [v.split(',') for v in lines[i:index_autobackup]]
     li = create_dic_server(data)
 
     return li
