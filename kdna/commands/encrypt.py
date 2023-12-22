@@ -6,6 +6,7 @@ This module contains the commands for encryption managing in kdna.
 :date: 2023-12-20
 """
 import click
+from kdna.encrypt.encrypt import generate_key
 
 
 @click.group()
@@ -19,8 +20,10 @@ def keygen(path):
     """Command to generate encryption key
     :param path: option to specify the path of the key"""
     if path:
-        click.echo(f"Key stored to {path}")
-    click.echo(f"Key generated")
+        output_path = generate_key()
+    else:
+        output_path = generate_key(path)
+    click.echo(f"Key generated at {output_path}")
 
 
 @encrypt.command(name='activate')
