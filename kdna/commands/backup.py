@@ -19,11 +19,6 @@ def backup():
 
 # Création de la fonction display pour afficher le contenu d'un fichier
 def display(path):
-    """Fonction pour afficher le contenu d'un fichier\n
-    :param path: le path du fichier à afficher\n
-    :type path: str\n
-    :return: le contenu du fichier\n
-    :rtype: str"""
     try:
         with open(path, mode="r", encoding="utf-8") as file:
             return file.read()
@@ -42,13 +37,6 @@ def display(path):
 @click.argument('path', nargs=1, required=True)
 @click.argument('tag', nargs=1, required=True)
 def add(project, path, tag):
-    """Commande pour sauvegarder un fichier\n
-    :param project: le nom du fichier à sauvegarder\n
-    :type project: str\n
-    :param path: le path du fichier à sauvegarder\n
-    :type path: str\n
-    :return: un message de confirmation ou d'erreur\n
-    :rtype: str"""
     click.echo(f"Creating backup \"{project}\":\n{tag}")
     uuid_backup = str(uuid.uuid4())
     name_of_temp_backup = encrypt.package(path, uuid_backup, kdna_path, True)
@@ -75,11 +63,6 @@ def add(project, path, tag):
 @backup.command()
 @click.option('-t', 'pathtag', nargs=1, required=True, help="entrer le path du fichier et le tag [ path:tag ]")
 def delete(pathtag):
-    """Commande pour supprimer un fichier\n
-    :param pathtag: -t [ path:tag ] le path du fichier à supprimer et le tag\n
-    :type pathtag: str\n
-    :return: un message de confirmation ou d'erreur\n
-    :rtype: str"""
     click.echo(f"Suppression du fichier : \"{pathtag}\"")
 
 
@@ -87,9 +70,6 @@ def delete(pathtag):
 @backup.command()
 @click.argument('project_name', nargs=1, required=True)
 def list(project_name):
-    """Commande pour lister les fichiers sauvegardés
-    :return: Liste des fichiers sauvegardés : class: `str`\n
-    :rtype: list"""
     try:
         instance = SSHClient(listServers[0].credentials).connect()
     except Exception as e:
@@ -116,13 +96,6 @@ def list(project_name):
               help="entrer le nom du fichier à restaurer et le tag [ name:tag ]")
 @click.argument('path', nargs=1, required=True)
 def restore(nametag, path):
-    """Commande pour restaurer un fichier\n
-    :param nametag: -t [ name:tag ] le nom du fichier à restaurer
-    :type nametag: str\n
-    :param path: le path du fichier à restaurer\n
-    :type path: str\n
-    :return: un message de confirmation ou d'erreur\n
-    :rtype: str"""
     click.echo(f"Restauration du fichier : \"{nametag}\"")
 
     try:
