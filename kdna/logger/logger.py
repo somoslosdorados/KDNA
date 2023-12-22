@@ -34,7 +34,7 @@ def write_log(msg, path, log_path="logs/logs.txt"):
     return res
 
 
-def printk(msg, log_path):
+def printk(msg, log_path="logs/logs.txt"):
     """
     This function acts 'like' print, but also logs what you printed in the chosen logs file (default is logs/logs.txt").
     :param msg: the message to print and log\n
