@@ -56,3 +56,22 @@ def find_path(connection: Connection, tag: str, project_name: str) -> str:
         raise Exception(f"Tag {tag} not found in project {project_name}")
     # renvoie le path du backup
     return f"./kdna/{project_name}/{backup_name}"
+
+def find_all_file(connection: Connection, tag: str):
+    """return a list of path of backups that or tag with the given tag"""
+    try:
+        projects=connection.run(f"ls ./kdna/").stdout
+    except:
+        raise Exception("Can't list project")
+    listedProject=projects.split(" ")
+
+    message="Vos sauvergardes: \n"
+    
+    for project in listedProject:
+        try:
+            find_path(connection, tag, project)
+        except:
+            message+=""
+
+
+        
