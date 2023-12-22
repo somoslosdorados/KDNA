@@ -38,19 +38,20 @@ def display(path):
 
 # Création de la commande add
 @backup.command()
-@click.argument('name', nargs=1, required=True)
+@click.argument('project', nargs=1, required=True)
 @click.argument('path', nargs=1, required=True)
 @click.argument('tag', nargs=1, required=True)
-def add(name, path, tag):
+def add(project, path, tag):
     """Commande pour sauvegarder un fichier\n
-    :param name: le nom du fichier à sauvegarder\n
-    :type name: str\n
+    :param project: le nom du fichier à sauvegarder\n
+    :type project: str\n
     :param path: le path du fichier à sauvegarder\n
     :type path: str\n
     :return: un message de confirmation ou d'erreur\n
     :rtype: str"""
-    click.echo(f"Creating backup \"{name}\":\n{tag}")
-    name_of_temp_backup = encrypt.package(path, name, kdna_path, True)
+    click.echo(f"Creating backup \"{project}\":\n{tag}")
+    uuid_backup = str(uuid.uuid4())
+    name_of_temp_backup = encrypt.package(path, uuid_backup, kdna_path, True)
     path_to_local_backup = os.path.join(kdna_path, name_of_temp_backup)
     path_to_remote_backup = os.path.join("kdna", "project")
     serversCredential = listServers[0].credentials
