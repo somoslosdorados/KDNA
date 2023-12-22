@@ -40,9 +40,8 @@ def find_path(connection: Connection, tag: str, project_name: str) -> str:
 
 
 def main ():
-    with Connection("bbronsin@162.38.112.136") as c:
-        upload_file(c, "/toto.txt", "/home/bbronsin/")
-        download_file(c, "/home/baptiste/", "/home/bbronsin/toto1.txt")
+    with Connection("test@192.168.122.226") as c:
+       print( getFileNameByTag(c,'project1','a'))
 
 if __name__ == '__main__':
     main()
