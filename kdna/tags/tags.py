@@ -138,29 +138,30 @@ def readTags(connexionInstance: Connection, project: str):
         print('{:>8} {:>8}'.format(tagFileCouple[0], tagFileCouple[1]))
     os.remove('tags.conf')
 
-def getFileNameByTag(connexionInstance: Connection,project: str,tag:str):
-    pathToTag=f"./kdna/{project}/tags.conf"
+
+def getFileNameByTag(connexionInstance: Connection, project: str, tag: str):
+    pathToTag = f"./kdna/{project}/tags.conf"
     found = False
-    #récupération du fichier tag.conf
-    getTagConf(pathToTag,connexionInstance)
-    #Recherche dans le fichier si un tag correspond a un fichier
-    with open("tags.conf","r") as tagFile:
-        
+    # récupération du fichier tag.conf
+    getTagConf(pathToTag, connexionInstance)
+    # Recherche dans le fichier si un tag correspond a un fichier
+    with open("tags.conf", "r") as tagFile:
+
         for line in tagFile:
-            tagFileCouple= line.split(", ")
-            if(tagFileCouple[0]==tag):
-                found=True
+            tagFileCouple = line.split(", ")
+            if (tagFileCouple[0] == tag):
+                found = True
                 os.remove('tags.conf')
                 return tagFileCouple[1]
-    #Si aucun fichier n'est trouvé une erreur apparait
-    if(not found):
-        raise Exception(f"Aucun fichier n'a été associé au tag {tag} dans le project {project}")
-    
+    # Si aucun fichier n'est trouvé une erreur apparait
+    if (not found):
+        raise Exception(
+            f"Aucun fichier n'a été associé au tag {tag} dans le project {project}")
 
-def getTagConf(pathToConfTag:str,connexionInstance: Connection):
+
+def getTagConf(pathToConfTag: str, connexionInstance: Connection):
     try:
         connexionInstance.get(pathToConfTag)
     except:
-        raise Exception("Erreur lors de l'accès au fichier de configuration des tags")
-
-
+        raise Exception(
+            "Erreur lors de l'accès au fichier de configuration des tags")

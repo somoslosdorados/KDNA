@@ -79,7 +79,7 @@ def restore(path: str, out: str) -> str:
     :param encrypted: is the file encrypted
     :return: path to output folder
     """
-    print(os.getcwd())
+    print("restoring = ", path)
     encrypted = path.endswith(".enc")
     tar_name = path
     if encrypted:
