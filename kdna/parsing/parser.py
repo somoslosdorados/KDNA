@@ -2,6 +2,7 @@ from kdna.parsing.server import parseServer
 from kdna.parsing.autobackup import parse
 
 lines = {}
+listServers = []
 
 serversCredential =[
     {
@@ -51,9 +52,6 @@ def parseConfig():
                     listAutoBackups.append(parsed)
         else:
             print(f"Unknown header: {header}")
-
-    for server in listServers:
-        print(server)
     for autobackup in listAutoBackups:
         print(autobackup)
 

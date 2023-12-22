@@ -1,7 +1,7 @@
 import click
 import os
 import kdna.tags.tags as tags
-from kdna.parsing.parser import serversCredential
+from kdna.parsing.parser import listServers
 from kdna.encrypt.encrypt import package
 from kdna.parsing.parser import kdna_path
 from kdna.ssh.ssh_client import SSHClient
@@ -51,8 +51,9 @@ def add(name, path, tag):
     name_of_temp_backup = package(path, name, kdna_path, True)
     path_to_local_backup = os.path.join(kdna_path, name_of_temp_backup)
     path_to_remote_backup = os.path.join("kdna", "project")
+    serversCredential = listServers[0].credentials
     try:
-        instance = SSHClient(serversCredential[0]).connect()
+        instance = SSHClient(serversCredential).connect()
     except Exception as e:
         print("error2 = "+e.__str__())
 
@@ -103,7 +104,7 @@ def restore(nametag, path):
     :rtype: str"""
     click.echo(f"Restauration du fichier : \"{nametag}\"")
     try:
-        instance = SSHClient(serversCredential[0]).connect()
+        instance = SSHClient(listServers[0].credentials).connect()
     except Exception as e:
         print(e)
 
