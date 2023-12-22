@@ -53,7 +53,6 @@ def add(name, path, tag):
     path_to_local_backup = os.path.join(kdna_path, name_of_temp_backup)
     path_to_remote_backup = os.path.join("kdna", "project")
     serversCredential = listServers[0].credentials
-    print(serversCredential)
     try:
         instance = SSHClient(serversCredential).connect()
     except Exception as e:
