@@ -57,7 +57,7 @@ def find_path(connection: Connection, tag: str, project_name: str) -> str:
     # renvoie le path du backup
     return f"./kdna/{project_name}/{backup_name}"
 
-def find_all_file(connection: Connection, tag: str,verbose=True):
+def find_all_file(connection: Connection, tag: str,verbose=False):
     """return a list of path of backups that or tag with the given tag"""
      #Listing des différents projets
     try:
@@ -73,7 +73,7 @@ def find_all_file(connection: Connection, tag: str,verbose=True):
         try:
             fileName=getFileNameByTag(connection, project, tag).strip("\n")
             paths_list.append(f"/{project}/{fileName}")
-            message+='In {:>8}:{:>8}{:>8}'.format(project,tag,fileName)
+            message+='In {:>8}:{:>8}{:>8}\n'.format(project,tag,fileName)
         except:
             message+=f"No file tagged {tag} in {project}\n"
     
