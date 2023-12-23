@@ -138,9 +138,8 @@ def readTags(connexionInstance: Connection, project: str):
         print('{:>8} {:>8}'.format(tagFileCouple[0], tagFileCouple[1]))
     os.remove('tags.conf')
 
-
-def getFileNameByTag(connexionInstance: Connection, project: str, tag: str):
-    pathToTag = f"./kdna/{project}/tags.conf"
+def getFileNameByTag(connexionInstance: Connection,project: str,tag:str,verbose: True):
+    pathToTag=f"./kdna/{project}/tags.conf"
     found = False
     # récupération du fichier tag.conf
     getTagConf(pathToTag, connexionInstance)
