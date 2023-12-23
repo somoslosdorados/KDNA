@@ -80,10 +80,3 @@ def find_all_file(connection: Connection, tag: str,verbose=False):
     if(verbose):
         print(message)
     return paths_list
-  
-
-client=Connection("test@192.168.122.226")
-print(find_all_file(client,'a'))
-
-
-        
