@@ -52,7 +52,7 @@ def add(project, path, tag):
         upload_file(instance.connection, path_to_local_backup,
                     path_to_remote_backup)
         os.remove(path_to_local_backup)
-        tags.addTags(instance.connection, "project",
+        tags.add_tags(instance.connection, "project",
                      tag, name_of_temp_backup, True)
     except Exception as e:
         print("error = "+e.__str__())
@@ -79,7 +79,7 @@ def list(project_name):
 
     try:
         backups = list_backups(instance.connection, project_name)
-        tags.readTags(instance.connection, project_name)
+        tags.read_tags(instance.connection, project_name)
     except Exception as e:
         print("error2 = "+e.__str__())
 
