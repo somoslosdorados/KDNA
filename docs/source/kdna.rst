@@ -9,9 +9,13 @@ Subpackages
 
    kdna.commands
    kdna.conf_utils
+   kdna.connexion_ssh
    kdna.encrypt
+   kdna.parsing
    kdna.read_backups
    kdna.server
+   kdna.ssh
+   kdna.tags
 
 Submodules
 ----------

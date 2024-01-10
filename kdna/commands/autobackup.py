@@ -39,8 +39,6 @@ def get_custom_cron(sched_part_type: str, cond_inf: int, cond_sup: int):
 
 
 def concatenate_custom_cron():
-    """
-    """
     custom_cron = get_custom_cron("Minute", 0, 59)
     custom_cron += get_custom_cron("Heure", 0, 23)
     custom_cron += get_custom_cron("Jour du mois", 0, 31)

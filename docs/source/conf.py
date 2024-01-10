@@ -15,7 +15,7 @@ release = '1'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'autoapi.extension']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode']
 
 templates_path = ['_templates']
 exclude_patterns = []
@@ -31,15 +31,5 @@ html_static_path = ['_static']
 
 
 autoapi_type = "python"
-autoapi_member_order = "bysource"
 
 autoapi_dirs = ["../../kdna"]
-autoapi_options = [
-    "members",
-    "undoc-members",
-    "private-members",
-    "show-inheritance",
-    "show-module-summary",
-    "special-members",
-    "imported-members",
-]

@@ -1,6 +1,4 @@
-"""
-This module contains encryption functions.
-
+"""This module contains encryption functions.
 :author: RADULESCU Tristan-Mihai, TCHILINGUIRIAN Théo
 :email: <placeholder>, theo.tchlx@gmail.com
 :date: 2023-12-15
@@ -15,8 +13,7 @@ kdna_path_to_path = os.path.join(os.path.expanduser('~'), '.kdna/path')
 
 
 def generate_key(key_path: str = kdna_default_path) -> str:
-    """
-    Generate a key and save it into a file
+    """Generate a key and save it into a file
     :param key_path: path to the key file
     :return: path to the key file
     """
@@ -34,8 +31,7 @@ def generate_key(key_path: str = kdna_default_path) -> str:
 
 
 def load_key() -> bytes:
-    """
-    Load the previously generated key
+    """Load the previously generated key
     :param key_path: path to the key file
     :return: key as bytes
     """
@@ -50,11 +46,9 @@ def load_key() -> bytes:
 
 
 def package(path: str, name: str, out: str, encrypt: bool) -> str:
-    """
-    :param path: path to folder to backup
+    """:param path: path to folder to backup
     :param out: path to output file
-    :param encrypt: encrypt the file if True then the output
-    file will be a .enc file else it will be a .tar.gz file
+    :param encrypt: encrypt the file if True then the output file will be a .enc file else it will be a .tar.gz file
     :return: path to output file
     """
     old_path = os.path.abspath(os.getcwd())
@@ -73,8 +67,7 @@ def package(path: str, name: str, out: str, encrypt: bool) -> str:
 
 
 def restore(path: str, out: str) -> str:
-    """
-    :param path: path to .tar.gz or .enc file to restore
+    """:param path: path to .tar.gz or .enc file to restore
     :param out: path to output folder
     :param encrypted: is the file encrypted
     :return: path to output folder
@@ -93,8 +86,7 @@ def restore(path: str, out: str) -> str:
 
 
 def cypher(path: str, out: str) -> bytes:
-    """
-    :param path: path to file to encrypt
+    """:param path: path to file to encrypt
     :param out: path to output file
     """
     key = load_key()
@@ -107,8 +99,7 @@ def cypher(path: str, out: str) -> bytes:
 
 
 def decypher(path: str, out: str):
-    """
-    :param path: path to file to decrypt
+    """:param path: path to file to decrypt
     :param out: path to output file
     """
     key = load_key()
