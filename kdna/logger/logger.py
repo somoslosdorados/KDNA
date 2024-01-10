@@ -1,39 +1,29 @@
 """
-    This is the logger program. It implements the famous "printk" function. Yep, that's the one.
-    It prints, but also logs the output with a filestamp, in kdna/logs/logs.txt
+    This is the logger program. It implements the "log" function. 
+    Logs the timestamp, the alert_level, the path from where the log is called and the message, in kdna/logs/logs.log
+    Réalisé par : Sarah THEOULLE et Théo TCHILLINGUIRIAN
 """
 
-
-import os
 import time
 
 
-def get_path():
-    """
-    :return: returns the path of the .py file it is executed it.\n
-    :rtype: str
-    """
-    return os.path.dirname(__file__) + '/' + os.path.basename(__file__)
-
-
-def write_log(msg, path, log_path="logs/logs.txt"):
+def write_log(alert_level, msg, path):
     """
     :param msg: the message to print and log\n
     :type msg: str\n
-    :param log_path: the path to log to (default is "logs/logs.txt")\n
+    :param log_path: the path to log to (default is "logs/logs.log")\n
     :type log_path: str\n
     :return: returns file.write output (that is, number of characters written)\n
     :rtype: int
     """
     timestamp = "on " + time.strftime("%Y-%m-%d") + " at " + time.strftime("%Hh %Mm %Ss")
-    # local time is formatted as follows : "on year-month-day at hour minute second"
-    text = msg+':'+path+':'+timestamp+'\n'
-    with open("logs/logs.txt", 'a') as file:
+    text = timestamp + "  " + alert_level + "  " + path + " : " + msg + "\n"
+    with open("kdna/logs/logs.log", 'a') as file:
         res = file.write(text)
     return res
 
 
-def printk(msg, log_path="logs/logs.txt"):
+def log(alert_level, msg, path):
     """
     This function acts 'like' print, but also logs what you printed in the chosen logs file (default is logs/logs.txt").
     :param msg: the message to print and log\n
@@ -43,17 +33,14 @@ def printk(msg, log_path="logs/logs.txt"):
     :return: returns file.write output (that is, number of characters written)\n
     :rtype: int
     """
-    path = get_path()
-    res = write_log(str(msg), path)
-    print(msg)
+    res = write_log(str(alert_level), str(msg), str(path))
     return res
 
 
 def main():
-    # Tests
-    printk("We dine well here in Camelot. We eat ham and jam and spam a lot.")
+    log("Warning","We dine well here in Camelot. We eat ham and jam and spam a lot.", "path")
 
 
 if __name__ == '__main__':
-    main()
+   main()
 
