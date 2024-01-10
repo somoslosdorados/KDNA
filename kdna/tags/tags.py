@@ -1,5 +1,7 @@
 """We will use connexion instance gathered by the module
-    If the service is running the tags.conf file could change"""
+    If the service is running the tags.conf file could change
+    
+    authors: Dorian TETU, Hugo PONTHIEU"""
 
 import os
 from fabric import Connection
