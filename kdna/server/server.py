@@ -1,5 +1,5 @@
 from fabric import Connection  # type: ignore
-from kdna.tags.tags import getFileNameByTag
+from kdna.tags.tags import get_file_name_by_tag
 
 
 def directory_exists(connection: Connection, path: str) -> bool:
@@ -46,7 +46,7 @@ def find_path(connection: Connection, tag: str, project_name: str) -> str:
         raise Exception(f"Project {project_name} not found")
 
     # récupérer le nom du backup à partir du tag
-    backup_name = getFileNameByTag(
+    backup_name = get_file_name_by_tag(
         connection, project_name, tag).removesuffix("\n")
 
     # vérifie que le backup_name existe dans le projet
@@ -71,7 +71,7 @@ def find_all_file(connection: Connection, tag: str,verbose=False):
     #Vérifie dans chaque project si il existe une backup associé au tag
     for project in listedProject:
         try:
-            fileName=getFileNameByTag(connection, project, tag).strip("\n")
+            fileName=get_file_name_by_tag(connection, project, tag).strip("\n")
             paths_list.append(f"/{project}/{fileName}")
             message+='In {:>8}:{:>8}{:>8}\n'.format(project,tag,fileName)
         except:
