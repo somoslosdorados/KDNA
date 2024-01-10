@@ -15,11 +15,11 @@ def encrypt():
 
 
 @encrypt.command(name='key-gen')
-@click.option('--path', is_flag=True, default=False)
+@click.option('-p', '--path', required=False, default="", help="entrer le path du fichier si vous voulez")
 def keygen(path):
     """Command to generate encryption key
     :param path: option to specify the path of the key"""
-    if path:
+    if path == "":
         output_path = generate_key()
     else:
         output_path = generate_key(path)
@@ -29,10 +29,10 @@ def keygen(path):
 @encrypt.command(name='activate')
 def activate():
     """Command to enable encryption"""
-    click.echo(f"Encryption activated")
+    click.echo("Encryption activated")
 
 
-@encrypt.command()
+@encrypt.command(name='deactivate')
 def deactivate():
     """Command to disable encryption"""
-    click.echo(f"Encryption deactivated")
+    click.echo("Encryption deactivated")
