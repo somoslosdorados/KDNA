@@ -65,6 +65,20 @@ def add(project, path, tag):
 def delete(pathtag):
     click.echo(f"Suppression du fichier : \"{pathtag}\"")
 
+@backup.command()
+@click.option('-pt', 'pathtag', nargs=1, required=True, help="entrer le path du fichier et le tag [ path:tag ]")
+@click.option('-t', '--tag', nargs=2, required=False, help="entrer le tag de la backup à mettre à jour et le tag mis à jour")
+@click.option('-p', '--path', nargs=1, required=False, help="entrer le chemin de la nouvelle backup")
+def update(idcron, tag, cron_schedule, custom_cron, date, path):
+    old_tag, new_tag = tag
+    click.echo(f"Name of cron : \"{idcron}\"")
+    click.echo(f"Cron tag and schedule : \"{tag}\" \"{cron_schedule}\"")
+    if cron_schedule == 'custom':
+        if not custom_cron:
+            click.echo("L'argument custom_cron doit être suivi d'un schedule de cron personnalisé.")
+        else:
+            click.echo(f"Custom cron : \"{custom_cron}\"")
+
 
 # Création de la commande list
 @backup.command()

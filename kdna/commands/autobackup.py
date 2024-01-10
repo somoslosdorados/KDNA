@@ -84,7 +84,7 @@ def delete(idcron):
 
 @autobackup.command()
 @click.option('-i', '--idcron', nargs=1, required=True, help="entrer l'id du cron à mettre à jour")
-@click.option('-t', '--tag', nargs=1, required=False, help="entrer le tag du cron à mettre à jour")
+@click.option('-t', '--tag', nargs=2, required=False, help="entrer le tag du cron à mettre à jour et le tag à jour")
 @click.argument('cron_schedule', type=click.Choice(['daily', 'monthly', 'weekly',
                                                     'custom']), required=False)
 @click.argument('custom_cron', nargs=-1, required=False)
@@ -92,6 +92,7 @@ def delete(idcron):
               help="entrer la nouvelle date de la première backup [ xxxx-xx-xx ]")
 @click.option('-p', '--path', nargs=1, required=False, help="entrer le chemin de la nouvelle backup")
 def update(idcron, tag, cron_schedule, custom_cron, date, path):
+    old_tag, new_tag = tag
     click.echo(f"Name of cron : \"{idcron}\"")
     click.echo(f"Cron tag and schedule : \"{tag}\" \"{cron_schedule}\"")
     if cron_schedule == 'custom':
