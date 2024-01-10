@@ -4,22 +4,6 @@ kdna.conf\_utils package
 Submodules
 ----------
 
-kdna.conf\_utils.backup module
-------------------------------
-
-.. automodule:: kdna.conf_utils.backup
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-kdna.conf\_utils.server module
-------------------------------
-
-.. automodule:: kdna.conf_utils.server
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 kdna.conf\_utils.utils module
 -----------------------------
 

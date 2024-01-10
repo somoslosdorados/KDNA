@@ -20,6 +20,14 @@ kdna.commands.backup module
    :undoc-members:
    :show-inheritance:
 
+kdna.commands.encrypt module
+----------------------------
+
+.. automodule:: kdna.commands.encrypt
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 kdna.commands.server module
 ---------------------------
 
