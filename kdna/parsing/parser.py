@@ -57,7 +57,7 @@ def line_is_header(line: str) -> str:
     """
     Verifie si la ligne est un header
     """
-    if line.startswith("[") and line.endswith("]\n"):
+    if line.startswith("[") and (line.endswith("]\n") or line.endswith("]")) :
         return line[1:-2]
     return None
 
