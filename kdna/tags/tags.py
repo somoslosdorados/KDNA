@@ -37,60 +37,37 @@ def add_tags(connection_instance: Connection, project: str, new_tag: str, file_t
         raise ConnectionError("Erreur de connexion lors de l'ajout d'un tag")
 
 
-def delete_tags(connection_instance: Connection, project: str, oldTag: str, verbose=False):
+def delete_tags(connection_instance: Connection, project: str, old_tag: str):
     """arguments: oldTag """
-
-    # Validateur
-    removed = False
-    path_to_conf_tag = "./kdna/"+project+"/tags.conf"
-
-    # Ouverture du fichier de conf en lecture
-    try:
-        with open('tags.conf', "r") as tag_file:
-            tag_lines = tag_file.readlines()
-    except:
-        raise PermissionError("Erreur de permission: read sur tags.conf")
-
-    # Ouverture du fichier conf en écriture
-    try:
-        with open('tags.conf', "w") as tag_file:
-            for line in tag_lines:
-                tag = line.split(", ")[0]
-                if (tag != oldTag):
-                    tag_file.write(line)
-                else:
-                    file = line.split(", ")[1].strip('\n')
-                    removed = True
-    except:
-        raise PermissionError("Erreur de permission: write sur tags.conf")
-
-    if (not removed):
-        os.remove('tags.conf')
-        raise FileNotFoundError(f"Aucun tag {oldTag} n'a été trouvé pour la supression")
-    else:
-        if (verbose):
-            print(f"Le tag {oldTag} associé au fichier {file} a été supprimé")
-
-    try:
-        connection_instance.put("tags.conf", path_to_conf_tag)
-        os.remove('tags.conf')
-    except:
-        os.remove('tags.conf')
-        raise PermissionError("La deletion de tag n'a pas été appliqué sur le server")
+    #vérification 
+    if(not tag_exists(connection_instance,project,old_tag)):
+        raise KeyError(f"{old_tag} n'existe pas")
+    
+    # Récupération du fichier tag.conf
+    tag_file=get_tag_conf(connection_instance,project)
+    # Verification de la présence du tag
+    if(not tag_exists(connection_instance,project,old_tag)):
+        raise KeyError(f"{old_tag} n'existe pas")
+    # Deletion de du tag à enlever
+    tag_file.pop(old_tag)
+    # Ecriture dans le fichier
+    write_tag_conf(connection_instance,project,tag_file)
 
 
-def update_tags(connection_instance: Connection, project: str, oldTag: str, new_tag: str, file_to_tag: str, verbose=False):
-    try:
-        delete_tags(connection_instance, project, oldTag)
-    except:
-        raise PermissionError("Une erreur est survenue lors de la tentative de suppression du tag")
+def update_tags(connection_instance: Connection, project: str, old_tag: str, new_tag: str, file_to_tag: str):
+    tag_file = get_tag_conf(connection_instance,project)
+    if not tag_exists(dic,old_tag):
+        raise KeyError(f"{old_tag} n'existe pas")
+   
 
-    try:
-        add_tags(connection_instance, project, new_tag, file_to_tag)
-    except:
-        raise PermissionError("Une erreur est survenue lors de la tentative de création du tag")
-    if (verbose):
-        print(f"Le tag {oldTag} a été modifié en {new_tag}")
+    if tag_exists(dic,new_tag):
+        raise KeyError(f"{new_tag} existe déjà")
+    
+    tag_file.pop(old_tag)
+    tag_file[new_tag] = file_to_tag
+
+    write_tag_conf(connection_instance,project,tag_file)
+
 
 def get_file_name_by_tag(connection_instance: Connection,project: str,tag:str) -> str:
     dico = get_tag_conf(connection_instance,project)
