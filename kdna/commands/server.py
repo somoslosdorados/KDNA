@@ -8,7 +8,7 @@ list : Commande pour lister les serveurs
 
 import click
 from kdna.server.server_service import ServerService
-#from tabulate import tabulate
+from tabulate import tabulate
 
 @click.group()
 def server():
@@ -28,7 +28,6 @@ def set(id, alias, credentials, port):
         click.echo(f"Alias du serveur : \"{alias}\"")
     if id:
         click.echo(f"ID du serveur : \"{id}\"")
-
 
 
 # Création de la commande delete
