@@ -96,8 +96,8 @@ def create(idcron, nameofcron, cron_schedule, custom_cron, date, server, path):
         \tSi l'argument n'a pas été saisi, le programme rentre en mode interactif et attend des entrées de l'utilisateur pour compléter custom_cron.
     """
     log("Info", "Creating a new auto-backup")
-    log(f"Name of cron : \"{nameofcron}\"")
-    log(f"Cron schedule choice : \"{cron_schedule}\"")
+    log("Info", f"Name of cron : \"{nameofcron}\"")
+    log("Info", f"Cron schedule choice : \"{cron_schedule}\"")
     if cron_schedule == 'custom':
         if not custom_cron:  # custom_cron n'est pas donné en argument
             click.echo("L'argument custom_cron doit être suivi d'un schedule de cron personnalisé.")
@@ -107,8 +107,8 @@ def create(idcron, nameofcron, cron_schedule, custom_cron, date, server, path):
             click.echo("L'argument custom_cron n'est pas au format '0-59:0-23:0-31:1-12:0-6'. Ne définissez pas l'option pour la définir interactivement.")
             log("Error", "Chosen custom cron schedule is :", custom_cron)
     else:
-        log("Info", "Cron schedule is :", cron_schedule)
         custom_cron = translate_cron_schedule(cron_schedule)
+        log("Info", "Cron schedule is : \"{cron_schedule}\"")
         if custom_cron == False:  # translate_cron_schedule() error
             click.echo("L'argument cron_schedule ne correspond pas à {daily, monthly, weekly, custom}")
     log("Info", "Calling kdna.conf CRUD...")
