@@ -47,3 +47,14 @@ class SSHClient:
     except Exception as e:
       print(f"Error getting system information on {self.host}: {e}")
     return system_info
+
+  def sendCommand(self, command):
+    try:
+      with Connection(host=self.host, user=self.user) as conn:
+        # Récupère le retour de la commande
+        command_return = conn.run(command, hide=True)
+        msg = "\n{0.stdout}"
+        print(msg.format(command_return))
+        return msg.format(command_return)
+    except Exception as e:
+      raise Exception(f"Error sending command {command} to {self.host}: {e}")
