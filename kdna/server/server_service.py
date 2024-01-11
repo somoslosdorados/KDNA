@@ -129,7 +129,7 @@ class ServerService:
           f"Erreur : Aucun élément trouvé avec l'{element_type} \"{id}\" dans "
           f"la section [server].")
 
-  def update_server(self, alias_to_update, new_credentials=None, new_port=None, new_address=None, new_alias=None):
+  def update_server(self, alias_to_update, new_credentials="", new_port="", new_address="", new_alias=""):
     lines = Utils.read_file_lines(Utils.config_file)
 
     index_servers = Utils.find_servers_index(lines)
@@ -148,14 +148,11 @@ class ServerService:
         existing_port = existing_line[3].strip()
         existing_alias = existing_line[4].strip() if len(existing_line) >= 5 else None
 
-
-        print(f"DEBUG {existing_alias}")
-
         # Mettre à jour les informations si de nouvelles valeurs sont fournies
-        new_credentials = new_credentials if new_credentials is not None else existing_credentials
-        new_port = new_port if new_port is not None else existing_port
-        new_address = new_address if new_address is not None else existing_address
-        new_alias = new_alias if new_alias is not None else existing_alias
+        new_address = new_address if new_address is not "" else existing_address
+        new_credentials = new_credentials if new_credentials is not "" else existing_credentials
+        new_port = new_port if new_port is not "" else existing_port
+        new_alias = new_alias if new_alias is not "" else existing_alias
 
         # Vérifier si le nouvel alias  existe déjà
         if (new_alias is not None and new_alias != existing_alias and new_alias in

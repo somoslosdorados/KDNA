@@ -89,7 +89,7 @@ class AutoBackupService:
             f"Erreur : Aucun élément trouvé avec l'id \"{id}\" dans la section ["
             f"auto-backups].")
         
-  def update_auto_backup(self, id, new_frequency=None, new_name=None, new_timestamp=None, new_path=None):
+  def update_auto_backup(self, id, new_frequency="", new_name="", new_timestamp="", new_path=""):
     """update a specific backup"""
     # On ouvre le fichier en mode lecture
     lines = Utils.read_file_lines(Utils.config_file)
@@ -116,10 +116,10 @@ class AutoBackupService:
                 existing_line) >= 6 else None
 
             # Mettre à jour les informations si de nouvelles valeurs sont fournies
-            new_frequency = new_frequency if new_frequency is not None else existing_frequency
-            new_name = new_name if new_name is not None else existing_name
-            new_timestamp = new_timestamp if new_timestamp is not None else existing_timestamp
-            new_path = new_path if new_path is not None else existing_path
+            new_frequency = new_frequency if new_frequency is not "" else existing_frequency
+            new_name = new_name if new_name is not "" else existing_name
+            new_timestamp = new_timestamp if new_timestamp is not "" else existing_timestamp
+            new_path = new_path if new_path is not "" else existing_path
 
             # Construire la nouvelle ligne mise à jour
             updated_line = (f"{existing_id_backup}, {new_frequency}, {new_name}, "
