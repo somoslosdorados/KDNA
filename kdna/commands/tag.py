@@ -48,7 +48,8 @@ def list(project):
     """Commande pour lister les tags."""
 
     try:
-        tags.read_tags(ssh.connection, project)
+        for (tag,backup) in tags.get_tag_conf(ssh.connection, project):
+            click.echo(f"{tag} : {backup}")
     except FileNotFoundError as exc:
         click.echo("Le fichier n'a pas été trouvé")
     except PermissionError as exc:
