@@ -10,7 +10,6 @@ import click
 from kdna.server.server_service import ServerService
 from tabulate import tabulate
 
-
 @click.group()
 def server():
     """Commande pour lancer le serveur"""
