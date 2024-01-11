@@ -14,6 +14,10 @@ from kdna.parsing.parser import parseConfig  # import du parseur
 from tabulate import tabulate
 
 
+# Fonctions CRUD pour le crond
+# The crond (cron daemon) reads the cron tables to configure the schedule
+
+
 # Creation du groupe de commande autobackup
 @click.group(name='auto-backup')
 def autobackup():
@@ -44,7 +48,7 @@ def get_custom_cron(sched_part_type: str, cond_inf: int, cond_sup: int):
 def concatenate_custom_cron():
     custom_cron = get_custom_cron("Minute", 0, 59)
     custom_cron += get_custom_cron("Heure", 0, 23)
-    custom_cron += get_custom_cron("Jour du mois", 0, 31)
+    custom_cron += get_custom_cron("Jour du mois", 1, 31)
     custom_cron += get_custom_cron("Mois", 1, 12)
     custom_cron += get_custom_cron("Jour de la semaine", 0, 6)
     return custom_cron[:-1]  # Suppression du ':' final
@@ -59,7 +63,7 @@ def validate_cron_schedule(custom_cron:str):
             if not (part.isnumeric() or part == ''):
                 return False
         # Check that numbers are in the correct range
-        if not (0 < int(schedule_list[0]) <= 59 and 0 < int(schedule_list[1]) <= 23 and 0 < int(schedule_list[2]) <= 31 and 1 < int(schedule_list[3]) <= 12 and 0 < int(schedule_list[4]) <= 6):
+        if not (0 < int(schedule_list[0]) <= 59 and 0 < int(schedule_list[1]) <= 23 and 1 < int(schedule_list[2]) <= 31 and 1 < int(schedule_list[3]) <= 12 and 0 < int(schedule_list[4]) <= 6):
             return False
     return True
 
@@ -104,7 +108,7 @@ def create(idcron, nameofcron, cron_schedule, custom_cron, date, server, path):
             custom_cron = concatenate_custom_cron()  # le custom_cron est donc demandé en input interactif
             log("Info", "Chosen custom cron schedule is :", custom_cron)
         else:  # Cron schedule is not custom
-            click.echo("L'argument custom_cron n'est pas au format '0-59:0-23:0-31:1-12:0-6'. Ne définissez pas l'option pour la définir interactivement.")
+            click.echo("L'argument custom_cron n'est pas au format '0-59:0-23:1-31:1-12:0-6'. Ne définissez pas l'option pour la définir interactivement.")
             log("Error", "Chosen custom cron schedule is :", custom_cron)
     else:
         custom_cron = translate_cron_schedule(cron_schedule)
@@ -155,7 +159,7 @@ def update(idcron, new_cron_schedule="", custom_cron="", new_date="", new_path="
             custom_cron = concatenate_custom_cron()  # le custom_cron est donc demandé en input interactif
             log("Info", "Chosen custom cron schedule is :", custom_cron)
         else:  # Cron schedule is not custom
-            click.echo("L'argument custom_cron n'est pas au format '0-59:0-23:0-31:1-12:0-6'. Ne définissez pas l'option pour la définir interactivement.")
+            click.echo("L'argument custom_cron n'est pas au format '0-59:0-23:1-31:1-12:0-6'. Ne définissez pas l'option pour la définir interactivement.")
             log("Error", "Chosen custom cron schedule is :", custom_cron)
     else:
         log("Info", "Cron schedule is :", new_cron_schedule)
