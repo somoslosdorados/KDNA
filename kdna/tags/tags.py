@@ -159,4 +159,4 @@ def get_tag_conf(path_to_conf_tag: str, connexion_instance: Connection):
     try:
         connexion_instance.get(path_to_conf_tag)
     except:
-        raise PermissionError("Erreur lors de l'accès au fichier de configuration des tags")
+        raise FileNotFoundError("Erreur lors de l'accès au fichier de configuration des tags")
