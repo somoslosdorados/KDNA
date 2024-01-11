@@ -1,6 +1,9 @@
 """Utils"""
 
 
+import os
+
+
 class Utils:
     """Fonctions utilitaires pour les fichiers de configuration"""
 
@@ -8,27 +11,27 @@ class Utils:
 
     @staticmethod
     def initialize_config_file():
-        """Initialize the config file"""
+        home_directory = os.path.expanduser("~")
+        kdna_directory = os.path.join(home_directory, ".kdna")
+        config_file_path = os.path.join(kdna_directory, Utils.config_file)
         config_content = "[server]\n[auto-backup]\n"
-
-        # On vérifie si le fichier existe déjà
-        try:
-            with open(config_content, "r", encoding="utf-8") as f:
-                content = f.read()
-                # Si le fichier existe déjà et qu'il est correctement initialisé, on ne fait rien
-                if "[server]" in content and "[auto-backup]" in content:
-                    return
-        # On récupère l'erreur si le fichier n'existe pas
-        except FileNotFoundError:
-            print("Le fichier n'existe pas encore, nous allons le créer...")
+        # TODO: mettre les print dans les logs
+        # Vérifier si le dossier kdna existe, sinon le créer
+        if not os.path.exists(kdna_directory):
+            os.makedirs(kdna_directory)
+            # print("Dossier créé:", kdna_directory)
+        else:
+            # print("Le dossier existe déjà:", kdna_directory)
             pass
 
-        # On initialise le contenu du fichier de configuration si le fichier n'existe pas ou
-        # s'il n'est pas correctement initialisé
-        with open(config_content, "w", encoding="utf-8") as f:
-            f.write(config_content)
-
-        print("Le fichier de configuration a été initialisé avec succès.")
+        # Vérifier si le fichier kdna.conf existe, sinon le créer
+        if not os.path.exists(config_file_path):
+            with open(config_file_path, "w") as config_file:
+                config_file.write(config_content)
+            # print("Fichier créé:", config_file_path)
+        else:
+            # print("Le fichier existe déjà:", config_file_path)
+            pass
 
     @staticmethod
     def read_all():
