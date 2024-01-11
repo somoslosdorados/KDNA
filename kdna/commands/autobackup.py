@@ -106,7 +106,7 @@ def create(idcron, nameofcron, tag, cron_schedule, custom_cron, date, server, pa
             click.echo("L'argument cron_schedule ne correspond pas à {daily, monthly, weekly, custom}")
     #logger.log_backup("Info", "Calling kdna.conf CRUD...")
     AutoBackupService().create_auto_backup(idcron, custom_cron, nameofcron, date, server, path)  # Écrit dans kdna.conf
-    #log_backup("Info", "Calling parser...")
+    #logger.log_backup("Info", "Calling parser...")
     parseConfig()  # Lance le parseur
 
 
@@ -117,8 +117,11 @@ def delete(idcron):
     """
     Commande pour supprimer une backup régulière
     """
+    #logger.log_backup("Info", "Calling kdna.conf CRUD...")
     AutoBackupService().delete_auto_backup(idcron)
-    #log_backup("Info", f"Deleted cron : \"{idcron}\"")
+    #logger.log_backup("Info", f"Deleted cron : \"{idcron}\"")
+    #logger.log_backup("Info", "Calling parser...")
+    parseConfig()  # Lance le parseur
 
 
 @autobackup.command()
@@ -130,15 +133,16 @@ def delete(idcron):
 @click.option('-d', '--date', nargs=1, required=False,
               help="entrer la nouvelle date de la première backup [ xxxx-xx-xx ]")
 @click.option('-p', '--path', nargs=1, required=False, help="entrer le chemin de la nouvelle backup")
-def update(idcron, tag, cron_schedule, custom_cron, date, path):
+def update(new_idcron, new_tag="", new_cron_schedule="", custom_cron="", new_date="", new_path=""):
     """
             Commande pour mettre à jour une backup régulière\n
             \t- <cron_schedule> : le schedule de l'auto-backup à mettre à jour ['daily', 'monthly', 'weekly', 'custom']\n
             \t- <custom_cron> : le schedule personnalisé à mettre à jour de l'auto-backup, obligatoire si l'option custom a été séléctionnée\n
             \tSi l'argument n'a pas été saisi, le programme rentre en mode interactif et attend des entrées de l'utilisateur pour compléter custom_cron.
     """
-    click.echo(f"Name of cron : \"{idcron}\"")
-    click.echo(f"Cron tag and schedule : \"{tag}\" \"{cron_schedule}\"")
+    #logger.log_backup("Info", f"Name of cron : \"{idcron}\")
+    #logger.log_backup("Info", f"Cron tag and schedule : \"{tag}\" \"{cron_schedule}\"")
+    AutoBackupService().update_auto_backup(new_idcron, new_cron_schedule, new_name="", new_date="", new_path="")
     if cron_schedule == 'custom':
         if not custom_cron:
             click.echo("L'argument custom_cron doit être suivi d'un schedule de cron personnalisé.")
