@@ -1,3 +1,11 @@
+"""
+Groupe de commandes server qui permet de gérer les serveurs (backups régulières)
+add: Commande pour ajouter un serveur au fichier de configuration
+delete : Commande pour supprimer un serveur du fichier de configuration
+update : Commande pour mettre à jour un serveur
+list : Commande pour lister les serveurs
+"""
+
 import click
 from kdna.server.server_service import ServerService
 from tabulate import tabulate
@@ -16,17 +24,7 @@ def server():
 @click.option('-c', '--credentials', required=True, help="entrer les credentials")
 @click.option('-p', '--port', required=True, help="entrer le port")
 def set(id, alias, credentials, port):
-    """Commande pour sélectionner un serveur.\n
-    :param id: -i l'id du serveur à séléctionner\n
-    :type id: str\n
-    :param alias: -a l'alias du serveur à sélectionner\n
-    :type alias: str\n
-    :param credentials: -c les credentials du serveur à sélectionner\n
-    :type credentials: str\n
-    :param port: -p le port du serveur à sélectionner\n
-    :type port: str\n
-    :return: un message de confirmation ou d'erreur\n
-    :rtype: str"""
+    """Commande pour sélectionner un serveur."""
     if alias:
         click.echo(f"Alias du serveur : \"{alias}\"")
     if id:
@@ -38,13 +36,7 @@ def set(id, alias, credentials, port):
 @click.option('-a', '--alias', required=False, help="entrer l'alias du serveur à supprimer")
 @click.option('-i', '--id', required=False, help="entrer l'id du serveur à supprimer")
 def delete(alias, id):
-    """Commande pour supprimer un serveur.\n
-    :param alias: -a l'alias du serveur à supprimer\n
-    :type alias: str\n
-    :param id: -i l'ID du serveur à supprimer\n
-    :type id: str\n
-    :return: un message de confirmation ou d'erreur\n
-    :rtype: str"""
+    """Commande pour supprimer un serveur."""
     if alias:
         click.echo(f"Suppression du serveur : \"{alias}\"")
     else:
@@ -63,16 +55,8 @@ def delete(alias, id):
 @click.option('-a', 'new_alias', default='', required=False, help="entrer le nouvel alias")
 def update(alias, credentials, port, new_alias):
     """Commande pour mettre à jour un serveur.\n
-    :param alias: l'alias du serveur à mettre à jour\n
-    :type alias: str\n
-    :param credentials: -c les nouvelles credentials\n
-    :type credentials: str\n
-    :param port: -p le nouveau port\n
-    :type port: str\n
-    :param new_alias: -a le nouvel alias\n
-    :type new_alias: str\n
-    :return: un message de confirmation ou d'erreur\n
-    :rtype: str"""
+    argument obligatoire :\n
+    \t- <alias>: l'alias du serveur à mettre à jour"""
     if alias:
         click.echo(f"Serveur mis à jour : \"{alias}\"")
 
