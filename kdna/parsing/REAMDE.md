@@ -6,6 +6,6 @@ Parsing a file means we are breaking down the data into its component parts, suc
 
 The file `parser.py` will automatically apply the parsing based on our criteria ( see 1. kdna.conf file format). 
 
-Once the parsing is done, the different data that we have recovered will be used to create the different objects, here `server` and `auto-backup`.
+Once the parsing is done, the different data that we have recovered will be used to create the different objects, here `servers` and `auto-backups`.
 
 We will then save the initialized objects in lists in order not to lose the data. 
