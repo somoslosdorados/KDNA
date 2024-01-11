@@ -128,7 +128,7 @@ def delete(idcron):
 @click.option('-d', '--date', nargs=1, required=False,
               help="entrer la nouvelle date de la première backup [ xxxx-xx-xx ]")
 @click.option('-p', '--path', nargs=1, required=False, help="entrer le chemin de la nouvelle backup")
-def update(idcron, tag, cron_schedule, custom_cron, date, path):(daily, monthly, weekly, custom)
+def update(idcron, tag, cron_schedule, custom_cron, date, path):
     """
             Commande pour mettre à jour une backup régulière\n
             \t- <cron_schedule> : le schedule de l'auto-backup à mettre à jour ['daily', 'monthly', 'weekly', 'custom']\n
