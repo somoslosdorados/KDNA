@@ -4,6 +4,7 @@
     authors: Dorian TETU, Hugo PONTHIEU"""
 
 import os
+import time
 from fabric import Connection
 
 
@@ -163,3 +164,33 @@ def get_tag_conf(path_to_conf_tag: str, connexion_instance: Connection):
         get_tag_conf(path_to_conf_tag, connexion_instance)
     except PermissionError:
         raise PermissionError("Erreur de permission: write sur tags.conf")
+
+def tag_exists(connection_instance: Connection, project: str, tag: str) -> bool:
+    """Check if the tag exists in the project"""
+    path_to_conf_tag = "./kdna/"+project+"/tags.conf"
+    try:
+        result = connection_instance.run(f"cat {path_to_conf_tag} | grep \"^{tag},\"", hide=True)
+    except PermissionError:
+        raise PermissionError("Erreur de permission: read sur tags.conf")
+    except FileNotFoundError:
+        raise FileNotFoundError("Erreur: le fichier tags.conf n'existe pas")
+    except:
+        return False
+    return True
+
+
+def generate_tag_name_(connection_instance: Connection, project: str, prefix: str) -> str:
+    ct = time.time()
+    new_tag = prefix + "_" + str(ct)
+    new_tag_decorated = new_tag
+
+    #check if the tag exists
+    if tag_exists(connection_instance, project, new_tag):
+        found = False
+        while not found:
+            #increment the tag, exemple: tag_1, tag_2, tag_3
+            ct += 1
+            new_tag_decorated = new_tag + "_" + ct
+            if not tag_exists(connection_instance, project, new_tag_decorated):
+                found = True
+    return new_tag_decorated
