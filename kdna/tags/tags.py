@@ -128,14 +128,22 @@ def get_file_name_by_tag(connection_instance: Connection,project: str,tag:str,ve
     # Si aucun fichier n'est trouvé une erreur apparait
     if (not found):
         raise FileNotFoundError(f"Aucun fichier n'a été associé au tag {tag} dans le project {project}")
-
+    
+def check_init_tag_file(connection_instance: Connection, project: str):
+    path_to_conf_tag = "./kdna/"+project+"/tags.conf"
+    try:
+        connection_instance.run(f"find {path_to_conf_tag}", hide=True)
+    except PermissionError:
+        raise PermissionError("Erreur de permission lors de l'acces à tags.conf")
+    except:
+        connection_instance.run(f"echo '[tags]' > {path_to_conf_tag}", hide=True)
 
 def get_tag_conf(path_to_conf_tag: str, connection_instance: Connection):
     try:
-        connexion_instance.get(path_to_conf_tag)
+        connection_instance.get(path_to_conf_tag)
     except FileNotFoundError:
-        connexion_instance.run(f"touch {path_to_conf_tag}")
-        get_tag_conf(path_to_conf_tag, connexion_instance)
+        connection_instance.run(f"touch {path_to_conf_tag}")
+        get_tag_conf(path_to_conf_tag, connection_instance)
     except PermissionError:
         raise PermissionError("Erreur de permission: write sur tags.conf")
 
@@ -168,3 +176,6 @@ def generate_tag_name_(connection_instance: Connection, project: str, prefix: st
             if not tag_exists(connection_instance, project, new_tag_decorated):
                 found = True
     return new_tag_decorated
+
+c = Connection("debian12.local")
+check_init_tag_file(c, "project")
