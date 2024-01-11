@@ -146,10 +146,21 @@ def update(idcron, tag, cron_schedule, custom_cron, date, path):
         else:
             click.echo(f"Custom cron : \"{custom_cron}\"")
 
+
+# Création de la commande stop
+@autobackup.command()
+@click.option('-n', '--nameofcron', nargs=1, required=True, help="entrer le nom du cron à stopper")
+def stop(nameofcron):
+    """
+    Commande pour stopper une backup régulière\n
+    """
+    click.echo(f"Stopped cron : \"{nameofcron}\"")
+
+
 # Création de la commande list
 @autobackup.command()
 def list():
-    """Commande pour lister les autobackups
-    :return: Liste des autobackups : class: `str`\n
-    :rtype: list"""
+    """
+    Commande pour lister les backups régulières\n
+    """
     click.echo(f"List of autobackups : \n...\n...")
