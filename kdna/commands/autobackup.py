@@ -105,8 +105,8 @@ def create(idcron, nameofcron, tag, cron_schedule, custom_cron, date, server, pa
             custom_cron = '0:0:::6'
         else:
             click.echo("L'argument cron_schedule ne correspond pas à {daily, monthly, weekly, custom}")
-    AutoBackupService().create_auto_backup(idcron, frequency, name, timestamp, id_server, path)
-    parseConfig()
+    AutoBackupService().create_auto_backup(idcron, custom_cron, nameofcron, date, server, path)  # Écrit dans kdna.conf
+    parseConfig()  # Lance le parseur
 
 
 # Création de la commande delete
@@ -128,7 +128,7 @@ def delete(idcron):
 @click.option('-d', '--date', nargs=1, required=False,
               help="entrer la nouvelle date de la première backup [ xxxx-xx-xx ]")
 @click.option('-p', '--path', nargs=1, required=False, help="entrer le chemin de la nouvelle backup")
-def update(idcron, tag, cron_schedule, custom_cron, date, path):
+def update(idcron, tag, cron_schedule, custom_cron, date, path):(daily, monthly, weekly, custom)
     """
             Commande pour mettre à jour une backup régulière\n
             \t- <cron_schedule> : le schedule de l'auto-backup à mettre à jour ['daily', 'monthly', 'weekly', 'custom']\n
