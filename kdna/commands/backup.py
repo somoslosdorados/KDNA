@@ -157,9 +157,13 @@ def list(project_name):
               help="entrer le nom du fichier à restaurer et le tag [ name:tag ]")
 @click.argument('path', nargs=1, required=True)
 def restore(nametag, path):
-    """Commande pour restaurer une backup.\n
-        Argument obligatoire :\n
-        \t- <path>: le chemin du fichier ou du dossier à restaurer\n"""
+    """Commande pour restaurer un fichier\n
+    :param nametag: -t [ name:tag ] le nom du fichier à restaurer
+    :type nametag: str\n
+    :param path: le path du fichier à restaurer\n
+    :type path: str\n
+    :return: un message de confirmation ou d'erreur\n
+    :rtype: str"""
     click.echo(f"Restauration du fichier : \"{nametag}\"")
 
     try:
