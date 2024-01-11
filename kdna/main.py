@@ -6,6 +6,8 @@ from kdna.commands.tag import tag
 from kdna.conf_utils.utils import Utils
 from kdna.commands.encrypt import encrypt
 from kdna.parsing.parser import parseConfig
+from kdna.commands.tag import tag
+from kdna.encrypt import encrypt
 from kdna.conf_utils.utils import Utils
 
 @click.group()
@@ -20,6 +22,7 @@ def main():
     kdna.add_command(tag)
     kdna.add_command(encrypt)
     parseConfig()
+    kdna.add_command(tag)
 
     """main: Fonction principale"""
     kdna()
