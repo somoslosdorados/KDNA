@@ -9,26 +9,42 @@ list : Commande pour lister les serveurs
 import click
 from kdna.server.server_service import ServerService
 from tabulate import tabulate
+from kdna.ssh.ssh_client import SSHClient
+from kdna.server.server import directory_exists
+
 
 @click.group()
 def server():
-    """Commande pour lancer le serveur"""
+    """Commande pour gérer les serveurs"""
 
 
 #! Création des commandes du groupe server
-# Création de la commande set
+# Création de la commande add
 @server.command()
 @click.option('-i', '--id', required=True, help="entrer l'id")
+@click.option('-ad', '--address', required=True, help="entrer l'adresse")
 @click.option('-a', '--alias', required=True, help="entrer l'alias")
 @click.option('-c', '--credentials', required=True, help="entrer les credentials")
 @click.option('-p', '--port', required=True, help="entrer le port")
-def set(id, alias, credentials, port):
-    """Commande pour sélectionner un serveur."""
-    if alias:
-        click.echo(f"Alias du serveur : \"{alias}\"")
-    if id:
-        click.echo(f"ID du serveur : \"{id}\"")
+def add(id, alias, address, credentials, port):
+    """Commande pour ajoute un serveur."""
+    try:
+        connection = SSHClient(address)
+        connection.sendCommand(f"ls > /dev/null")
 
+        try :
+            connection.sendCommand(f"test ! -d {credentials} &&mkdir {credentials}")
+        except Exception:
+            click.echo("Le dossier existe déjà")
+        serverService = ServerService()
+        serverService.create_server(id, address, credentials, port, alias)
+        if alias:
+            click.echo(f"Alias du serveur : \"{alias}\"")
+        if id:
+            click.echo(f"ID du serveur : \"{id}\"")
+    except Exception as e:
+        print("An errror occured nothing done")
+        return None
 
 # Création de la commande delete
 @server.command()
