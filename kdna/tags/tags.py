@@ -8,12 +8,13 @@ import time
 from fabric import Connection
 from kdna.connexion_ssh.sshConnect import SSHClient
 
-def backup_exist(connection_instance: Connection,project: str,file_to_tag: str):
+def backup_exist(connection_instance: Connection,project: str,file: str):
         # Vérification que la sauvegarde existe sur le serveur
     try:
-        connection_instance.run(f"find ./kdna/{project}/{file_to_tag}",hide=True)
-    except FileNotFoundError:
-        raise FileNotFoundError(f"Erreur: la sauvegarde {file_to_tag} n'existe pas")
+        connection_instance.run(f"ls ./kdna/{project}/{file}",hide=True)
+    except:
+        return False
+    return True
 
 def add_tags(connection_instance: Connection, project: str, new_tag: str, file_to_tag: str, verbose=False):
     """arguments: ssh instance / name of the project / name of the tags
@@ -26,6 +27,7 @@ def add_tags(connection_instance: Connection, project: str, new_tag: str, file_t
     path_to_conf_tag = "./kdna/"+project+"/tags.conf"
     #VERIFIER QUE LES TAGS NE SONT PAS EXISTANT !!!!!!!!!!!!!
     #Vérification que la backup existe sur le serveur
+    tag_exists(connection_instance,)
     backup_exist(connection_instance,project,file_to_tag)
 
     #Ecrire dans le fichier tag.conf le nouveau tag
