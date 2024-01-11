@@ -37,7 +37,7 @@ def add_tags(connexion_instance: Connection, project: str, new_tag: str, file_to
 
     # Vérification que la sauvegarde existe sur le serveur
     try:
-        connexion_instance.run(f"find ./kdna/{project}/{file_to_tag}")
+        c = connexion_instance.run(f"find ./kdna/{project}/{file_to_tag}")
     except:
         raise FileNotFoundError(f"Erreur: la sauvegarde {file_to_tag} n'existe pas")
 

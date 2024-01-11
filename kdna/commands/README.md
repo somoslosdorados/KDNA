@@ -23,20 +23,20 @@ kdna server <commande> [options] [arguments]
 
 ---
 
-### Sélection
+### Ajout
 
 #### Usage
 
-Sélectionner un serveur de backup
+Ajout d'un serveur de backup
 
 ```
-kdna server set -i <id_serveur> -a <alias_serveur> -c <credentials> -p <port_serveur>
+kdna server add -i <id_serveur> -a <alias_serveur> -c <credentials> -p <port_serveur>
 ```
 
 #### Exemple
 
 ```
-kdna server set -i 1 -a alias -c test_credentials -p 22
+kdna server add -i 1 -a alias -c test_credentials -p 22
 ```
 
 #### Options
@@ -50,7 +50,7 @@ kdna server set -i 1 -a alias -c test_credentials -p 22
 
 ---
 
-### Suppression de la sélection d'un serveur
+### Suppression d'un serveur de backup
 
 #### Usage
 
@@ -84,7 +84,7 @@ A noter : Une seule des deux options doit être impérativement choisie
 Mettre à jour un serveur
 
 ```
-kdna server update <alias_serveur> -c <new_credentials> -p <new_port_serveur> -a <new_alias>
+kdna server update <alias_serveur> -c <new_credentials> -p <new_port_serveur> -ad <new_address> -a <new_alias>
 ```
 
 #### Exemple
@@ -100,6 +100,7 @@ kdna server update alias_serveur -c new_credentials
 |         | String |      alias       |   Vrai   |
 | -c      | String | new_credentials  |   Faux   |
 | -p      | String | new_port_serveur |   Faux   |
+| -ad     | String |   new_address    |   Faux   |
 | -a      | String |    new_alias     |   Faux   |
 
 ---
@@ -111,8 +112,22 @@ kdna server update alias_serveur -c new_credentials
 Lister les serveurs de backup
 
 ```
-kdna server list
+kdna server list <project_name>
 ```
+
+### Exemple
+
+```
+kdna server list project_name
+```
+
+#### Options
+
+| Options |  Type  |   Description    | Required |
+|:--------|:------:|:----------------:|:--------:|
+|         | String |   project_name   |   Vrai   |
+
+---
 
 ---
 
@@ -137,27 +152,27 @@ kdna auto-backup <commande> [options] [arguments]
 Créer une backup régulière
 
 ```
-kdna auto-backup schedule -i <id_backup> -n <nom_backup> -t <tag> <cron_schedule> <custom_schedule> -d <date_debut> -s <id_server> -p <path_fichier/dossier_backup>
+kdna auto-backup create -i <id_backup> -n <nom_backup> -t <tag> <cron_schedule> <custom_schedule> -d <date_debut> -s <id_server> -p <path_fichier/dossier_backup>
 ``` 
 
 #### Exemple
 
 ```
-kdna auto-backup schedule -i 1 -n backup -t tag -d 2021-01-01 -s 1 -p /home
+kdna auto-backup create -i 1 -n backup -t tag -d 2021-01-01 -s 1 -p /home
 ```
 
 #### Options
 
-| Options |  Type  |   Description   |                     Required                     |
-|:--------|:------:|:---------------:|:------------------------------------------------:|
-| -i      | String |    id_backup    |                       Vrai                       |
-| -n      | String |   nom_backup    |                       Vrai                       |
-| -t      | String |       tag       |                       Vrai                       |
-|         | String |  cron_schedule  |                       Vrai                       |
-|         | String | custom_schedule | Faux, Vrai si le cron_schedule choisi est custom |
-| -d      | String |   date_debut    |                       Vrai                       |
-| -s      | String |    id_server    |                       Vrai                       |
-| -p      | String |   path_backup   |                       Vrai                       |
+| Options |  Type  |   Description   | Required |
+|:--------|:------:|:---------------:|:--------:|
+| -i      | String |    id_backup    |   Vrai   |
+| -n      | String |   nom_backup    |   Vrai   |
+| -t      | String |       tag       |   Vrai   |
+|         | String |  cron_schedule  |   Vrai   |
+|         | String | custom_schedule |   Faux   |
+| -d      | String |   date_debut    |   Vrai   |
+| -s      | String |    id_server    |   Vrai   |
+| -p      | String |   path_backup   |   Vrai   |
 
 ---
 
@@ -192,7 +207,7 @@ kdna auto-backup delete -i 1
 Mettre à jour une backup régulière
 
 ```
-kdna auto-backup update -i <id_backup> cron_schedule <<custom_schedule>> -d <date_debut> -p <path_backup>
+kdna auto-backup update -i <id_backup> -t <tag> <tag_updated> cron_schedule <<custom_schedule>> -d <date_debut> -p <path_backup>
 ```
 
 #### Exemple
@@ -203,13 +218,14 @@ kdna auto-backup update -i 1 -d 2021-01-01 -p /home
 
 #### Options
 
-| Options |  Type  |   Description   |                  Required                  |
-|:--------|:------:|:---------------:|:------------------------------------------:|
-| -i      | String |    id_backup    |                    Vrai                    |
-|         | String |  cron_schedule  |                    Faux                    |
-|         | String | custom_schedule | Faux (vrai si le cron_schedule est custom) |
-| -d      | String |   date_debut    |                    Faux                    |
-| -p      | String |   path_backup   |                    Faux                    |
+| Options |  Type  |     Description      | Required |
+|:--------|:------:|:--------------------:|:--------:|
+| -i      | String |      id_backup       |   Vrai   |
+| -t      | String | tag & tag mis à jour |   Faux   |
+|         | String |    cron_schedule     |   Faux   |
+|         | String |   custom_schedule    |   Faux   |
+| -d      | String |      date_debut      |   Faux   |
+| -p      | String |     path_backup      |   Faux   |
 
 A noter: on ne peut pas modifier l'id du serveur car la backup est liée à celui-ci
 
@@ -387,3 +403,59 @@ Désactiver l'encryption
 ```
 kdna encrypt deactivate
 ```
+
+---
+
+## Tag
+
+---
+
+### Description
+
+Gérer les tags
+
+```
+kdna tag <commande> [options]
+```
+
+---
+
+### Création
+
+Créer un tag 
+
+#### Usage
+
+```
+kdna tag add -t <tag> -p <project> -f <file>
+``` 
+
+#### Exemple
+
+```
+kdna tag -t tag -p un_projet -f a_file
+```
+
+#### Options
+
+| Options |  Type  | Description | Required |
+|:--------|:------:|:-----------:|:--------:|
+| -t      | String |     tag     |   Vrai   |
+| -p      | String |   project   |   Vrai   |
+| -f      | String |    file     |   Vrai   |
+
+
+---
+
+### List
+
+#### Usage
+
+Lister les tags
+
+```
+kdna tag list
+```
+
+
+---
