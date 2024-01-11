@@ -111,7 +111,9 @@ def list(project_name):
 
     try:
         backups = list_backups(instance.connection, project_name)
-        tags.read_tags(instance.connection, project_name)
+        for (key, value) in tags.get_tag_conf(instance.connection, project_name):
+            click.echo(f"Backup : {value} - Tag : {key}")
+
     except Exception as e:
         print("error2 = "+e.__str__())
 
