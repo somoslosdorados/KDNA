@@ -42,6 +42,14 @@ class Utils:
         return config_file_path
 
     @staticmethod
+    def get_config_file_path():
+        """Get the path of the config file"""
+        home_directory = os.path.expanduser("~")
+        kdna_directory = os.path.join(home_directory, ".kdna")
+        config_file_path = os.path.join(kdna_directory, Utils.config_file)
+        return config_file_path
+
+    @staticmethod
     def read_all():
         """Read all the configurations"""
         # Fonction pour afficher le fichier de configuration
