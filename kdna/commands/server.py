@@ -37,11 +37,12 @@ def set(id, alias, credentials, port):
 @click.option('-i', '--id', required=False, help="entrer l'id du serveur à supprimer")
 def delete(alias, id):
     """Commande pour supprimer un serveur."""
+    serverService = ServerService()
     if alias:
-        click.echo(f"Suppression du serveur : \"{alias}\"")
+        serverService.delete_server(alias, True)
     else:
         if id:
-            click.echo(f"Suppression du serveur : \"{id}\"")
+            serverService.delete_server(id)
         else:
             click.echo("L'argument alias ou id doit être renseigné.")
 
