@@ -54,13 +54,18 @@ def display(path):
 @click.argument('tag', nargs=1, required=True)
 def add(project, path, tag):
     """
-    Commande pour sauvegarder un fichier ou un dossier.\n
+    Commande pour créer une backup.\n
     Arguments obligatoires :\n
     \t- <project>: le nom du projet à sauvegarder\n
-    \t- <path>: le chemin du dossier ou fichier à sauvegarder\n
+    \t- <path>: le chemin du fichier ou du dossier à sauvegarder\n
     \t- <tag>: le tag de la sauvegarde
     """
-    click.echo(f"Creating backup \"{project}\":\n{tag}")
+
+    if len(listServers) == 0:
+        click.echo("Any server found in the configuration file.")
+        return
+    
+    click.echo(f"Creating backup in \"{project}\" with {tag} tag")
     uuid_backup = str(uuid.uuid4())
     name_of_temp_backup = encrypt.package(path, uuid_backup, kdna_path, listServers[0].encrypt)
     path_to_local_backup = os.path.join(kdna_path, name_of_temp_backup)
@@ -122,6 +127,11 @@ def list(project_name):
     """Commande pour lister les backups d'un projet\n
     Argument obligatoire :\n
     \t- <project_name>: le nom du projet pour lequel lister les backups"""
+
+    if len(listServers) == 0:
+        click.echo("Any server found in the configuration file.")
+        return
+
     try:
         instance = SSHClient(listServers[0].credentials).connect()
     except Exception as e:
