@@ -16,7 +16,7 @@ def backup_exist(connection_instance: Connection,project: str,file: str):
         return False
     return True
 
-def add_tags(connection_instance: Connection, project: str, new_tag: str, file_to_tag: str, verbose=False):
+def add_tags(connection_instance: Connection, project: str, new_tag: str, file_to_tag: str):
     """arguments: ssh instance / name of the project / name of the tags
     In the file tag.conf we must identify the tag [tags] to write tags at the end 
     of the file
@@ -27,7 +27,7 @@ def add_tags(connection_instance: Connection, project: str, new_tag: str, file_t
     path_to_conf_tag = "./kdna/"+project+"/tags.conf"
 
     #Vérification que la backup existe sur le serveur
-    if(tag_exists(connection_instance,project,file_to_tag)):
+    if(tag_exists(connection_instance,project,new_tag)):
         raise KeyError(f"{new_tag} existe déja")
     if(not backup_exist(connection_instance,project,file_to_tag)):
         raise FileNotFoundError(f"{file_to_tag} n'existe pas")
@@ -35,42 +35,24 @@ def add_tags(connection_instance: Connection, project: str, new_tag: str, file_t
 
     #Ecrire dans le fichier tag.conf le nouveau tag
     try:
-        connection_instance.run(f"echo {new_tagged_backup} >> {path_to_conf_tag}")
+        connection_instance.run(f"echo '{new_tagged_backup}' >> {path_to_conf_tag}",hide=True)
     except PermissionError:
         raise PermissionError("Erreur de permission: read sur tags.conf")
     except ConnectionError:
         raise ConnectionError("Erreur de connexion lors de l'ajout d'un tag")
 
 
-def delete_tags(connection_instance: Connection, project: str, oldTag: str, verbose=False):
+def delete_tags(connection_instance: Connection, project: str, oldTag: str, verbose=False)->bool:
     """arguments: oldTag """
 
     # Validateur
     removed = False
     path_to_conf_tag = "./kdna/"+project+"/tags.conf"
-
-    # Ouverture du fichier de conf en lecture
-    try:
-        with open('tags.conf', "r") as tag_file:
-            tag_lines = tag_file.readlines()
-    except:
-        raise PermissionError("Erreur de permission: read sur tags.conf")
-
-    # Ouverture du fichier conf en écriture
-    try:
-        with open('tags.conf', "w") as tag_file:
-            for line in tag_lines:
-                tag = line.split(", ")[0]
-                if (tag != oldTag):
-                    tag_file.write(line)
-                else:
-                    file = line.split(", ")[1].strip('\n')
-                    removed = True
-    except:
-        raise PermissionError("Erreur de permission: write sur tags.conf")
-
+    #vérification 
+    if(not tag_exists(connection_instance,project,oldTag)):
+        raise KeyError(f"{oldTag} n'existe pas")
+    # ajouter la logique ici
     if (not removed):
-        os.remove('tags.conf')
         raise FileNotFoundError(f"Aucun tag {oldTag} n'a été trouvé pour la supression")
     else:
         if (verbose):
@@ -78,9 +60,7 @@ def delete_tags(connection_instance: Connection, project: str, oldTag: str, verb
 
     try:
         connection_instance.put("tags.conf", path_to_conf_tag)
-        os.remove('tags.conf')
     except:
-        os.remove('tags.conf')
         raise PermissionError("La deletion de tag n'a pas été appliqué sur le server")
 
 
