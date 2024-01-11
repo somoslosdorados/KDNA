@@ -8,6 +8,9 @@ list : Commande pour lister les auto-backups
 """
 
 import click
+#from kdna.logger.logger import log
+from kdna.server.autobackup_service import AutoBackupService  # import du C(R)UD de kdna.conf
+from kdna.parsing.parser import parseConfig  # import du parseur
 
 
 # Creation du groupe de commande autobackup
@@ -17,7 +20,7 @@ def autobackup():
 
 
 def get_custom_cron(sched_part_type: str, cond_inf: int, cond_sup: int):
-    """Fonction qui récupère auprès de l'utilisateur un morceau de custom_cron.\n
+    """Fonction qui récupère auprès de l'utilisateur une partie de la date du schedule de custom_cron pour autobackup (e.g. renvoie la minute de backup, ou l'heure, ...).\n
     :param sched_part_type: le type de la partie manquante de custom_cron à demander à l'utilisateur (e.g. 'Hour')\n
     :sched_part_type sched_part_type: str\n
     :return: le custom_cron partiel\n
@@ -47,6 +50,19 @@ def concatenate_custom_cron():
     return custom_cron[:-1]  # Suppression du ':' final
 
 
+def validate_cron_schedule(custom_cron:str):
+    schedule_list = custom_cron.split(':')
+    if len(schedule_list) != 5:
+        return False
+    else:
+        for part in schedule_list:  # Check that every part is made only of numbers
+            if not (part.isnumeric() or part == ''):
+                return False
+        # Check that numbers are in the correct range
+        if not (0 < int(schedule_list[0]) <= 59 and 0 < int(schedule_list[1]) <= 23 and 0 < int(schedule_list[2]) <= 31 and 1 < int(schedule_list[3]) <= 12 and 0 < int(schedule_list[4]) <= 6):
+            return False
+    return True
+
 # Création des commandes du groupe autobackup
 
 # Création de la commande schedule
@@ -59,7 +75,7 @@ def concatenate_custom_cron():
 @click.option('-d', '--date', nargs=1, required=True, help="entrer la date de la première backup [ xxxx-xx-xx ]")
 @click.option('-s', '--server', nargs=1, required=True, help="entrer l'id du serveur")
 @click.option('-p', '--path', nargs=1, required=True, help="entrer le chemin de la backup")
-def schedule(idcron, nameofcron, tag, cron_schedule, custom_cron, date, server, path):
+def create(idcron, nameofcron, tag, cron_schedule, custom_cron, date, server, path):
     """
     Commande pour prévoir une auto-backup.\n
     Arguments obligatoires :\n
@@ -67,17 +83,30 @@ def schedule(idcron, nameofcron, tag, cron_schedule, custom_cron, date, server, 
         \t- <custom_cron>: le schedule personnalisé de l'auto-backup, obligatoire si l'option custom a été séléctionnée\n
         \tSi l'argument n'a pas été saisi, le programme rentre en mode interactif et attend des entrées de l'utilisateur pour compléter custom_cron.
     """
-    click.echo(f"Name of cron : \"{nameofcron}\"")
-    click.echo(f"Cron tag and schedule : \"{tag}\" \"{cron_schedule}\"")
+    #log("Creating a new auto-backup")
+    #log(f"Name of cron : \"{nameofcron}\"")
+    #log(f"Cron tag and schedule choice : \"{tag}\" \"{cron_schedule}\"")
     if cron_schedule == 'custom':
         if not custom_cron:  # custom_cron n'est pas donné en argument
             click.echo("L'argument custom_cron doit être suivi d'un schedule de cron personnalisé.")
             custom_cron = concatenate_custom_cron()  # le custom_cron est donc demandé en input interactif
-            print("Custom cron schedule is :", custom_cron)
-        else:
-            print("Custom cron schedule is :", custom_cron[0])
+            #log("Chosen custom cron schedule is :", custom_cron)
+        else:  # Cron schedule is not custom
+            click.echo("L'argument custom_cron n'est pas au format '0-59:0-23:0-31:1-12:0-6'. Ne définissez pas l'option pour la définir interactivement.")
+            #log("Chosen custom cron schedule is :", custom_cron)
+
     else:
-        print("Cron schedule is :", cron_schedule, "(not custom)")
+        #log("Cron schedule is :", cron_schedule)
+        if cron_schedule == 'daily':
+            custom_cron = '0:0:::'
+        elif cron_schedule == 'monthly':
+            custom_cron = '0:0:0::'
+        elif cron_schedule == 'weekly':  # Every saturday at 00:00
+            custom_cron = '0:0:::6'
+        else:
+            click.echo("L'argument cron_schedule ne correspond pas à {daily, monthly, weekly, custom}")
+    AutoBackupService().create_auto_backup(idcron, frequency, name, timestamp, id_server, path)
+    parseConfig()
 
 
 # Création de la commande delete
