@@ -67,6 +67,10 @@ delete_cron_job("python /path/to/your/updated_script.py")
 
 from kdna.server.autobackup_service import AutoBackupService
 
+# Fonctions CRUD pour le crond
+# The crond (cron daemon) reads the cron tables to configure the schedule
+
+
 # Creation du groupe de commande autobackup
 @click.group(name='auto-backup')
 def autobackup():
