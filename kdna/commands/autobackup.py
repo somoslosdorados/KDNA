@@ -181,7 +181,7 @@ def list():
     table = tabulate(
         [[data for data in autobackup.values()] for autobackup in autobackups],
         ['idcron', 'nameofcron', 'cron_schedule', 'custom_cron', 'date', 'server', 'path'],
-        idcron, custom_cron, nameofcron, date, server, path
+        #idcron, custom_cron, nameofcron, date, server, path
         tablefmt="grid"
     )
     click.echo(table)
