@@ -16,7 +16,7 @@ def backup_exist(connection_instance: Connection,project: str,file_to_tag: str) 
         return False
     return True
 
-def add_tags(connection_instance: Connection, project: str, new_tag: str, file_to_tag: str, verbose=False):
+def add_tags(connection_instance: Connection, project: str, new_tag: str, file_to_tag: str):
     """arguments: ssh instance / name of the project / name of the tags
     In the file tag.conf we must identify the tag [tags] to write tags at the end 
     of the file
@@ -130,9 +130,3 @@ def write_tag_conf(connection_instance: Connection, project: str, dictionnaire: 
         connection_instance.run(f"echo \"{texte_conf}\" > {path_to_conf_tag}", hide=True)
     except PermissionError:
         raise PermissionError("Erreur de permission: write sur tags.conf")
-
-c = Connection("test@192.168.122.226")
-#check_init_tag_file(c,"project")
-#add_tags(c,"project","tag","save.tar.gz")
-#update_tags(c,"project","tag","new","save.tar.gz")
-#delete_tags(c, "project", "new")
