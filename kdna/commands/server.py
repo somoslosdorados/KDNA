@@ -42,6 +42,7 @@ def add(id, alias, address, repo, port):
         return None
 
 
+
 # Création de la commande delete
 @server.command()
 @click.option('-a', '--alias', required=False, help="entrer l'alias du serveur à supprimer")
