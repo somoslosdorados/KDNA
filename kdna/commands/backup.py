@@ -99,11 +99,16 @@ def delete(pathtag):
 @backup.command()
 @click.argument('project_name', nargs=1, required=True)
 def list(project_name):
-    """Commande pour lister les backups d'un projet\n
-    Argument obligatoire :\n
-    \t- <project_name>: le nom du projet pour lequel lister les backups"""
+    """Commande pour lister les fichiers sauvegardés
+    :return: Liste des fichiers sauvegardés : class: `str`\n
+    :rtype: list"""
+    
+    if len(listServers) == 0:
+        click.echo("Any server found in the configuration file.")
+        return
+
     try:
-        instance = SSHClient(listServers[0].credentials).connect()
+        instance = SSHClient(listServers[0].credentials, "/home/baptiste/.ssh/id_rsa_test").connect()
     except Exception as e:
         print("error = "+e.__str__())
 
