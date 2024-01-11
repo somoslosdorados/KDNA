@@ -13,7 +13,13 @@ poetry run python KDNA/__init__.py
 ### Run the tests
 
 ```bash
-poetry run pytest
+poetry run pytest tests
+```
+
+OU 
+
+```bash
+make test
 ```
 
 ### Run the pipeline
