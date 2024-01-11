@@ -1,4 +1,4 @@
-.PHONY: install run
+.PHONY: install run test clear
 
 run:
 	poetry run python kdna/main.py
