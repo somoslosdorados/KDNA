@@ -72,8 +72,3 @@ def test_update_tags():
             found = True
     assert found
 
-@pytest.mark.skip(reason="Not implemented yet")
-def test_read_tags():
-    tags.read_tags(connexion_instance, "project")
-    assert True
-    
