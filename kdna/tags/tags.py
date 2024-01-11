@@ -91,7 +91,7 @@ def delete_tags(connexion_instance: Connection, project: str, oldTag: str, verbo
 
     if (not removed):
         os.remove('tags.conf')
-        raise FileNotFoundError(f"Aucun tag {oldTag} n'a été trouvé pour la supression")
+        raise FileNotFoundError(f"Aucun tag {oldTag} n'a été trouvé pour la suppression")
     else:
         if (verbose):
             print(f"Le tag {oldTag} associé au fichier {file} a été supprimé")
@@ -158,5 +158,8 @@ def get_file_name_by_tag(connexion_instance: Connection,project: str,tag:str,ver
 def get_tag_conf(path_to_conf_tag: str, connexion_instance: Connection):
     try:
         connexion_instance.get(path_to_conf_tag)
-    except:
-        raise FileNotFoundError("Erreur lors de l'accès au fichier de configuration des tags")
+    except FileNotFoundError:
+        connexion_instance.run(f"touch {path_to_conf_tag}")
+        get_tag_conf(path_to_conf_tag, connexion_instance)
+    except PermissionError:
+        raise PermissionError("Erreur de permission: write sur tags.conf")
