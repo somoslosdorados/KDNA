@@ -1,5 +1,4 @@
 import click
-from kdna.conf_utils.server import Server
 
 
 @click.group()
@@ -7,7 +6,7 @@ def server():
     """Commande pour lancer le serveur"""
 
 
-#! Création des commandes du groupe server
+# Création des commandes du groupe server
 # Création de la commande set
 @server.command()
 @click.option('-i', '--id', required=True, help="entrer l'id")
@@ -83,7 +82,7 @@ def list():
     """Commande pour lister les serveurs\n
     :return: Liste des serveurs : class: `str`\n
     :rtype: list"""
-    click.echo(f"List of server : \n...\n...")
+    click.echo("List of server : \n...\n...")
 
 
 @server.command()
