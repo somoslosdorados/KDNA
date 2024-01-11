@@ -19,10 +19,15 @@ def encrypt():
 def keygen(path):
     """Command to generate encryption key
     :param path: option to specify the path of the key"""
+    print(path)
     if path == "":
         output_path = generate_key()
     else:
-        output_path = generate_key(path)
+        try:
+            output_path = generate_key(path)
+        except Exception:
+            click.echo("Path must lead to a file not a directory")
+            return
     click.echo(f"Key generated at {output_path}")
 
 
