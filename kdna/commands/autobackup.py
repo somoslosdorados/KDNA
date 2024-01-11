@@ -159,6 +159,44 @@ def translate_cron_schedule(cron_schedule):
         return False
 
 
+def validate_cron_schedule(custom_cron:str):
+    schedule_list = custom_cron.split(':')
+    if len(schedule_list) != 5:
+        return False
+    else:
+        for part in schedule_list:  # Check that every part is made only of numbers
+            if not (part.isnumeric() or part == ''):
+                return False
+        # Check that numbers are in the correct range
+        if not (0 < int(schedule_list[0]) <= 59 and 0 < int(schedule_list[1]) <= 23 and 1 < int(schedule_list[2]) <= 31 and 1 < int(schedule_list[3]) <= 12 and 0 < int(schedule_list[4]) <= 6):
+            return False
+    return True
+
+
+def translate_cron_schedule(cron_schedule):
+    if cron_schedule == 'daily':
+        return '0:0:::'
+    elif cron_schedule == 'monthly':
+        return '0:0:0::'
+    elif cron_schedule == 'weekly':  # Every saturday at 00:00
+        return '0:0:::6'
+    else:
+        return False
+
+
+def validate_cron_schedule(custom_cron:str):
+    schedule_list = custom_cron.split(':')
+    if len(schedule_list) != 5:
+        return False
+    else:
+        for part in schedule_list:  # Check that every part is made only of numbers
+            if not (part.isnumeric() or part == ''):
+                return False
+        # Check that numbers are in the correct range
+        if not (0 < int(schedule_list[0]) <= 59 and 0 < int(schedule_list[1]) <= 23 and 0 < int(schedule_list[2]) <= 31 and 1 < int(schedule_list[3]) <= 12 and 0 < int(schedule_list[4]) <= 6):
+            return False
+    return True
+
 # Création des commandes du groupe autobackup
 
 # Création de la commande schedule
