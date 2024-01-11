@@ -25,10 +25,13 @@ def add_tags(connection_instance: Connection, project: str, new_tag: str, file_t
 
     new_tagged_backup = new_tag+", "+file_to_tag+"\n"
     path_to_conf_tag = "./kdna/"+project+"/tags.conf"
-    #VERIFIER QUE LES TAGS NE SONT PAS EXISTANT !!!!!!!!!!!!!
+
     #Vérification que la backup existe sur le serveur
-    tag_exists(connection_instance,)
-    backup_exist(connection_instance,project,file_to_tag)
+    if(tag_exists(connection_instance,project,file_to_tag)):
+        raise KeyError(f"{new_tag} existe déja")
+    if(not backup_exist(connection_instance,project,file_to_tag)):
+        raise FileNotFoundError(f"{file_to_tag} n'existe pas")
+
 
     #Ecrire dans le fichier tag.conf le nouveau tag
     try:
