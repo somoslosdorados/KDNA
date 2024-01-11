@@ -1,5 +1,7 @@
 import click
 from kdna.conf_utils.server import Server
+
+
 @click.group()
 def server():
     """Commande pour lancer le serveur"""
@@ -51,6 +53,8 @@ def delete(alias, id):
             click.echo("L'argument alias ou id doit être renseigné.")
 
 # Création de la commande update
+
+
 @server.command()
 @click.argument('alias', required=True)
 @click.option('-c', 'credentials', default='', required=False, help="entrer les nouvelles credentials")
@@ -72,9 +76,16 @@ def update(alias, credentials, port, new_alias):
         click.echo(f"Serveur mis à jour : \"{alias}\"")
 
 # Création de la commande list
+
+
 @server.command()
 def list():
     """Commande pour lister les serveurs\n
     :return: Liste des serveurs : class: `str`\n
     :rtype: list"""
     click.echo(f"List of server : \n...\n...")
+
+
+@server.command()
+def status():
+    click.echo("Server Status")
