@@ -53,18 +53,19 @@ def display(path):
 @click.argument('path', nargs=1, required=True)
 @click.argument('tag', nargs=1, required=True)
 def add(project, path, tag):
-    """Commande pour sauvegarder un fichier\n
-    :param name: le nom du fichier à sauvegarder\n
-    :type name: str\n
-    :param path: le path du fichier à sauvegarder\n
-    :type path: str\n
-    :return: un message de confirmation ou d'erreur\n
-    :rtype: str"""
-    click.echo(f"Creating backup in \"{project}\" with {tag} tag")
+    """
+    Commande pour créer une backup.\n
+    Arguments obligatoires :\n
+    \t- <project>: le nom du projet à sauvegarder\n
+    \t- <path>: le chemin du fichier ou du dossier à sauvegarder\n
+    \t- <tag>: le tag de la sauvegarde
+    """
 
     if len(listServers) == 0:
         click.echo("Any server found in the configuration file.")
         return
+    
+    click.echo(f"Creating backup in \"{project}\" with {tag} tag")
     uuid_backup = str(uuid.uuid4())
     name_of_temp_backup = encrypt.package(path, uuid_backup, kdna_path, listServers[0].encrypt)
     path_to_local_backup = os.path.join(kdna_path, name_of_temp_backup)
@@ -121,9 +122,9 @@ def delete(pathtag):
 @backup.command()
 @click.argument('project_name', nargs=1, required=True)
 def list(project_name):
-    """Commande pour lister les fichiers sauvegardés
-    :return: Liste des fichiers sauvegardés : class: `str`\n
-    :rtype: list"""
+    """Commande pour lister les backups d'un projet\n
+    Argument obligatoire :\n
+    \t- <project_name>: le nom du projet pour lequel lister les backups"""
 
     if len(listServers) == 0:
         click.echo("Any server found in the configuration file.")
