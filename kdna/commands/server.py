@@ -50,14 +50,19 @@ def delete(alias, id):
 @click.argument('alias', required=True)
 @click.option('-c', 'credentials', default='', required=False, help="entrer les nouvelles credentials")
 @click.option('-p', 'port', default='', required=False, help="entrer le nouveau port")
+@click.option('-ad', 'new_address', default='', required=False, help="entrer la nouvelle adresse")
 @click.option('-a', 'new_alias', default='', required=False, help="entrer le nouvel alias")
-def update(alias, credentials, port, new_alias):
-    """Commande pour mettre à jour un serveur.\n
+def update(alias, credentials, port, new_address, new_alias):
+    """
+    Commande pour mettre à jour un serveur.\n
     argument obligatoire :\n
-    \t- <alias>: l'alias du serveur à mettre à jour"""
-    if alias:
-        click.echo(f"Serveur mis à jour : \"{alias}\"")
-
+    \t- <alias>: l'alias du serveur à mettre à jour
+    """
+    serverService = ServerService()
+    if alias and new_address or alias and credentials or alias and port or alias and new_alias:
+        serverService.update_server(alias, credentials, port, new_address, new_alias)
+    else:
+        click.echo("Les arguments à mettre à jour doivent être renseignés.")
 # Création de la commande list
 @server.command()
 def list():
