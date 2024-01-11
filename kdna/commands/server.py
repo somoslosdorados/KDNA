@@ -30,10 +30,10 @@ def add(id, alias, address, credentials, port):
     """Commande pour ajoute un serveur."""
     try:
         connection = SSHClient(address)
-        connection.sendCommand(f"ls > /dev/null")
+        connection.sendCommand("ls > /dev/null")
 
-        try :
-            connection.sendCommand(f"test ! -d {credentials} &&mkdir {credentials}")
+        try:
+            connection.sendCommand(f"test ! -d {credentials} && mkdir {credentials}")
         except Exception:
             click.echo("Le dossier existe déjà")
         serverService = ServerService()
@@ -43,6 +43,7 @@ def add(id, alias, address, credentials, port):
         if id:
             click.echo(f"ID du serveur : \"{id}\"")
     except Exception as e:
+        print(e)
         print("An errror occured nothing done")
         return None
 
