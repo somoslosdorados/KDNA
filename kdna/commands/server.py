@@ -8,7 +8,7 @@ list : Commande pour lister les serveurs
 
 import click
 from kdna.server.server_service import ServerService
-from tabulate import tabulate
+#from tabulate import tabulate
 
 @click.group()
 def server():
