@@ -14,7 +14,7 @@ def add_tags(connexion_instance: Connection, project: str, new_tag: str, file_to
     
     authors: Dorian TETU, Hugo PONTHIEU"""
 
-    new_taggedBackup = new_tag+", "+file_to_tag+"\n"
+    new_tagged_backup = new_tag+", "+file_to_tag+"\n"
     path_to_conf_tag = "./kdna/"+project+"/tags.conf"
 
     # Récupération en local du fichier de config sur les tags
@@ -26,35 +26,33 @@ def add_tags(connexion_instance: Connection, project: str, new_tag: str, file_to
             tag_lines = tag_file.readlines()
         tag_lines.pop(0)
     except:
-        raise Exception("Erreur de permission: read sur tags.conf")
+        raise PermissionError("Erreur de permission: read sur tags.conf")
 
     # Vérification que le tag n'est pas déjà utilisé
     for line in tag_lines:
         tag_file_couple = line.split(", ")
         if (new_tag == tag_file_couple[0]):
             os.remove('tags.conf')
-            raise Exception(
-                f"Le tag {tag_file_couple[0]} est déjà associé la backup {tag_file_couple[1]}")
+            raise FileExistsError(f"Le tag {tag_file_couple[0]} est déjà associé la backup {tag_file_couple[1]}")
 
     # Vérification que la sauvegarde existe sur le serveur
     try:
-        if connexion_instance.run(f"find ./kdna/{project}/{file_to_tag}"):
-            pass
+        connexion_instance.run(f"find ./kdna/{project}/{file_to_tag}")
     except:
-        raise Exception(f"Erreur: la sauvegarde {file_to_tag} n'existe pas")
+        raise FileNotFoundError(f"Erreur: la sauvegarde {file_to_tag} n'existe pas")
 
     # Ouverture du fichier de conf en append
     try:
         with open('tags.conf', "a") as tag_file:
-            tag_file.write(new_taggedBackup)
+            tag_file.write(new_tagged_backup)
     except:
-        raise Exception(f"Erreur de permission: append sur tags.conf")
+        raise PermissionError("Erreur de permission: append sur tags.conf")
 
     # Renvoie du fichier sur le serveur
     try:
         connexion_instance.put("tags.conf", path_to_conf_tag)
     except:
-        raise Exception("Erreur lors du renvoie du fichier sur le serveur")
+        raise PermissionError("Erreur lors du renvoie du fichier sur le serveur")
 
     # Print+clean du fichier local
     if (verbose):
@@ -76,7 +74,7 @@ def delete_tags(connexion_instance: Connection, project: str, oldTag: str, verbo
         with open('tags.conf', "r") as tag_file:
             tag_lines = tag_file.readlines()
     except:
-        raise Exception("Erreur de permission: read sur tags.conf")
+        raise PermissionError("Erreur de permission: read sur tags.conf")
 
     # Ouverture du fichier conf en écriture
     try:
@@ -89,12 +87,11 @@ def delete_tags(connexion_instance: Connection, project: str, oldTag: str, verbo
                     file = line.split(", ")[1].strip('\n')
                     removed = True
     except:
-        raise Exception("Erreur de permission: write sur tags.conf")
+        raise PermissionError("Erreur de permission: write sur tags.conf")
 
     if (not removed):
         os.remove('tags.conf')
-        raise Exception(
-            f"Aucun tag {oldTag} n'a été trouvé pour la supression")
+        raise FileNotFoundError(f"Aucun tag {oldTag} n'a été trouvé pour la supression")
     else:
         if (verbose):
             print(f"Le tag {oldTag} associé au fichier {file} a été supprimé")
@@ -104,22 +101,19 @@ def delete_tags(connexion_instance: Connection, project: str, oldTag: str, verbo
         os.remove('tags.conf')
     except:
         os.remove('tags.conf')
-        raise Exception(
-            "La deletion de tag n'a pas été appliqué sur le server")
+        raise PermissionError("La deletion de tag n'a pas été appliqué sur le server")
 
 
 def update_tags(connexion_instance: Connection, project: str, oldTag: str, new_tag: str, file_to_tag: str, verbose=False):
     try:
         delete_tags(connexion_instance, project, oldTag)
     except:
-        raise Exception(
-            "Une erreur est survenue lors de la tentative de suppression du tag")
+        raise PermissionError("Une erreur est survenue lors de la tentative de suppression du tag")
 
     try:
         add_tags(connexion_instance, project, new_tag, file_to_tag)
     except:
-        raise Exception(
-            "Une erreur est survenue lors de la tentative de création du tag")
+        raise PermissionError("Une erreur est survenue lors de la tentative de création du tag")
     if (verbose):
         print(f"Le tag {oldTag} a été modifié en {new_tag}")
 
@@ -158,13 +152,11 @@ def get_file_name_by_tag(connexion_instance: Connection,project: str,tag:str,ver
                 return tag_file_couple[1]
     # Si aucun fichier n'est trouvé une erreur apparait
     if (not found):
-        raise Exception(
-            f"Aucun fichier n'a été associé au tag {tag} dans le project {project}")
+        raise FileNotFoundError(f"Aucun fichier n'a été associé au tag {tag} dans le project {project}")
 
 
 def get_tag_conf(path_to_conf_tag: str, connexion_instance: Connection):
     try:
         connexion_instance.get(path_to_conf_tag)
     except:
-        raise Exception(
-            "Erreur lors de l'accès au fichier de configuration des tags")
+        raise PermissionError("Erreur lors de l'accès au fichier de configuration des tags")
