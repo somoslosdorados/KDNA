@@ -39,10 +39,11 @@ def display(path):
 def add(project, path, tag):
     click.echo(f"Creating backup \"{project}\":\n{tag}")
     uuid_backup = str(uuid.uuid4())
-    name_of_temp_backup = encrypt.package(path, uuid_backup, kdna_path, True)
+    name_of_temp_backup = encrypt.package(path, uuid_backup, kdna_path, False)
     path_to_local_backup = os.path.join(kdna_path, name_of_temp_backup)
     path_to_remote_backup = os.path.join("kdna", "project")
     serversCredential = listServers[0].credentials
+    print(serversCredential)
     try:
         instance = SSHClient(serversCredential).connect()
     except Exception as e:
