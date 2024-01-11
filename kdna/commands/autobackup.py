@@ -230,6 +230,7 @@ def create(idcron, nameofcron, project, tag, cron_schedule, custom_cron, date, s
             click.echo("L'argument custom_cron n'est pas au format '0-59:0-23:1-31:1-12:0-6'. Ne définissez pas l'option pour la définir interactivement.")
             log("Error", "Chosen custom cron schedule is :", custom_cron)
     else:
+        log("Info", "Cron schedule is :", cron_schedule)
         custom_cron = translate_cron_schedule(cron_schedule)
         log("Info", "Cron schedule is : \"{cron_schedule}\"")
         if custom_cron == False:  # translate_cron_schedule() error
