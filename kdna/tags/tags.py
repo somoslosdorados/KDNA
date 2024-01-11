@@ -33,6 +33,8 @@ def add_tags(connection_instance: Connection, project: str, new_tag: str, file_t
         connection_instance.run(f"echo {new_tagged_backup} >> {path_to_conf_tag}")
     except PermissionError:
         raise PermissionError("Erreur de permission: read sur tags.conf")
+    except ConnectionError:
+        raise ConnectionError("Erreur de connexion lors de l'ajout d'un tag")
 
 
 def delete_tags(connection_instance: Connection, project: str, oldTag: str, verbose=False):
@@ -41,8 +43,6 @@ def delete_tags(connection_instance: Connection, project: str, oldTag: str, verb
     # Validateur
     removed = False
     path_to_conf_tag = "./kdna/"+project+"/tags.conf"
-    # Récupération en local du fichier de config sur les tags
-    get_tag_conf(path_to_conf_tag, connection_instance)
 
     # Ouverture du fichier de conf en lecture
     try:
