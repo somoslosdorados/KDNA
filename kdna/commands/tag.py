@@ -12,8 +12,6 @@ from kdna.ssh.ssh_client import SSHClient
 from kdna.tags import tags
 from kdna.parsing import parser
 
-
-
 @click.group()
 def tag():
     """Commande pour gérer les tags"""
