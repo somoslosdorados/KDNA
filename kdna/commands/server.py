@@ -12,7 +12,6 @@ from tabulate import tabulate
 from kdna.ssh.ssh_client import SSHClient
 from kdna.server.server import directory_exists
 
-
 @click.group()
 def server():
     """Commande pour gérer les serveurs"""
