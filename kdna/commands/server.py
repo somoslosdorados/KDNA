@@ -97,11 +97,12 @@ def list():
     )
     click.echo(table)
 
-
 @server.command()
 def status():
-    click.echo("Server Status")
-    
+    serverService = ServerService()
+    server = serverService.find_by_alias('test')
+    print(server.get_status())
+
 @server.command()
 def import_s():
     """Import server from ~/.ssh/config file"""

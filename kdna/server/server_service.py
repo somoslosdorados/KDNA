@@ -2,8 +2,15 @@
 import os
 import paramiko
 from kdna.conf_utils.utils import Utils
-import os
 
+def array_to_dic(array):
+  return {
+    'id': array[0].strip(),
+    'host': array[1].strip(),
+    'path': array[2].strip(),
+    'port': array[3].strip(),
+    'alias': array[4].strip()
+  }
 
 def create_dic_server(data):
     li = []
@@ -42,23 +49,26 @@ class ServerService:
         return li
 
     def find_by_alias(self, alias):
-        lines = Utils.read_file_lines(Utils.get_config_file_path())
-        index_servers = Utils.find_servers_index(lines)
-        index_auto_backups = Utils.find_auto_backups_index(lines)
+      lines = Utils.read_file_lines(Utils.get_config_file_path())
+      index_servers = Utils.find_servers_index(lines)
+      index_auto_backups = Utils.find_auto_backups_index(lines)
 
-        existing_aliases = self.extract_existing_aliases(
-            lines, index_servers, index_auto_backups
-        )
-        if alias in existing_aliases:
-            line_to_print = self.find_line_to_delete(
-                lines, index_servers, alias, by_alias=True
-            )
-            print(lines[line_to_print].strip())
-        else:
-            print(
-                f'Erreur : Aucun serveur trouvé avec l\'alias "{alias}" dans la '
-                f"section [server]."
-            )
+      existing_aliases = self.extract_existing_aliases(
+        lines,
+        index_servers,
+        index_auto_backups
+      )
+      if alias in existing_aliases:
+        line_to_print = self.find_line_to_delete(lines, index_servers, alias, by_alias=True)
+        #print(lines[line_to_print].strip())
+        data_server = array_to_dic(lines[line_to_print].split(','))
+        server = Server(data_server['host'])
+        return server
+
+      else:
+        print(f"Erreur : Aucun serveur trouvé avec l'alias \"{alias}\" dans la "
+              f"section [server].")
+
 
     def create_server(self, id, address, credentials, port,  encrypt, alias):
         # On ouvre le fichier en mode lecture
@@ -97,7 +107,7 @@ class ServerService:
             if encrypt != True and encrypt != False:
                 print("Erreur : La valeur du paramètre encrypt doit être True ou False.")
                 return
-            
+
             # Construction de la nouvelle ligne
             new_line = f"{id}, {address}, {credentials}, {port}, {encrypt}, {alias}\n"
 
