@@ -6,12 +6,11 @@ from kdna.commands.tag import tag
 from kdna.conf_utils.utils import Utils
 from kdna.commands.encrypt import encrypt
 from kdna.parsing.parser import parseConfig
-
+from kdna.conf_utils.utils import Utils
 
 @click.group()
 def kdna():
     """"""
-
 
 def main():
     Utils.initialize_config_file()
