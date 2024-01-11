@@ -26,11 +26,11 @@ class AutoBackupService:
     # On ouvre le fichier en mode lecture
     lines = Utils.read_file_lines(Utils.config_file)
 
-    # On cherche les indices de [servers] et [auto-backups]
+    # On cherche les indices de [server] et [auto-backup]
     index_servers = Utils.find_servers_index(lines)
     index_auto_backups = Utils.find_auto_backups_index(lines)
 
-    # Vérification de l'existence de l'id_server dans la section [servers]
+    # Vérification de l'existence de l'id_server dans la section [server]
     if not self.check_id_server(lines, index_servers, index_auto_backups, id_server):
         print(
             f"Erreur : L'id du serveur \"{id_server}\" de votre auto backup n'existe "
@@ -48,7 +48,7 @@ class AutoBackupService:
     if str(id) in existing_backups:
         print(
             f"Erreur : L'id de l'auto backup \"{id}\" existe déjà dans la "
-            f"section [auto-backups].")
+            f"section [auto-backup].")
         return
 
     # Ajout de la ligne
@@ -66,11 +66,11 @@ class AutoBackupService:
     # On ouvre le fichier en mode lecture
     lines = Utils.read_file_lines(Utils.config_file)
 
-    # On cherche les indices de [servers] et [auto-backups]
+    # On cherche les indices de [server] et [auto-backup]
     index_auto_backups = Utils.find_auto_backups_index(lines)
     if index_auto_backups is None:
         print(
-            "Erreur : Section [auto-backups] non trouvé dans le fichier.")
+            "Erreur : Section [auto-backup] non trouvé dans le fichier.")
         return
 
     # On cherche la ligne à supprimer
@@ -94,10 +94,10 @@ class AutoBackupService:
     # On ouvre le fichier en mode lecture
     lines = Utils.read_file_lines(Utils.config_file)
 
-    # On cherche les indices de [auto-backups]
+    # On cherche les indices de [auto-backup]
     index_auto_backups = Utils.find_auto_backups_index(lines)
 
-    # On regarde si la section [auto-backups] existe
+    # On regarde si la section [auto-backup] existe
     if index_auto_backups is not None:
         # On cherche la ligne à mettre à jour
         line_to_update = self.find_line_to_update(
@@ -134,15 +134,15 @@ class AutoBackupService:
 
             print(
                 f"L'auto backup avec l'id \"{id}\" a été mis à jour dans la "
-                f"section [auto-backups].")
+                f"section [auto-backup].")
         # Sinon, afficher un message d'erreur
         else:
             print(
                 f"Erreur : Aucun élément trouvé avec l'id \"{id}\" dans la section "
-                f"[auto-backups].")
+                f"[auto-backup].")
     else:
         print(
-            "Erreur : Section [auto-backups] non trouvée dans le fichier.")
+            "Erreur : Section [auto-backup] non trouvée dans le fichier.")
 
   @staticmethod
   def find_line_to_update(lines, index_auto_backups, id_to_update):
@@ -162,7 +162,7 @@ class AutoBackupService:
         
   def check_id_server(self, lines, index_servers, index_auto_backups, id_server):
     """Check the id of a specific server"""
-    # Fonction pour vérifier l'existence de l'id_server dans la section [servers]
+    # Fonction pour vérifier l'existence de l'id_server dans la section [server]
     existing_servers = \
         [line.split(',')[0].strip() for line in lines[index_servers + 1:index_auto_backups] if
           len(line.split(',')) >= 4 and line.strip()]
@@ -171,7 +171,7 @@ class AutoBackupService:
   @staticmethod
   def extract_existing_backups(lines, index_auto_backups):
     """Extract an existing backup"""
-    # Fonction pour extraire les id_backup dans la section [auto-backups]
+    # Fonction pour extraire les id_backup dans la section [auto-backup]
     return [line.split(',')[0].strip() for line in lines[index_auto_backups + 1:] if
             len(line.split(',')) >= 6 and line.strip()]
     

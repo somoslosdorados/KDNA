@@ -15,8 +15,8 @@ Utils.initialize_config_file()
 Un fichier est créé :
 
 ```
-[servers]
-[auto-backups]
+[server]
+[auto-backup]
 ```
 
 Vous pouvez désormais faire vos commandes dans le fichier `main.py`
