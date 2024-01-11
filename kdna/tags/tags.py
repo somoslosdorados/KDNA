@@ -177,5 +177,31 @@ def generate_tag_name_(connection_instance: Connection, project: str, prefix: st
                 found = True
     return new_tag_decorated
 
+def get_tag_conf(connection_instance: Connection, project: str):
+    """Get the tag.conf file and return a dictionnary with the tags, exemple: {"tag1": "file1", "tag2": "file2"}"""
+    path_to_conf_tag = "./kdna/"+project+"/tags.conf"
+    check_init_tag_file(connection_instance, project)
+    result = connection_instance.run(f"cat {path_to_conf_tag}", hide=True)
+    resultset = result.stdout.splitlines()
+    resultset.pop(0)
+    dictionnaire = {}
+    for line in resultset:
+        if line != "":
+            dictionnaire[line.split(", ")[0]] = line.split(", ")[1]
+    return dictionnaire
+
+def write_tag_conf(connection_instance: Connection, project: str, dictionnaire: dict):
+    """Write the dictionnary in the tag.conf file"""
+    path_to_conf_tag = "./kdna/"+project+"/tags.conf"
+    texte_conf = "[tags]\n"
+    for key in dictionnaire:
+        texte_conf += key + ", " + dictionnaire[key] + "\n"
+    try:
+        connection_instance.run(f"echo \"{texte_conf}\" > {path_to_conf_tag}", hide=True)
+    except PermissionError:
+        raise PermissionError("Erreur de permission: write sur tags.conf")
+
 c = Connection("debian12.local")
-check_init_tag_file(c, "project")
+dic = get_tag_conf(c,"project")
+c.run("rm ./kdna/project/tags.conf")
+write_tag_conf(c,"project",dic)
