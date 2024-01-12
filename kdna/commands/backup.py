@@ -108,7 +108,6 @@ def add(project, path, tag):
     except Exception as e:
         print("Ajout du tag : error = "+e.__str__())
 
-
 # Création de la commande delete
 @backup.command()
 @click.option('-t', 'pathtag', nargs=1, required=True, help="entrer le path du fichier et le tag [ path:tag ]")
