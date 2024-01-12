@@ -327,16 +327,18 @@ def list():
 @autobackup.command()
 @click.option('-n', '--nameofcron', nargs=1, required=True, help="entrer le nom du cron à stopper")
 def stop(nameofcron):
-    """
-    Commande pour stopper une backup régulière\n
-    """
+    """Commande pour stopper une backup régulière\n
+    :param nameofcron: -n le nom du cron à stopper\n
+    :type nameofcron: str\n
+    :return: un message de confirmation ou d'erreur\n
+    :rtype: str"""
     click.echo(f"Stopped cron : \"{nameofcron}\"")
 
 
 # Création de la commande list
 @autobackup.command()
 def list():
-    """
-    Commande pour lister les backups régulières\n
-    """
+    """Commande pour lister les autobackups
+    :return: Liste des autobackups : class: `str`\n
+    :rtype: list"""
     click.echo(f"List of autobackups : \n...\n...")
