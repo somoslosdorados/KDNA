@@ -74,7 +74,6 @@ def add(project, path, tag):
         click.echo("Vous n'avez pas les droits")
     except Exception as e:
         print("error2 = "+e.__str__())
-
     try:
         upload_file(instance.connection, path_to_local_backup,
                     path_to_remote_backup)
