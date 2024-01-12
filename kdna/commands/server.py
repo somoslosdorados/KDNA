@@ -21,23 +21,35 @@ def server():
 # Création de la commande add
 @server.command()
 @click.option('-i', '--id', required=True, help="entrer l'id")
-@click.option('-ad', '--address', required=True, help="entrer l'adresse")
+@click.option('-ad', '--address', required=True, help="entrer le libelé de connexion")
 @click.option('-a', '--alias', required=True, help="entrer l'alias")
-@click.option('-c', '--credentials', required=True, help="entrer les credentials")
+@click.option('-r', '--repo', required=True, help="entrer le répertoire de sauvegarde")
 @click.option('-p', '--port', required=True, help="entrer le port")
-def add(id, alias, address, credentials, port):
-    """Commande pour ajoute un serveur."""
+def add(id, alias, address, repo, port):
+    """Commande pour ajoute un serveur.
+    :param id: -i l'id du serveur à séléctionner\n
+     :type id: str\n
+     :param alias: -a l'alias du serveur à sélectionner\n
+     :type alias: str\n
+     :param address: -ad libeler de connexion \n
+     :type address: str\n
+     :param repo: -c le repertoire dans lequel les sauvegardes seront envoyé\n
+     :type repo: str\n
+     :param port: -p le port du serveur à sélectionner\n
+     :type port: str\n
+     :return: un message de confirmation ou d'erreur\n
+     :rtype: str"""
     try:
         connection = SSHClient(address)
         connection.sendCommand("ls > /dev/null")
 
         try:
             connection.sendCommand(
-                f"test ! -d {credentials} && mkdir {credentials}")
+                f"test ! -d {repo} && mkdir {repo}")
         except Exception:
             click.echo("Le dossier existe déjà")
         serverService = ServerService()
-        serverService.create_server(id, address, credentials, port, alias)
+        serverService.create_server(id, address, repo, port, alias)
         if alias:
             click.echo(f"Alias du serveur : \"{alias}\"")
         if id:
@@ -46,25 +58,6 @@ def add(id, alias, address, credentials, port):
         print(e)
         print("An errror occured connection on this adress fail.")
         return None
-
-
-def set(id, alias, credentials, port):
-    """Commande pour sélectionner un serveur.\n
-     :param id: -i l'id du serveur à séléctionner\n
-     :type id: str\n
-     :param alias: -a l'alias du serveur à sélectionner\n
-     :type alias: str\n
-     :param credentials: -c les credentials du serveur à sélectionner\n
-     :type credentials: str\n
-     :param port: -p le port du serveur à sélectionner\n
-     :type port: str\n
-     :return: un message de confirmation ou d'erreur\n
-     :rtype: str"""
-
-    if alias:
-        click.echo(f"Alias du serveur : \"{alias}\"")
-    if id:
-        click.echo(f"ID du serveur : \"{id}\"")
 
 
 # Création de la commande delete
