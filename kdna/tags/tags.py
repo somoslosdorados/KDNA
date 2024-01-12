@@ -49,8 +49,9 @@ def delete_tags(connection_instance: Connection, project: str, old_tag: str):
     write_tag_conf(connection_instance,project,tag_file)
 
 
-def update_tags(connection_instance: Connection, project: str, old_tag: str, new_tag: str, file_to_tag: str):
+def update_tags(connection_instance: Connection, project: str, old_tag: str, new_tag: str):
     tag_file = get_tag_conf(connection_instance,project)
+    file_to_tag = tag_file[old_tag]
     if not tag_exists(connection_instance, project,old_tag):
         raise KeyError(f"{old_tag} n'existe pas")
    
