@@ -44,16 +44,10 @@ def add(id, alias, address, repo, port):
         connection.sendCommand("ls > /dev/null")
 
         try:
-            connection.sendCommand(
-                f"test ! -d {repo} && mkdir {repo}")
+            connection.sendCommand(f"test ! -d {repo} && mkdir {repo}")
         except Exception:
             click.echo("Le dossier existe déjà")
-        serverService = ServerService()
-        serverService.create_server(id, address, repo, port, alias)
-        if alias:
-            click.echo(f"Alias du serveur : \"{alias}\"")
-        if id:
-            click.echo(f"ID du serveur : \"{id}\"")
+        ServerService().create_server(id, address, repo, port, alias)
     except Exception as e:
         print(e)
         print("An errror occured connection on this adress fail.")
