@@ -97,9 +97,7 @@ def add(project, path, tag):
         click.echo("Envoi du fichier sur le serveur : vous n'avez pas les droits")
         return
     except Exception as e:
-        print("Envoi du fichier sur le serveur : error = " + e.__str__())
-        return
-
+        print("error2 = "+e.__str__())
     try:
         os.remove(path_to_local_backup)
     except FileNotFoundError as exc:

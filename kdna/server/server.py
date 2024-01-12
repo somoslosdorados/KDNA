@@ -57,13 +57,21 @@ def find_path(connection: Connection, tag: str, project_name: str) -> str:
     # renvoie le path du backup
     return f"./kdna/{project_name}/{backup_name}"
 
-def find_all_file(connection: Connection, tag: str,verbose=False) -> list:
+
+def find_all_file(connection: Connection, tag: str, verbose=False):
     """return a list of path of backups that or tag with the given tag"""
+    # Listing des différents projets
     # Listing des différents projets
     try:
         projects = connection.run(f"ls ./kdna/", hide=True).stdout
+        projects = connection.run(f"ls ./kdna/", hide=True).stdout
     except:
         raise Exception("Can't list projects")
+    # Trier la liste
+    listedProject = list(filter(lambda item: item != "", projects.split("\n")))
+    paths_list = []
+    message = "Vos sauvegardes: \n"
+    # Vérifie dans chaque project si il existe une backup associé au tag
     # Trier la liste
     listedProject = list(filter(lambda item: item != "", projects.split("\n")))
     paths_list = []
@@ -73,9 +81,15 @@ def find_all_file(connection: Connection, tag: str,verbose=False) -> list:
         try:
             fileName = get_file_name_by_tag(
                 connection, project, tag).strip("\n")
+            fileName = get_file_name_by_tag(
+                connection, project, tag).strip("\n")
             paths_list.append(f"/{project}/{fileName}")
             message += 'In {:>8}:{:>8}{:>8}\n'.format(project, tag, fileName)
+            message += 'In {:>8}:{:>8}{:>8}\n'.format(project, tag, fileName)
         except:
+            message += f"No file tagged {tag} in {project}\n"
+
+    if (verbose):
             message += f"No file tagged {tag} in {project}\n"
 
     if (verbose):
