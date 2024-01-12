@@ -63,6 +63,8 @@ def delete(alias, id):
             click.echo("L'argument alias ou id doit être renseigné.")
 
 # Création de la commande update
+
+
 @server.command()
 @click.argument('alias', required=True)
 @click.option('-c', 'credentials', default='', required=False, help="entrer les nouvelles credentials")
@@ -81,9 +83,15 @@ def update(alias, credentials, port, new_address, new_alias):
     else:
         click.echo("Les arguments à mettre à jour doivent être renseignés.")
 # Création de la commande list
+
+
 @server.command()
 def list():
-    """Commande pour lister les serveurs"""
+    """
+    Commande pour lister les serveurs
+    :return: Liste des serveurs : class: `str`\n
+    :rtype: list
+    """
     serverService = ServerService()
     servers = serverService.find_all()
 
@@ -93,3 +101,8 @@ def list():
         tablefmt="grid"
     )
     click.echo(table)
+
+
+@server.command()
+def status():
+    click.echo("Server Status")
