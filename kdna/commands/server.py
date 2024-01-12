@@ -33,7 +33,8 @@ def add(id, alias, address, credentials, port):
         connection.sendCommand("ls > /dev/null")
 
         try:
-            connection.sendCommand(f"test ! -d {credentials} && mkdir {credentials}")
+            connection.sendCommand(
+                f"test ! -d {credentials} && mkdir {credentials}")
         except Exception:
             click.echo("Le dossier existe déjà")
         serverService = ServerService()
@@ -47,12 +48,37 @@ def add(id, alias, address, credentials, port):
         print("An errror occured nothing done")
         return None
 
+
+def set(id, alias, credentials, port):
+    """Commande pour sélectionner un serveur.\n
+    :param id: -i l'id du serveur à séléctionner\n
+    :type id: str\n
+    :param alias: -a l'alias du serveur à sélectionner\n
+    :type alias: str\n
+    :param credentials: -c les credentials du serveur à sélectionner\n
+    :type credentials: str\n
+    :param port: -p le port du serveur à sélectionner\n
+    :type port: str\n
+    :return: un message de confirmation ou d'erreur\n
+    :rtype: str"""
+    if alias:
+        click.echo(f"Alias du serveur : \"{alias}\"")
+    if id:
+        click.echo(f"ID du serveur : \"{id}\"")
+
+
 # Création de la commande delete
 @server.command()
 @click.option('-a', '--alias', required=False, help="entrer l'alias du serveur à supprimer")
 @click.option('-i', '--id', required=False, help="entrer l'id du serveur à supprimer")
 def delete(alias, id):
-    """Commande pour supprimer un serveur."""
+    """Commande pour supprimer un serveur.\n
+    :param alias: -a l'alias du serveur à supprimer\n
+    :type alias: str\n
+    :param id: -i l'ID du serveur à supprimer\n
+    :type id: str\n
+    :return: un message de confirmation ou d'erreur\n
+    :rtype: str"""
     serverService = ServerService()
     if alias:
         serverService.delete_server(alias, True)
@@ -79,7 +105,8 @@ def update(alias, credentials, port, new_address, new_alias):
     """
     serverService = ServerService()
     if alias and new_address or alias and credentials or alias and port or alias and new_alias:
-        serverService.update_server(alias, credentials, port, new_address, new_alias)
+        serverService.update_server(
+            alias, credentials, port, new_address, new_alias)
     else:
         click.echo("Les arguments à mettre à jour doivent être renseignés.")
 # Création de la commande list
