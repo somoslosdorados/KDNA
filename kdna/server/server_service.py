@@ -235,4 +235,98 @@ class ServerService:
                 if line_alias == alias_to_update:
                     return i + index_servers + 1
 
-        return None
+      # Si la ligne à mettre à jour a été trouvée, on la met à jour
+      if line_to_update is not None:
+        # Récupérer les informations existantes
+        existing_line = lines[line_to_update].strip().split(',')
+        existing_id = existing_line[0].strip()
+        existing_address = existing_line[1].strip()
+        existing_credentials = existing_line[2].strip()
+        existing_port = existing_line[3].strip()
+        existing_alias = existing_line[4].strip() if len(existing_line) >= 5 else None
+
+        # Mettre à jour les informations si de nouvelles valeurs sont fournies
+        new_address = new_address if new_address != "" else existing_address
+        new_credentials = new_credentials if new_credentials != "" else existing_credentials
+        new_port = new_port if new_port != "" else existing_port
+        new_alias = new_alias if new_alias != "" else existing_alias
+
+        # Vérifier si le nouvel alias  existe déjà
+        if (new_alias is not None and new_alias != existing_alias and new_alias in
+            self.extract_existing_aliases(lines, index_servers, len(lines))):
+          print("Erreur : Le nouvel alias existe déjà dans la liste des serveurs.")
+          return
+
+        # Construire la nouvelle ligne mise à jour
+        updated_line = f"{existing_id}, {new_address}, {new_credentials}, {new_port}, {new_alias}\n"
+
+        # Mettre à jour la ligne
+        lines[line_to_update] = updated_line
+
+        # Écrire les lignes mises à jour dans le fichier
+        with open(Utils.config_file, 'w', encoding="utf-8") as f:
+          f.writelines(lines)
+
+        print(f"Les informations du serveur avec l'alias \"{alias_to_update}\" ont été "
+              f"mises à jour.")
+      # Sinon, afficher un message d'erreur
+      else:
+        print(f"Erreur : Aucun serveur trouvé avec l'alias \"{alias_to_update}\" dans la "
+              f"section [server].")
+    # Sinon, afficher un message d'erreur
+    else:
+      print("Erreur : Section [server] non trouvée dans le fichier.")
+
+
+
+  @staticmethod
+  def extract_existing_servers(lines, index_servers, index_auto_backups):
+    """Extract the id of th server"""
+    return [line.split(',')[0].strip() for line in lines[index_servers + 1:index_auto_backups]
+            if len(line.split(',')) >= 4 and line.strip()]
+
+  @staticmethod
+  def extract_existing_aliases(lines, index_servers, index_auto_backups):
+    """Extract the aliases in the server section"""
+    return [line.split(',')[4].strip() if len(line.split(',')) >= 5 else None for line in
+            lines[index_servers + 1:index_auto_backups] if line.strip()]
+
+  @staticmethod
+  def find_line_to_delete(lines, index_servers, id, by_alias=False):
+    """Find the line to delete"""
+    index_auto_backups = Utils.find_auto_backups_index(lines)
+    if index_auto_backups is None:
+      index_auto_backups = len(lines)
+    server_lines = lines[index_servers + 1:index_auto_backups]
+
+    for i, line in enumerate(server_lines):
+      if len(line.split(',')) >= 5 and line.strip():
+        line_id = line.split(',')[0].strip()
+        line_alias = line.split(',')[4].strip() if len(line.split(',')) >= 5 else None
+
+        if (by_alias and line_alias == id or not by_alias
+            and line_id == str(id)):
+          return i + index_servers + 1
+    print(
+      f"Erreur : Aucun élément trouvé avec "
+      f"l'{'alias' if by_alias else 'id'} \"{id}\" dans la section [server].")
+    return None
+
+  @staticmethod
+  def find_line_to_update(lines, index_servers, alias_to_update):
+    """Find the line to update"""
+    index_auto_backups = Utils.find_auto_backups_index(lines)
+    if index_auto_backups is None:
+      index_auto_backups = len(lines)
+    server_lines = lines[index_servers + 1:index_auto_backups]
+
+    for i, line in enumerate(server_lines):
+      if len(line.split(',')) >= 5 and line.strip():
+        line.split(',')[0].strip()
+        line_alias = line.split(',')[4].strip() if len(line.split(',')) >= 5 else None
+
+        # Si l'alias correspond à celui à mettre à jour
+        if line_alias == alias_to_update:
+          return i + index_servers + 1
+
+    return None

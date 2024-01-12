@@ -116,10 +116,10 @@ class AutoBackupService:
                 existing_line) >= 6 else None
 
             # Mettre à jour les informations si de nouvelles valeurs sont fournies
-            new_frequency = new_frequency if new_frequency is not "" else existing_frequency
-            new_name = new_name if new_name is not "" else existing_name
-            new_timestamp = new_timestamp if new_timestamp is not "" else existing_timestamp
-            new_path = new_path if new_path is not "" else existing_path
+            new_frequency = new_frequency if new_frequency != "" else existing_frequency
+            new_name = new_name if new_name != "" else existing_name
+            new_timestamp = new_timestamp if new_timestamp != "" else existing_timestamp
+            new_path = new_path if new_path != "" else existing_path
 
             # Construire la nouvelle ligne mise à jour
             updated_line = (f"{existing_id_backup}, {new_frequency}, {new_name}, "
