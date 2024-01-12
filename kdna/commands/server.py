@@ -44,7 +44,7 @@ def add(id, alias, address, credentials, port):
             click.echo(f"ID du serveur : \"{id}\"")
     except Exception as e:
         print(e)
-        print("An errror occured nothing done")
+        print("An errror occured connection on this adress fail.")
         return None
 
 
