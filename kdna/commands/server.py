@@ -51,16 +51,17 @@ def add(id, alias, address, credentials, port):
 
 def set(id, alias, credentials, port):
     """Commande pour sélectionner un serveur.\n
-    :param id: -i l'id du serveur à séléctionner\n
-    :type id: str\n
-    :param alias: -a l'alias du serveur à sélectionner\n
-    :type alias: str\n
-    :param credentials: -c les credentials du serveur à sélectionner\n
-    :type credentials: str\n
-    :param port: -p le port du serveur à sélectionner\n
-    :type port: str\n
-    :return: un message de confirmation ou d'erreur\n
-    :rtype: str"""
+     :param id: -i l'id du serveur à séléctionner\n
+     :type id: str\n
+     :param alias: -a l'alias du serveur à sélectionner\n
+     :type alias: str\n
+     :param credentials: -c les credentials du serveur à sélectionner\n
+     :type credentials: str\n
+     :param port: -p le port du serveur à sélectionner\n
+     :type port: str\n
+     :return: un message de confirmation ou d'erreur\n
+     :rtype: str"""
+
     if alias:
         click.echo(f"Alias du serveur : \"{alias}\"")
     if id:

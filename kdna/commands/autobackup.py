@@ -124,7 +124,7 @@ def delete(idcron):
 
 @autobackup.command()
 @click.option('-i', '--idcron', nargs=1, required=True, help="entrer l'id du cron à mettre à jour")
-@click.option('-t', '--tag', nargs=1, required=False, help="entrer le tag du cron à mettre à jour")
+@click.option('-t', '--tag', nargs=2, required=False, help="entrer le tag du cron à mettre à jour et le tag mis à jour")
 @click.argument('cron_schedule', type=click.Choice(['daily', 'monthly', 'weekly',
                                                     'custom']), required=False)
 @click.argument('custom_cron', nargs=-1, required=False)
