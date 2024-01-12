@@ -26,10 +26,10 @@ def add_tags(connection_instance: Connection, project: str, new_tag: str, file_t
     #Vérification que la backup existe sur le serveur
     if not backup_exist(connection_instance,project,file_to_tag):
         raise FileNotFoundError("Erreur: le fichier n'existe pas")
-    dico = get_tag_conf(connection_instance, project)
-    if(tag_exists(dico,new_tag)):
-        raise KeyError(f"{old_tag} existe déjà")
+    if(tag_exists(connection_instance,project,new_tag)):
+        raise KeyError(f"{new_tag} existe déjà")
     
+    dico = get_tag_conf(connection_instance, project)
     #Ecrire dans le fichier tag.conf le nouveau tag
     dico[new_tag] = file_to_tag
     write_tag_conf(connection_instance, project, dico)
@@ -39,13 +39,9 @@ def delete_tags(connection_instance: Connection, project: str, old_tag: str):
     """arguments: oldTag """
     # Récupération du fichier tag.conf
     tag_file=get_tag_conf(connection_instance,project)
-    #vérification 
-    if(not tag_exists(tag_file,old_tag)):
-        raise KeyError(f"{old_tag} n'existe pas")
     
-
     # Verification de la présence du tag
-    if(not tag_exists(tag_file,old_tag)):
+    if(not tag_exists(connection_instance,project,old_tag)):
         raise KeyError(f"{old_tag} n'existe pas")
     # Deletion de du tag à enlever
     tag_file.pop(old_tag)
@@ -55,11 +51,11 @@ def delete_tags(connection_instance: Connection, project: str, old_tag: str):
 
 def update_tags(connection_instance: Connection, project: str, old_tag: str, new_tag: str, file_to_tag: str):
     tag_file = get_tag_conf(connection_instance,project)
-    if not tag_exists(tag_file,old_tag):
+    if not tag_exists(connection_instance, project,old_tag):
         raise KeyError(f"{old_tag} n'existe pas")
    
 
-    if tag_exists(tag_file,new_tag):
+    if tag_exists(connection_instance,project,new_tag):
         raise KeyError(f"{new_tag} existe déjà")
     
     tag_file.pop(old_tag)
@@ -84,26 +80,27 @@ def check_init_tag_file(connection_instance: Connection, project: str):
     except:
         connection_instance.run(f"echo '[tags]' > {path_to_conf_tag}", hide=True)
 
-def tag_exists(dico: dict, tag: str) -> bool:
+def tag_exists(connection_instance: Connection,project: str, tag: str) -> bool:
     """Check if the tag exists in the project"""
+    dico = get_tag_conf(connection_instance,project)
     if tag in dico:
         return True
     return False
 
 
-def generate_tag_name_(connection_instance: Connection, project: str, prefix: str) -> str:
+def generate_tag_name(connection_instance: Connection, project: str, prefix: str) -> str:
     ct = time.time()
     new_tag = prefix + "_" + str(ct)
     new_tag_decorated = new_tag
 
     #check if the tag exists
-    if tag_exists(get_tag_conf(connection_instance,project), new_tag):
+    if tag_exists(connection_instance,project, new_tag):
         found = False
         while not found:
             #increment the tag, exemple: tag_1, tag_2, tag_3
             ct += 1
             new_tag_decorated = new_tag + "_" + ct
-            if not tag_exists(get_tag_conf(connection_instance,project), new_tag_decorated):
+            if not tag_exists(connection_instance,project, new_tag_decorated):
                 found = True
     return new_tag_decorated
 
