@@ -7,6 +7,7 @@ import os
 import time
 from fabric import Connection
 from kdna.connexion_ssh.sshConnect import SSHClient
+from kdna.logger import logger
 
 def backup_exist(connection_instance: Connection,project: str,file_to_tag: str) -> bool:
         # Vérification que la sauvegarde existe sur le serveur
@@ -25,14 +26,17 @@ def add_tags(connection_instance: Connection, project: str, new_tag: str, file_t
     #VERIFIER QUE LES TAGS NE SONT PAS EXISTANT !!!!!!!!!!!!!
     #Vérification que la backup existe sur le serveur
     if not backup_exist(connection_instance,project,file_to_tag):
+        logger.log("ERROR",f"Erreur lors de l'ajout de {new_tag} pour le project {project}, {file_to_tag} n'existe pas")
         raise FileNotFoundError("Erreur: le fichier n'existe pas")
     if(tag_exists(connection_instance,project,new_tag)):
+        logger.log("ERROR",f"Erreur lors de l'ajout de {new_tag} pour le project {project}, {new_tag} existe déjà")
         raise KeyError(f"{new_tag} existe déjà")
     
     dico = get_tag_conf(connection_instance, project)
     #Ecrire dans le fichier tag.conf le nouveau tag
     dico[new_tag] = file_to_tag
     write_tag_conf(connection_instance, project, dico)
+    logger.log("INFO",f"Le tag {new_tag} a été ajouté au fichier {file_to_tag} du projet {project}")
 
 
 def delete_tags(connection_instance: Connection, project: str, old_tag: str):
@@ -42,27 +46,32 @@ def delete_tags(connection_instance: Connection, project: str, old_tag: str):
     
     # Verification de la présence du tag
     if(not tag_exists(connection_instance,project,old_tag)):
+        logger.log("ERROR",f"Erreur lors de la suppression de {old_tag} pour le project {project}, {old_tag} n'existe pas")
         raise KeyError(f"{old_tag} n'existe pas")
     # Deletion de du tag à enlever
     tag_file.pop(old_tag)
     # Ecriture dans le fichier
     write_tag_conf(connection_instance,project,tag_file)
+    logger.log("INFO",f"Le tag {old_tag} a été supprimé du projet {project}")
 
 
 def update_tags(connection_instance: Connection, project: str, old_tag: str, new_tag: str):
     tag_file = get_tag_conf(connection_instance,project)
     file_to_tag = tag_file[old_tag]
     if not tag_exists(connection_instance, project,old_tag):
+        logger.log("ERROR",f"Erreur lors de l'update de {old_tag} en {new_tag} pour le project {project}, {old_tag} n'existe pas")
         raise KeyError(f"{old_tag} n'existe pas")
    
 
     if tag_exists(connection_instance,project,new_tag):
+        logger.log("ERROR",f"Erreur lors de l'update de {old_tag} en {new_tag} pour le project {project}, {new_tag} existe déjà")
         raise KeyError(f"{new_tag} existe déjà")
     
     tag_file.pop(old_tag)
     tag_file[new_tag] = file_to_tag
 
     write_tag_conf(connection_instance,project,tag_file)
+    logger.log("INFO",f"Le tag {old_tag} a été modifié en {new_tag} dans le projet {project}")
 
 
 def get_file_name_by_tag(connection_instance: Connection,project: str,tag:str) -> str:
@@ -70,15 +79,15 @@ def get_file_name_by_tag(connection_instance: Connection,project: str,tag:str) -
     if tag in dico:
         return dico[tag]
     # Si aucun fichier n'est trouvé une erreur apparait
+    logger.log("ERROR",f"Aucun fichier n'a été associé au tag {tag} dans le project {project}")
     raise FileNotFoundError(f"Aucun fichier n'a été associé au tag {tag} dans le project {project}")
     
 def check_init_tag_file(connection_instance: Connection, project: str):
     path_to_conf_tag = "./kdna/"+project+"/tags.conf"
     try:
         connection_instance.run(f"find {path_to_conf_tag}", hide=True)
-    except PermissionError:
-        raise PermissionError("Erreur de permission lors de l'acces à tags.conf")
-    except:
+    except Exception as e:
+        logger.log("INFO",f"Le fichier {path_to_conf_tag} n'existe pas, il va être créé")
         connection_instance.run(f"echo '[tags]' > {path_to_conf_tag}", hide=True)
 
 def tag_exists(connection_instance: Connection,project: str, tag: str) -> bool:
@@ -103,6 +112,7 @@ def generate_tag_name(connection_instance: Connection, project: str, prefix: str
             new_tag_decorated = new_tag + "_" + ct
             if not tag_exists(connection_instance,project, new_tag_decorated):
                 found = True
+    logger.log("INFO",f"Le tag {new_tag_decorated} a été généré")
     return new_tag_decorated
 
 def get_tag_conf(connection_instance: Connection, project: str) -> dict:
@@ -126,5 +136,6 @@ def write_tag_conf(connection_instance: Connection, project: str, dictionnaire: 
         texte_conf += key + ", " + dictionnaire[key] + "\n"
     try:
         connection_instance.run(f"echo \"{texte_conf}\" > {path_to_conf_tag}", hide=True)
-    except PermissionError:
-        raise PermissionError("Erreur de permission: write sur tags.conf")
+    except Exception as e:
+        logger.log("ERROR",f"Erreur inconnue lors de l'écriture dans tags.conf: {e}")
+        raise Exception("Erreur inconnue lors de l'écriture dans tags.conf")
