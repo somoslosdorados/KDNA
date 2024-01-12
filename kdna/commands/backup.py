@@ -60,11 +60,16 @@ def add(project, path, tag):
     \t- <path>: le chemin du fichier ou du dossier à sauvegarder\n
     \t- <tag>: le tag de la sauvegarde
     """
+    click.echo(f"Creating backup in {project} with {tag} tag")
 
     if len(listServers) == 0:
         click.echo("Any server found in the configuration file.")
         return
-    
+
+    if not os.path.exists(path):
+        click.echo("Directory '" + path + "' is missing.")
+        return
+
     uuid_backup = str(uuid.uuid4())
     name_of_temp_backup = encrypt.package(path, uuid_backup, kdna_path, listServers[0].encrypt)
     path_to_local_backup = os.path.join(kdna_path, name_of_temp_backup)
@@ -165,6 +170,10 @@ def restore(nametag, path):
     :return: un message de confirmation ou d'erreur\n
     :rtype: str"""
     click.echo(f"Restauration du fichier : \"{nametag}\"")
+
+    if len(listServers) == 0:
+        click.echo("Any server found in the configuration file.")
+        return
 
     try:
         instance = SSHClient(listServers[0].credentials).connect()
