@@ -10,10 +10,10 @@ from kdna.parsing.parser import listServers
 from tabulate import tabulate
 from kdna.ssh.ssh_client import SSHClient
 from kdna.tags import tags
+from kdna.parsing import parser
 
-#A IMPLEMENTER EN PARSANT LE FICHIER DE CONFIGURATION
-ssh = SSHClient("test@debian12.local",[])
-ssh.connect()
+parser.parseConfig()
+list_servers = parser.listServers
 
 
 @click.group()
@@ -24,20 +24,31 @@ def tag():
 #! Création des commandes du groupe tag
 # Création de la commande add
 @tag.command()
-@click.option('-p', '--project', required=True, help="entrer le projet dans lequel ajouter le tag")
-@click.option('-t', '--new_tag', required=True, help="entrer le tag à ajouter")
-@click.option('-f', '--file_to_tag', required=True, help="entrer le fichier à tagger")
-def add(project, new_tag, file_to_tag):
+@click.option('-p', '--project', required=True, help="entrez le projet dans lequel ajouter le tag")
+@click.option('-t', '--new_tag', required=True, help="entrez le tag à ajouter")
+@click.option('-f', '--file_to_tag', required=True, help="entrez le fichier à tagger")
+@click.option('-s', '--server', required=True, help="entrez l'id du serveur")
+def add(project, new_tag, file_to_tag, server):
     """Commande pour ajouter un tag."""
 
 #serversCredential = listServers[0].credentials
  #   instance = SSHClient(serversCredential).connect()
+    connection_instance = None
+    for server_i in list_servers:
+        if server_i.id_server == server:
+            connection_instance = SSHClient(server_i.credentials,server_i.path)
+            connection_instance.connect()
+            break
+
+    if(connection_instance == None):
+        click.echo("Le serveur n'a pas été trouvé")
+        raise click.Abort()
 
     try:
-        tags.add_tags(ssh.connection, project, new_tag, file_to_tag, True)
-    except FileNotFoundError as exc:
+        tags.add_tags(connection_instance.connection, project, new_tag, file_to_tag, True)
+    except FileNotFoundError:
         click.echo("Le fichier n'a pas été trouvé")
-    except PermissionError as exc:
+    except PermissionError:
         click.echo("Vous n'avez pas les droits")
     except Exception as e:
         print("error = "+e.__str__())
@@ -45,16 +56,27 @@ def add(project, new_tag, file_to_tag):
 
 # Création de la commande delete
 @tag.command()
-@click.option('-p', '--project', required=True, help="entrer le projet dans lequel ajouter le tag")
-@click.option('-t', '--old_tag', required=True, help="entrer le tag à supprimer")
-def delete(project, old_tag):
+@click.option('-p', '--project', required=True, help="entrez le projet dans lequel ajouter le tag")
+@click.option('-t', '--old_tag', required=True, help="entrez le tag à supprimer")
+@click.option('-s', '--server', required=True, help="entrez l'id du serveur")
+def delete(project, old_tag, server):
     """Commande pour ajouter un tag."""
 
 #serversCredential = listServers[0].credentials
  #   instance = SSHClient(serversCredential).connect()
+    connection_instance = None
+    for server_i in list_servers:
+        if server_i.id_server == server:
+            connection_instance = SSHClient(server_i.credentials,server_i.path)
+            connection_instance.connect()
+            break
+
+    if(connection_instance == None):
+        click.echo("Le serveur n'a pas été trouvé")
+        raise click.Abort()
 
     try:
-        tags.delete_tags(ssh.connection, project, old_tag)
+        tags.delete_tags(connection_instance.connection, project, old_tag)
         click.echo(f"Le tag {old_tag} a été supprimé")
     except FileNotFoundError:
         click.echo("Le fichier n'a pas été trouvé")
@@ -65,13 +87,25 @@ def delete(project, old_tag):
 
 # Création de la commande update
 @tag.command()
-@click.option('-p', '--project', required=True, help="entrer le projet dans lequel ajouter le tag")
-@click.option('-t', '--old_tag', required=True, help="entrer le tag à modifier")
-@click.option('-n', '--new_tag', required=True, help="entrer le nouveau tag")
-def update(project, old_tag, new_tag):
+@click.option('-p', '--project', required=True, help="entrez le projet dans lequel ajouter le tag")
+@click.option('-t', '--old_tag', required=True, help="entrez le tag à modifier")
+@click.option('-n', '--new_tag', required=True, help="entrez le nouveau tag")
+@click.option('-s', '--server', required=True, help="entrez l'id du serveur")
+def update(project, old_tag, new_tag,server):
     """Commande pour modifier un tag."""
+
+    connection_instance = None
+    for server_i in list_servers:
+        if server_i.id_server == server:
+            connection_instance = SSHClient(server_i.credentials,server_i.path)
+            connection_instance.connect()
+            break
+    if(connection_instance == None):
+        click.echo("Le serveur n'a pas été trouvé")
+        raise click.Abort()
+    
     try:
-        tags.update_tags(ssh.connection, project, old_tag, new_tag)
+        tags.update_tags(connection_instance.connection, project, old_tag, new_tag)
         click.echo(f"Le tag {old_tag} a été modifié en {new_tag}")
     except FileNotFoundError:
         click.echo("Le fichier n'a pas été trouvé")
@@ -83,12 +117,24 @@ def update(project, old_tag, new_tag):
 
 # Création de la commande list
 @tag.command()
-@click.option('-p', '--project', required=True, help="entrer le projet du tag à supprimer")
-def list(project):
+@click.option('-p', '--project', required=True, help="entrez le projet du tag à supprimer")
+@click.option('-s', '--server', required=True, help="entrez l'id du serveur")
+def list(project, server):
     """Commande pour lister les tags."""
-
+    
+    connection_instance = None
+    for server_i in list_servers:
+        if server_i.id_server == server:
+            connection_instance = SSHClient(server_i.credentials,server_i.path)
+            connection_instance.connect()
+            break
+    
+    if(connection_instance == None):
+        click.echo("Le serveur n'a pas été trouvé")
+        raise click.Abort()
+    
     try:
-        for (tag,backup) in tags.get_tag_conf(ssh.connection, project):
+        for (tag,backup) in tags.get_tag_conf(connection_instance.connection, project):
             click.echo(f"{tag} : {backup}")
     except FileNotFoundError as exc:
         click.echo("Le fichier n'a pas été trouvé")
