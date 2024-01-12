@@ -72,6 +72,37 @@ def autobackup():
     """Commande pour mettre en place un daemon de sauvegarde"""
 
 
+def get_type_cron(cron):
+    for char in cron:
+        if char == ':':
+            return ':'
+        elif char == '-':
+            return '-'
+    return -1
+
+
+def is_valid_cron(cron):
+    print(get_type_cron(cron))  # test pour voir à quoi ressemble la variable cron
+    if get_type_cron(cron) == ':':
+        cron_parts = cron.split(':')
+        if len(cron_parts) != 5:
+            return False
+        if 0 >= cron_parts[0] <= 59 and 0 >= cron_parts[1] <= 23 and 1 >= cron_parts[2] <= 31 and 1 >= cron_parts[
+            3] <= 12:
+            return True
+        return False
+    elif get_type_cron(cron) == '-':
+        cron_parts = cron.split(':')
+        if len(cron_parts) != 5:
+            return False
+        if 0 >= cron_parts[0] <= 59 and 0 >= cron_parts[1] <= 23 and 1 >= cron_parts[2] <= 31 and 1 >= cron_parts[
+            3] <= 12:
+            return True
+        return False
+    else:
+        return False
+
+
 def get_custom_cron(sched_part_type: str, cond_inf: int, cond_sup: int):
     """Fonction qui récupère auprès de l'utilisateur une partie de la date du schedule de custom_cron pour autobackup (e.g. renvoie la minute de backup, ou l'heure, ...).\n
     :param sched_part_type: le type de la partie manquante de custom_cron à demander à l'utilisateur (e.g. 'Hour')\n
@@ -188,6 +219,7 @@ def delete(idcron):
 @autobackup.command()
 @click.option('-i', '--idcron', nargs=1, required=True, help="entrer l'id du cron à mettre à jour")
 #@click.option('-t', '--tag', nargs=2, required=False, help="entrer le tag du cron à mettre à jour et le tag mis à jour")
+@click.option('-t', '--tag', nargs=1, required=False, help="entrer le tag du cron à mettre à jour")
 @click.argument('cron_schedule', type=click.Choice(['daily', 'monthly', 'weekly',
                                                     'custom']), required=False)
 @click.argument('custom_cron', nargs=-1, required=False)
@@ -244,7 +276,18 @@ def list():
 @autobackup.command()
 @click.option('-n', '--nameofcron', nargs=1, required=True, help="entrer le nom du cron à stopper")
 def stop(nameofcron):
-    """
-    Commande pour stopper une backup régulière\n
-    """
+    """Commande pour stopper une backup régulière\n
+    :param nameofcron: -n le nom du cron à stopper\n
+    :type nameofcron: str\n
+    :return: un message de confirmation ou d'erreur\n
+    :rtype: str"""
     click.echo(f"Stopped cron : \"{nameofcron}\"")
+
+
+# Création de la commande list
+@autobackup.command()
+def list():
+    """
+    Commande pour lister les backups régulières\n
+    """
+    click.echo(f"List of autobackups : \n...\n...")
