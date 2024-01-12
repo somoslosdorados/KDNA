@@ -109,8 +109,7 @@ def add(project, path, tag):
         click.echo("Ajout du tag sur la backup : vous n'avez pas les droits")
         return
     except Exception as e:
-        click.echo("Ajout du tag sur la backup : error" + e.__str__())
-        return
+        print("Ajout du tag : error = "+e.__str__())
 
 # Création de la commande delete
 @backup.command()
