@@ -28,4 +28,3 @@ WORKDIR /home/test
 COPY --chown=test:test . .
 RUN poetry install
 
-ENTRYPOINT ["/bin/bash"]
