@@ -7,7 +7,8 @@ listServers = []
 listAutoBackups = []
 
 kdna_path = os.path.join(os.path.expanduser('~'), '.kdna')
-# os.path.join(kdna_path, 'temp')
+
+
 def parseConfig():
     """
     Parse le fichier de configuration
