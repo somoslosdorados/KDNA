@@ -59,7 +59,10 @@ def add(project, path, tag):
     \t- <project>: le nom du projet à sauvegarder\n
     \t- <path>: le chemin du fichier ou du dossier à sauvegarder\n
     \t- <tag>: le tag de la sauvegarde
+
+    author: Baptiste BRONSIN
     """
+
     click.echo(f"Creating backup in {project} with {tag} tag")
 
     if len(listServers) == 0:
@@ -78,40 +81,45 @@ def add(project, path, tag):
 
     try:
         instance = SSHClient(serversCredential).connect()
-    except FileNotFoundError as exc:
-        click.echo("Connexion SSH : Le fichier n'a pas été trouvé")
     except PermissionError as exc:
-        click.echo("Connexion SSH : Vous n'avez pas les droits")
+        click.echo("Création d'une connexion SSH : vous n'avez pas les droits")
+        return
     except Exception as e:
-        print("Connexion SSH : error2 = "+e.__str__())
+        print("Création d'une connexion SSH : error2 = " + e.__str__())
+        return
 
     try:
-        upload_file(instance.connection, path_to_local_backup,
-                    path_to_remote_backup)
+        upload_file(instance.connection, path_to_local_backup, path_to_remote_backup)
     except FileNotFoundError as exc:
-        click.echo("Envoie de la backup : Le fichier n'a pas été trouvé")
+        click.echo("Envoi du fichier sur le serveur : le fichier n'a pas été trouvé")
+        return
     except PermissionError as exc:
-        click.echo("Envoie de la backup : Vous n'avez pas les droits")
+        click.echo("Envoi du fichier sur le serveur : vous n'avez pas les droits")
+        return
     except Exception as e:
-        print("Envoie de la backup : error = "+e.__str__())
+        print("Envoi du fichier sur le serveur : error = " + e.__str__())
+        return
 
     try:
         os.remove(path_to_local_backup)
     except FileNotFoundError as exc:
-        click.echo("Suppression de la backup locale : Le fichier n'a pas été trouvé")
+        click.echo("Suppression de la buckup locale : le fichier n'a pas été trouvé")
+        return
     except PermissionError as exc:
-        click.echo("Suppression de la backup locale : Vous n'avez pas les droits")
+        click.echo("Suppression de la buckup locale : vous n'avez pas les droits")
+        return
     except Exception as e:
-        print("Suppression de la backup locale : error = "+e.__str__())
+        print("Suppression de la buckup locale : error = " + e.__str__())
+        return
 
     try:
         tags.add_tags(instance.connection, project, tag, name_of_temp_backup)
-    except FileNotFoundError as exc:
-        click.echo("Ajout du tag : Le fichier n'a pas été trouvé")
     except PermissionError as exc:
-        click.echo("Ajout du tag : Vous n'avez pas les droits")
+        click.echo("Ajout du tag sur la backup : vous n'avez pas les droits")
+        return
     except Exception as e:
-        print("Ajout du tag : error = "+e.__str__())
+        click.echo("Ajout du tag sur la backup : error" + e.__str__())
+        return
 
 # Création de la commande delete
 @backup.command()
