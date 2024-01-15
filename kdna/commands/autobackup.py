@@ -28,7 +28,32 @@ from tabulate import tabulate
 
 # Création des commandes du groupe autobackup
 
+def validates_parameters(idcron, nameofcron, project, tag, cron_schedule, custom_cron, date, server, path) -> str:
+    if cron_schedule == 'custom':
+        if not custom_cron:  # custom_cron n'est pas donné en argument
+            # le custom_cron est donc demandé en input interactif
+            custom_cron = kdna.autobackup.autobackup.concatenate_custom_cron()
+            log("INFO", f"Chosen custom cron schedule is : {custom_cron}")
+            return custom_cron
+        else:  # Cron schedule is not custom
+            log("ERROR", f"Chosen custom cron schedule is : {custom_cron}")
+            raise Exception(
+                "L'argument custom_cron n'est pas au format '0-59:0-23:1-31:1-12:0-6'")
+    else:
+        custom_cron = kdna.autobackup.autobackup.translate_cron_schedule(
+            cron_schedule)
+        log("INFO", f"Chosen custom cron schedule is : {custom_cron}")
+        return custom_cron
+        if custom_cron == False:  # translate_cron_schedule() error
+            log("ERROR",
+                "L'argument cron_schedule ne correspond pas à {daily, monthly, weekly, custom}")
+            raise Exception(
+                "L'argument cron_schedule ne correspond pas à {daily, monthly, weekly, custom}")
+    raise Exception("Error validating parameters")
+
 # Creation du groupe de commande autobackup
+
+
 @click.group(name='auto-backup')
 def autobackup():
     """Commande pour mettre en place un daemon de sauvegarde"""
@@ -61,30 +86,13 @@ def create(idcron, nameofcron, project, tag, cron_schedule, custom_cron, date, s
     click.echo(f"Name of cron : \"{nameofcron}\"")
     click.echo(f"Cron schedule choice : \"{cron_schedule}\"")
 
-    if cron_schedule == 'custom':
-        if not custom_cron:  # custom_cron n'est pas donné en argument
-            click.echo(
-                "L'argument custom_cron doit être suivi d'un schedule de cron personnalisé.")
-            # le custom_cron est donc demandé en input interactif
-            custom_cron = kdna.autobackup.autobackup.concatenate_custom_cron()
-            log("INFO", f"Chosen custom cron schedule is : {custom_cron}")
-            click.echo(
-                "INFO", f"Chosen custom cron schedule is : {custom_cron}")
-        else:  # Cron schedule is not custom
-            click.echo(
-                "L'argument custom_cron n'est pas au format '0-59:0-23:1-31:1-12:0-6'. Ne définissez pas l'option pour la définir interactivement.")
-            log("ERROR", f"Chosen custom cron schedule is : {custom_cron}")
-            click.echo(f"Chosen custom cron schedule is : {custom_cron}")
-    else:
-        custom_cron = kdna.autobackup.autobackup.translate_cron_schedule(
-            cron_schedule)
-        log("INFO", f"Chosen custom cron schedule is : {custom_cron}")
-        click.echo(f"Chosen custom cron schedule is : {custom_cron}")
-        if custom_cron == False:  # translate_cron_schedule() error
-            click.echo(
-                "L'argument cron_schedule ne correspond pas à {daily, monthly, weekly, custom}")
-            log("ERROR",
-                "L'argument cron_schedule ne correspond pas à {daily, monthly, weekly, custom}")
+    try:
+        custom_cron = validates_parameters(
+            idcron, nameofcron, project, tag, cron_schedule, custom_cron, date, server, path)
+    except Exception as e:
+        click.echo(e)
+        return
+
     log("INFO", "Calling kdna.conf CRUD...")
 
     schedule = kdna.autobackup.autobackup.reformat(custom_cron)
@@ -131,11 +139,11 @@ def delete(idcron, project, tag, path):
 @click.option('-i', '--idcron', nargs=1, required=True, help="entrer l'id du cron à mettre à jour")
 @click.option('-p', '--project', nargs=1, required=True, help="entrer le nom du projet à mettre à jour")
 @click.option('-t', '--tag', nargs=1, required=True, help="entrer le tag à mettre à jour")
-@click.argument('cron_schedule', type=click.Choice(['daily', 'monthly', 'weekly', 'custom']), required=False)
+@click.argument('new_cron_schedule', type=click.Choice(['daily', 'monthly', 'weekly', 'custom']), required=False)
 @click.argument('custom_cron', nargs=-1, required=False)
-@click.option('-n', '--nameofcron', nargs=1, required=True, help="entrer le nouveau nom du cron")
-@click.option('-d', '--date', nargs=1, required=False, help="entrer la nouvelle date de la première backup [ xxxx-xx-xx ]")
-@click.option('-h', '--path', nargs=1, required=False, help="entrer le chemin de la nouvelle backup")
+@click.option('-n', '--new_name', nargs=1, required=True, help="entrer le nouveau nom du cron")
+@click.option('-d', '--new_date', nargs=1, required=False, help="entrer la nouvelle date de la première backup [ xxxx-xx-xx ]")
+@click.option('-h', '--new_path', nargs=1, required=False, help="entrer le chemin de la nouvelle backup")
 def update(idcron, project, tag, new_cron_schedule="", custom_cron="", new_name="", new_date="", new_path=""):
     """
             Commande pour mettre à jour une backup régulière\n
@@ -147,32 +155,18 @@ def update(idcron, project, tag, new_cron_schedule="", custom_cron="", new_name=
     log("INFO", f"New cron schedule : \"{new_cron_schedule}\"")
     click.echo(f"Name of cron : \"{idcron}\"")
     click.echo(f"New cron schedule : \"{new_cron_schedule}\"")
-    if new_cron_schedule == 'custom':
-        if not custom_cron:  # custom_cron n'est pas donné en argument
-            click.echo(
-                "L'argument custom_cron doit être suivi d'un schedule de cron personnalisé.")
-            # le custom_cron est donc demandé en input interactif
-            custom_cron = kdna.autobackup.autobackup.concatenate_custom_cron()
-            log("INFO", "Chosen custom cron schedule is :", custom_cron)
-            click.echo("Chosen custom cron schedule is :", custom_cron)
-        else:  # Cron schedule is not custom
-            click.echo(
-                "L'argument custom_cron n'est pas au format '0-59:0-23:1-31:1-12:0-6'. Ne définissez pas l'option pour la définir interactivement.")
-            log("ERROR", "Chosen custom cron schedule is :", custom_cron)
-            click.echo("Chosen custom cron schedule is :", custom_cron)
-    else:
-        custom_cron = kdna.autobackup.autobackup.translate_cron_schedule(
-            new_cron_schedule)
-        log("INFO", "Chosen custom cron schedule is :", custom_cron)
-        click.echo("Chosen custom cron schedule is :", custom_cron)
-        custom_cron = kdna.autobackup.autobackup.translate_cron_schedule(
-            new_cron_schedule)
-        if not custom_cron:  # translate_cron_schedule() error
-            click.echo(
-                "L'argument cron_schedule ne correspond pas à {daily, monthly, weekly, custom}")
+    backup = AutoBackupService().find_by_id(idcron)
+
+    try:
+        custom_cron = validates_parameters(
+            idcron, new_name, project, tag, new_cron_schedule, custom_cron, new_date, int(backup["id_server"]), new_path)
+    except Exception as e:
+        click.echo(e)
+        return
+
     log("INFO", "Calling kdna.conf CRUD...")
-    AutoBackupService().update_auto_backup(idcron, new_cron_schedule="",
-                                           new_name="", new_date="", new_path="")  # Modifie kdna.conf
+    AutoBackupService().update_auto_backup(idcron, custom_cron,
+                                           new_name, new_date, new_path)  # Modifie kdna.conf
     log("INFO", "Calling parser...")
     parseConfig()  # Lance le parseur
     log("INFO", "Writing crontab...")
