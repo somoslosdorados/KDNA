@@ -33,7 +33,8 @@ class AutoBackupService:
     def create_auto_backup(self, id, frequency, name, timestamp, id_server, path):
         """Add a new backup"""
         # On ouvre le fichier en mode lecture
-        lines = Utils.read_file_lines(Utils.config_file)
+        print(id, frequency, name, timestamp, id_server, path)
+        lines = Utils.read_file_lines(Utils.get_config_file_path())
 
         # On cherche les indices de [servers] et [auto-backups]
         index_servers = Utils.find_servers_index(lines)
@@ -41,13 +42,12 @@ class AutoBackupService:
 
         # Vérification de l'existence de l'id_server dans la section [servers]
         if not self.check_id_server(lines, index_servers, index_auto_backups, id_server):
-            print(
-                f"Erreur : L'id du serveur \"{id_server}\" de votre auto backup n'existe "
-                "pas dans la section [servers].")
             log("ERROR",
                 f"Erreur : L'id du serveur "+ id_server  + "  de votre auto backup pas dans la "
                 "section [servers].")
-            return
+            raise Exception(
+                f"Erreur : L'id du serveur \"{id_server}\" de votre auto backup n'existe "
+                "pas dans la section [servers].")
 
         # Construction de la nouvelle ligne
         new_line = (f"{id}, {frequency}, {name}, {timestamp}, "
@@ -57,12 +57,11 @@ class AutoBackupService:
         existing_backups = self.extract_existing_backups(
             lines, index_auto_backups)
         if str(id) in existing_backups:
-            print(
-                f"Erreur : L'id de l'auto backup \"{id}\" existe déjà dans la "
-                "section [auto-backups].")
             log("ERROR", "Erreur : L'id de l'auto backup " + id + " existe déjà dans "
                          "la section [auto-backups].")
-            return
+            raise Exception(
+                f"Erreur : L'id de l'auto backup \"{id}\" existe déjà dans la "
+                "section [auto-backups].")
 
         # Ajout de la ligne
         print(
@@ -73,13 +72,17 @@ class AutoBackupService:
         lines.insert(index_auto_backups + 1, new_line)
 
         # Écrire les lignes mises à jour dans le fichier
-        with open(Utils.config_file, 'w', encoding="utf-8") as f:
-            f.writelines(lines)
+        try:
+            with open(Utils.get_config_file_path(), 'w', encoding="utf-8") as f:
+                f.writelines(lines)
+        except Exception as e:
+            log("ERROR", "Erreur : " + str(e))
+            raise Exception("Erreur : " + str(e))
 
     def delete_auto_backup(self, id):
         """Delete a backup"""
         # On ouvre le fichier en mode lecture
-        lines = Utils.read_file_lines(Utils.config_file)
+        lines = Utils.read_file_lines(Utils.get_config_file_path())
 
         # On cherche les indices de [servers] et [auto-backups]
         index_auto_backups = Utils.find_auto_backups_index(lines)
@@ -96,7 +99,7 @@ class AutoBackupService:
         # Si la ligne à supprimer a été trouvée, on la supprime
         if line_to_delete is not None:
             Utils.delete_line(lines, line_to_delete)
-            Utils.write_file_lines(Utils.config_file, lines)
+            Utils.write_file_lines(Utils.get_config_file_path(), lines)
             print(
                 f"L'auto backup avec l'id \"{id}\" a été supprimé de la section ["
                 "auto-backups].")
@@ -113,7 +116,7 @@ class AutoBackupService:
     def update_auto_backup(self, id, new_frequency="", new_name="", new_timestamp="", new_path=""):
         """update a specific backup"""
         # On ouvre le fichier en mode lecture
-        lines = Utils.read_file_lines(Utils.config_file)
+        lines = Utils.read_file_lines(Utils.get_config_file_path())
 
         # On cherche les indices de [auto-backups]
         index_auto_backups = Utils.find_auto_backups_index(lines)
@@ -150,7 +153,7 @@ class AutoBackupService:
                 lines[line_to_update] = updated_line
 
                 # Écrire les lignes mises à jour dans le fichier
-                with open(Utils.config_file, 'w', encoding="utf-8") as f:
+                with open(Utils.get_config_file_path(), 'w', encoding="utf-8") as f:
                     f.writelines(lines)
 
                 print(
