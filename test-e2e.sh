@@ -12,7 +12,7 @@ add_command(){
 
 test_key_gen() {
   echo "Testing key gen..."
-  build_command "python kdna/main.py encrypt key-gen"
+  build_command "python kdna/__main__.main encrypt key-gen"
   if $command; then
     echo "Tests key gen passed!"
   else
@@ -21,7 +21,7 @@ test_key_gen() {
 }
 
 test_create_project(){
-  build_command "python kdna/main.py server add -i S1 -ad test@e2e-server -a jul -r test -p 2"
+  build_command "python kdna/__main__.py server add -i S1 -ad test@e2e-server -a jul -r test -p 2"
   if $command; then
     echo "Tests create project passed!"
   else
@@ -30,7 +30,7 @@ test_create_project(){
 }
 
 test_create_tag(){
-  build_command "python kdna/main.py encrypt create-tag --tag-name test --tag-value test"
+  build_command "python kdna/__main__.py encrypt create-tag --tag-name test --tag-value test"
   if $command; then
     echo "Tests create tag passed!"
   else
