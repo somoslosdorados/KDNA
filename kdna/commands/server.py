@@ -43,6 +43,11 @@ def add(alias, address, repo, port, id=None, encrypt=True):
     :rtype: str
     :param encrypt: -e encrypt les sauvegardes sur le serveur\n
     :type encrypt: bool\n"""
+    if id is None:
+        # Obtenir la valeur maximale de l'id existant
+        max_id = ServerService.get_max_id()
+        id = max_id + 1
+        
     try:
         connection = SSHClient(address)
         connection.sendCommand("ls > /dev/null")
@@ -79,20 +84,21 @@ def delete(alias, id):
 
 @server.command()
 @click.argument('alias', required=True)
-@click.option('-c', 'credentials', default='', required=False, help="entrer les nouvelles credentials")
+@click.option('-r', '--new_repo', required=False, help="entrer le répertoire de sauvegarde Ex: /home/user/backup")
 @click.option('-p', 'port', default='', required=False, help="entrer le nouveau port")
 @click.option('-ad', 'new_address', default='', required=False, help="entrer la nouvelle adresse")
 @click.option('-a', 'new_alias', default='', required=False, help="entrer le nouvel alias")
-def update(alias, credentials, port, new_address, new_alias):
+@click.option('-e', '--encrypt',default='', required=False, help="Encrypt les sauvegardes sur le serveur (valeur par defaut : True) Ex: False")
+def update(alias, new_repo, port, new_address, encrypt, new_alias):
     """
     Commande pour mettre à jour un serveur.\n
     argument obligatoire :\n
     \t- <alias>: l'alias du serveur à mettre à jour
     """
     serverService = ServerService()
-    if alias and new_address or alias and credentials or alias and port or alias and new_alias:
+    if alias and new_address or alias and new_repo or alias and port or alias and encrypt or alias and new_alias:
         serverService.update_server(
-            alias, credentials, port, new_address, new_alias)
+            alias, new_repo, port, new_address, new_repo, new_alias)
     else:
         click.echo("Les arguments à mettre à jour doivent être renseignés.")
 # Création de la commande list
