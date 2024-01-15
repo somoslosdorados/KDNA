@@ -3,10 +3,14 @@ from kdna.tags import tags
 from fabric import Connection
 from kdna.parsing import parser
 from kdna.ssh.ssh_client import SSHClient
+from kdna.conf_utils.utils import Utils
+from kdna.server.server_service import ServerService
 
 @pytest.mark.skip(reason="Not implemented yet")
 @pytest.fixture
 def connexion_instance():
+    Utils.initialize_config_file()
+    ServerService.create_server(ServerService,"test", "debian12.local", "./", "22", "test")
     parser.parseConfig()
     list_servers = parser.listServers
     found = False
@@ -18,7 +22,7 @@ def connexion_instance():
             connection_instance.connection.run("mkdir -p ./kdna/.test/test.tar.gz")
             break
     if not found:
-        raise FileNotFoundError("Server not found")
+        raise FileNotFoundError("Server not found, to run this test you need to add a server with id 'test' in your config file")
     yield
     connection_instance.connection.run("rm -rf ./kdna/.test")
 
