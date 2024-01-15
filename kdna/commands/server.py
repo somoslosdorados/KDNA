@@ -38,7 +38,7 @@ def add(id, alias, address, repo, port, encrypt):
             connection.sendCommand(f"test ! -d {repo} && mkdir {repo}")
         except Exception:
             click.echo("Le dossier existe déjà")
-        serverService.create_server(id, address, repo, port, alias)
+        serverService.create_server(id, address, repo, port, encrypt, alias)
     except Exception as e:
         print(e)
         print("An errror occured connection on this adress fail.")
@@ -88,6 +88,7 @@ def list():
     """Commande pour lister les serveurs"""
     serverService = ServerService()
     servers = serverService.find_all()
+    print(servers)
     table = tabulate(
         [[data for data in server.values()] for server in servers],
         ['id', 'host', 'path', 'port', 'alias'],
