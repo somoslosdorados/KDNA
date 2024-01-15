@@ -1,74 +1,28 @@
 import pytest
 from kdna.tags import tags 
 from fabric import Connection
+from kdna.parsing import parser
+from kdna.ssh.ssh_client import SSHClient
 
 @pytest.mark.skip(reason="Not implemented yet")
 @pytest.fixture
 def connexion_instance():
-    c =  Connection()
-    if c.is_connected:
-        return c
-
-@pytest.mark.skip(reason="Not implemented yet")
-def test_add_tags():
-    path_to_conf_tag = "./kdna/project/tags.conf"
-    tags.add_tags(connexion_instance, "project", "tag", "save", True)
-    assert connexion_instance.exists(path_to_conf_tag)
-    tags.get_tag_conf(path_to_conf_tag, connexion_instance)
-    try:
-        with open('tags.conf', "r") as tag_file:
-            tag_lines = tag_file.readlines()
-        tag_lines.pop(0)
-    except PermissionError:
-        raise PermissionError("Erreur de permission: read sur tags.conf")
+    parser.parseConfig()
+    list_servers = parser.listServers
     found = False
-    for line in tag_lines:
-        tag_file_couple = line.split(", ")
-        if ("tag" == tag_file_couple[0]):
+    for server_i in list_servers:
+        if server_i.id_server == "test":
             found = True
-    assert found
+            connection_instance = SSHClient(server_i.credentials,server_i.path)
+            connection_instance.connect()
+            connection_instance.connection.run("mkdir -p ./kdna/.test/test.tar.gz")
+            break
+    if not found:
+        raise FileNotFoundError("Server not found")
+    yield
+    connection_instance.connection.run("rm -rf ./kdna/.test")
 
-@pytest.mark.skip(reason="Not implemented yet")
-def test_delete_tags():
-    path_to_conf_tag = "./kdna/project/tags.conf"
-    tags.delete_tags(connexion_instance, "project", "tag", True)
-    assert connexion_instance.exists(path_to_conf_tag)
-    tags.get_tag_conf(path_to_conf_tag, connexion_instance)
-    try:
-        with open('tags.conf', "r") as tag_file:
-            tag_lines = tag_file.readlines()
-        tag_lines.pop(0)
-    except PermissionError:
-        raise PermissionError("Erreur de permission: read sur tags.conf")
-    found = False
-    for line in tag_lines:
-        tag_file_couple = line.split(", ")
-        if ("tag" == tag_file_couple[0]):
-            found = True
-    assert not found
 
-@pytest.mark.skip(reason="Not implemented yet")
-def test_update_tags():
-    path_to_conf_tag = "./kdna/project/tags.conf"
-    tags.update_tags(connexion_instance, "project", "newtag", "tag", "save", True)
-    assert connexion_instance.exists(path_to_conf_tag)
-    tags.get_tag_conf(path_to_conf_tag, connexion_instance)
-    try:
-        with open('tags.conf', "r") as tag_file:
-            tag_lines = tag_file.readlines()
-        tag_lines.pop(0)
-    except PermissionError:
-        raise PermissionError("Erreur de permission: read sur tags.conf")
-    found = False
-    for line in tag_lines:
-        tag_file_couple = line.split(", ")
-        if ("tag" == tag_file_couple[0]):
-            found = True
-    assert not found
-    found = False
-    for line in tag_lines:
-        tag_file_couple = line.split(", ")
-        if ("newtag" == tag_file_couple[0]):
-            found = True
-    assert found
-
+def test_add_tags(connexion_instance):
+    tags.add_tags(connexion_instance.connection, ".test", "tag", "test.tar.gz")
+    assert tags.tag_exists(connexion_instance.connection, ".test", "tag")

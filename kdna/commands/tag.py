@@ -23,7 +23,7 @@ def tag():
 @click.option('-p', '--project', required=True, help="entrez le projet dans lequel ajouter le tag")
 @click.option('-t', '--new_tag', required=True, help="entrez le tag à ajouter")
 @click.option('-f', '--file_to_tag', required=True, help="entrez le fichier à tagger")
-@click.option('-s', '--server', required=True, help="entrez l'id du serveur")
+@click.option('-s', '--server', required=True, help="entrez l'id ou l'alias du serveur")
 def add(project, new_tag, file_to_tag, server):
     """Commande pour ajouter un tag."""
 
@@ -32,7 +32,7 @@ def add(project, new_tag, file_to_tag, server):
     connection_instance = None
     list_servers = parser.listServers
     for server_i in list_servers:
-        if server_i.id_server == server:
+        if server_i.id_server == server or server_i.alias == server:
             connection_instance = SSHClient(server_i.credentials,server_i.path)
             connection_instance.connect()
             break
@@ -55,7 +55,7 @@ def add(project, new_tag, file_to_tag, server):
 @tag.command()
 @click.option('-p', '--project', required=True, help="entrez le projet dans lequel ajouter le tag")
 @click.option('-t', '--old_tag', required=True, help="entrez le tag à supprimer")
-@click.option('-s', '--server', required=True, help="entrez l'id du serveur")
+@click.option('-s', '--server', required=True, help="entrez l'id ou l'alias du serveur")
 def delete(project, old_tag, server):
     """Commande pour supprimer un tag."""
 
@@ -64,7 +64,7 @@ def delete(project, old_tag, server):
     connection_instance = None
     list_servers = parser.listServers
     for server_i in list_servers:
-        if server_i.id_server == server:
+        if server_i.id_server == server or server_i.alias == server:
             connection_instance = SSHClient(server_i.credentials,server_i.path)
             connection_instance.connect()
             break
@@ -88,14 +88,14 @@ def delete(project, old_tag, server):
 @click.option('-p', '--project', required=True, help="entrez le projet dans lequel ajouter le tag")
 @click.option('-t', '--old_tag', required=True, help="entrez le tag à modifier")
 @click.option('-n', '--new_tag', required=True, help="entrez le nouveau tag")
-@click.option('-s', '--server', required=True, help="entrez l'id du serveur")
+@click.option('-s', '--server', required=True, help="entrez l'id ou l'alias du serveur")
 def update(project, old_tag, new_tag,server):
     """Commande pour modifier un tag."""
 
     connection_instance = None
     list_servers = parser.listServers
     for server_i in list_servers:
-        if server_i.id_server == server:
+        if server_i.id_server == server or server_i.alias == server:
             connection_instance = SSHClient(server_i.credentials,server_i.path)
             connection_instance.connect()
             break
@@ -117,14 +117,14 @@ def update(project, old_tag, new_tag,server):
 # Création de la commande list
 @tag.command()
 @click.option('-p', '--project', required=True, help="entrez le projet du tag à supprimer")
-@click.option('-s', '--server', required=True, help="entrez l'id du serveur")
+@click.option('-s', '--server', required=True, help="entrez l'id ou l'alias du serveur")
 def list(project, server):
     """Commande pour lister les tags."""
     
     connection_instance = None
     list_servers = parser.listServers
     for server_i in list_servers:
-        if server_i.id_server == server:
+        if server_i.id_server == server or server_i.alias == server:
             connection_instance = SSHClient(server_i.credentials,server_i.path)
             connection_instance.connect()
             break
