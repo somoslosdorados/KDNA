@@ -1,12 +1,12 @@
 # KDNA
 
-As part of the python program, we were responsible for carrying out the KDNA project.
+As part of the python program, we were responsible for carrying out the KDNA project. This is the official repository for the DO 2023-2026 python CLI backup project.
 
-KDNA is a python-coded application for automating and generating document backups on remote servers.
-The software works as follows.
+KDNA is a python application for automating and generating document backups on remote servers.
+The software works as follows : 
 
-First, the application is installed on an X machine by a user with rights to that machine.
-Once the software has been installed on a machine, users can connect to it to initialize their configurations.
+First, the application is installed on a local machine by a user with rights to that machine.
+Once the software has been installed, users can initialize their configurations.
 
 This configuration is made up of two parts:
 - Servers, which are the remote servers to which the user has access.
@@ -14,19 +14,17 @@ This configuration is made up of two parts:
 
 Backups, thus created, target a directory or a file, which, on the remote server, will be saved at the root of the user's repository (the one selected during server configuration) on his `/home` directory in a `kdna` folder.
 
-Backups are automated to run recurrently according to their definitions, and are also encrypted by default for security reasons.
+Backups can be automated to run recurrently according to their configuration, and are also encrypted by default for security reasons.
 
 ## User installation
 
-This is the official repository for the DO2023-2026 python CLI backup project.
-
 ### Prerequisites
 
- - In order to run the project you will need an **SSH key**, *without any password* on this one. This will allow us to connect to the server.
+ In order to run the project you will need an **SSH key**, *with no passphrase*. This will allow us to connect to the server.
 
 
 ### Install the KDNA project
-- ### Option 1 : 
+- ### Option 1: 
     Without cloning the project run the following line in your terminal :
     ```bash 
     pip install -e "git+https://github.com/somoslosdorados/KDNA.git/#egg=kdna" 
@@ -36,7 +34,7 @@ This is the official repository for the DO2023-2026 python CLI backup project.
     kdna server init
     ```
 
-- ### Option 2 :
+- ### Option 2:
     You can also install the KDNA project with the following lines :  
     - ### Cloning the project 
     ```bash
@@ -98,7 +96,7 @@ Once you've finished the installation, you should be able to create local server
 In the following steps we will see how the project works. 
 
 ## Commands line
-Here you can find all the command you need to manage the project. 
+Here you can find all the command you need to manage the application. 
 
 ### Help
 
@@ -139,13 +137,13 @@ kdna server <command> [options] [arguments]
 
     Adding a backup server.
     ```
-    kdna server add -i <id_server> -ad <libele_connexion> -a <alias_server> -r <repo_backup> -p <port_server>
+    kdna server add -i <id_server> -ad <connection_label> -a <alias_server> -r <repo_backup> -p <port_server>
     ```
 
     #### Example
 
     ```
-    kdna server add -i S1 -ad kdna@162.38.112.110 -a alias -r /my/repository/backup/ -p 22
+    kdna server add -i 1 -ad kdna@162.38.112.110 -a alias -r /my/repository/backup/ -p 22
     ```
 
     #### Options
@@ -200,10 +198,11 @@ kdna server <command> [options] [arguments]
     | Options |  Type  |   Description    | Required |
     |:--------|:------:|:----------------:|:--------:|
     |         | String |      alias       |   True   |
-    | -c      | String | new_credentials  |   False  |
+    | -r      | String |     new_repo     |   False  |
     | -p      | String | new_port_serveur |   False  |
     | -ad     | String |   new_address    |   False  |
     | -a      | String |    new_alias     |   False  |
+    | -e      | String |     encrypt      |   False  |
 
 
 - ### List
@@ -217,7 +216,7 @@ kdna server <command> [options] [arguments]
     #### Example
 
     ```
-    kdna server list <project_name>
+    kdna server list project
     ```
 
     #### Options
@@ -309,7 +308,7 @@ kdna auto-backup <command> [options] [arguments]
     | -d      | String |      start_date      |   False  |
     | -p      | String |     path_backup      |   False  |
 
-    > NOTE : you cannot change the server id, as the backup is linked to it.
+    > NOTE : you can't change the server id, as the backup is linked to it.
 
 
 - ### List
@@ -384,7 +383,7 @@ kdna backup <command> [options] [arguments]
     kdna backup restore -t <name:tag> <path_backup>
     ```
 
-    Example
+    #### Example
 
     ```
     kdna backup restore -t backup:tag /home
@@ -443,9 +442,9 @@ kdna encrypt <command> [options]
     kdna encrypt activate
     ```
 
-- ### Désactivation
+- ### Deactivation
 
-    Desactivate encryption
+    Deactivate encryption
     ```
     kdna encrypt deactivate
     ```
@@ -464,13 +463,13 @@ kdna tag <command> [options]
     Create a tag
 
     ```
-    kdna tag add -t <tag> -p <project> -f <file>
+    kdna tag add -t <tag> -p <project_name> -f <file>
     ``` 
 
     #### Example
 
     ```
-    kdna tag -t tag -p project_name -f a_file
+    kdna tag -t tag -p project -f a_file
     ```
 
     #### Options
@@ -493,16 +492,15 @@ kdna tag <command> [options]
 
 ## kdna.conf file format
 
-This file contains all the data regarding configuration that we want to save.
-
-The configuration file will be automatically created in `~/.kdna/kdna.conf` if it is not present in the project. The file is structured with the following tags:
+This file contains all the configuration that we want to use.
+It will be automatically created in `~/.kdna/kdna.conf` if it is not present in the project. The file is structured with the following tags:
 
 ```
 [servers]
 [auto-backups]
 ```
 
-After adding servers/auto-backup, the knda.conf file will contain the following data in order:
+After adding servers/auto-backup, the `knda.conf` file will contain the following data in order:
 
 ```
 [servers]
@@ -540,7 +538,7 @@ B4, monthly, okay, 2021-01-01, S4, /home/backup
 
 ## Contributors installation
 
-Follow the instructions for the user option2 installation then you can follow here. 
+Follow the instructions for the user [option 2](#option-2) installation then you can follow here. 
 
 ### Install a virtual environment
 In this project, we use the `py venv` virtual environment. Here is the official documentation : https://docs.python.org/3/library/venv.html
@@ -552,21 +550,21 @@ apt install python3-poetry
 
 
 ### The pipeline
-The CI (Continuous Integration) will activate automatically each time a push or a pull request will append. 
+ The CI (Continuous Integration) will activate automatically each time a push or a pull request will append. 
 
-Inside the pipeline we have a job, named build, who will run on the `matrix.plateform`. 
-The plateform will define the environnement where we are running the tests.
+Inside the pipeline we have a job, named build, who will run on the `matrix.platform`. 
+The platform will define the environnement where we are running the tests.
 
-Here we are testins on three different plateform :
+Here we are testing on three different platforms :
 `[ubuntu-latest, macos-latest, windows-latest]`.
 
 On three different versions : `[3.10.11, 3.11.6, 3.12.0]`. 
 
-This bring us to a total of nine test environements (3x3). 
+This brings us to a total of nine test environements (3x3). 
 
 #### Execution of the pipeline : 
 
-1. `- uses: actions/checkout@v1` : we retrieve the project code, the equivalent on doing a `git clone`.
+1. `- uses: actions/checkout@v1` : we retrieve the project code, the equivalent of doing a `git clone`.
 
 2. `- name: Set up Python ${{ matrix.python-version }}` : we set up python. 
 
