@@ -38,9 +38,12 @@ class ServerService:
         """Get the maximum ID among the servers"""
         lines = self.find_all()
         max_id = 0
-        for line in lines:
-            if line[0] > max_id:
-                max_id = line[0]
+        # for line in lines:
+        #     if line[0] > max_id:
+        #         max_id = line[0]
+        for server in lines:
+            if server['id'] > max_id:
+                max_id = server['id']
         return max_id
 
     def find_all(self):
@@ -58,25 +61,25 @@ class ServerService:
         lines = Utils.read_file_lines(Utils.get_config_file_path())
         index_servers = Utils.find_servers_index(lines)
         index_auto_backups = Utils.find_auto_backups_index(lines)
-      lines = Utils.read_file_lines(Utils.get_config_file_path())
-      index_servers = Utils.find_servers_index(lines)
-      index_auto_backups = Utils.find_auto_backups_index(lines)
+        lines = Utils.read_file_lines(Utils.get_config_file_path())
+        index_servers = Utils.find_servers_index(lines)
+        index_auto_backups = Utils.find_auto_backups_index(lines)
 
-      existing_aliases = self.extract_existing_aliases(
+        existing_aliases = self.extract_existing_aliases(
         lines,
         index_servers,
         index_auto_backups
-      )
-      if alias in existing_aliases:
-        line_to_print = self.find_line_to_delete(lines, index_servers, alias, by_alias=True)
-        #print(lines[line_to_print].strip())
-        data_server = array_to_dic(lines[line_to_print].split(','))
-        server = Server(data_server['host'])
-        return server
+        )
+        if alias in existing_aliases:
+            line_to_print = self.find_line_to_delete(lines, index_servers, alias, by_alias=True)
+            #print(lines[line_to_print].strip())
+            data_server = array_to_dic(lines[line_to_print].split(','))
+            server = Server(data_server['host'])
+            return server
 
-      else:
-        print(f"Erreur : Aucun serveur trouvé avec l'alias \"{alias}\" dans la "
-              f"section [server].")
+        else:
+            print(f"Erreur : Aucun serveur trouvé avec l'alias \"{alias}\" dans la "
+                f"section [server].")
 
 
     def create_server(self, id, address, credentials, port,  encrypt, alias):
@@ -132,7 +135,7 @@ class ServerService:
             confirmation_message = f'Le server avec l\'id "{id}"'
             if alias is not None:
                 confirmation_message += f'et l\'alias "{alias}"'
-            confirmation_message += " a été ajouté dans la section [server]."
+            confirmation_message += " a été ajouté dans la section [servers]."
             print(confirmation_message)
         else:
             print("Erreur : Section [server] non trouvé dans le fichier.")
@@ -143,7 +146,7 @@ class ServerService:
         index_servers = Utils.find_servers_index(lines)
         element_type = "alias" if by_alias else "id"
         if index_servers is None:
-            print("Erreur : Section [server] non trouvée dans le fichier.")
+            print("Erreur : Section [servers] non trouvée dans le fichier.")
             return
 
         line_to_delete = self.find_line_to_delete(lines, index_servers, id, by_alias)
