@@ -11,7 +11,7 @@ def directory_exists(connection: Connection, path: str) -> bool:
 
 def upload_file(connection: Connection, local_path: str, remote_path: str) -> None:
     """
-    Send a file on a specific path in th/e remote server. Might throw an exception.
+    Send a file on a specific path in the remote server. Might throw an exception.
     """
     if not directory_exists(connection, remote_path):
         connection.run(f"mkdir -p {remote_path}")
@@ -19,7 +19,7 @@ def upload_file(connection: Connection, local_path: str, remote_path: str) -> No
     connection.put(local_path, remote=remote_path)
 
 
-def download_file(connection: Connection, local_path: str, remote_path: str) -> str:
+def download_file(connection: Connection, local_path: str, remote_path: str) -> None:
     """
     Receive a file on a specific path from the remote server. Might throw an exception.
     """
@@ -57,8 +57,7 @@ def find_path(connection: Connection, tag: str, project_name: str) -> str:
     # renvoie le path du backup
     return f"./kdna/{project_name}/{backup_name}"
 
-
-def find_all_file(connection: Connection, tag: str, verbose=False):
+def find_all_file(connection: Connection, tag: str,verbose=False) -> list:
     """return a list of path of backups that or tag with the given tag"""
     # Listing des différents projets
     try:

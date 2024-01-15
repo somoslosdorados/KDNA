@@ -9,6 +9,11 @@ repository = "https://github.com/somoslosdorados/KDNA"
 packages = [
     { include = "kdna" },
 ]
+[tool.poetry.scripts]
+kdna = "kdna.main:kdna"
+
+[tool.setuptools]
+script-files = ["kdna = kdna.main:kdna"]
 
 [tool.poetry.dependencies]
 python = "^3.10"

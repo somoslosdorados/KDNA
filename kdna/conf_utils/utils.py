@@ -1,5 +1,8 @@
 """Utils"""
 
+import os
+from kdna.logger import logger
+from kdna.parsing import parser
 
 import os
 
@@ -13,24 +16,30 @@ class Utils:
     def initialize_config_file():
         kdna_directory = os.path.join(os.path.expanduser("~"), ".kdna")
         config_file_path = Utils.get_config_file_path()
-        config_content = "[server]\n[auto-backup]\n"
+        config_content = "[servers]\n[auto-backups]\n"
         # TODO: mettre les print dans les logs
         # Vérifier si le dossier kdna existe, sinon le créer
         if not os.path.exists(kdna_directory):
             os.makedirs(kdna_directory)
+            logger.log("INFO", "Dossier créé: " + kdna_directory)
             # print("Dossier créé:", kdna_directory)
-        else:
-            # print("Le dossier existe déjà:", kdna_directory)
-            pass
 
         # Vérifier si le fichier kdna.conf existe, sinon le créer
         if not os.path.exists(config_file_path):
             with open(config_file_path, "w") as config_file:
                 config_file.write(config_content)
+            logger.log("INFO", "Fichier créé: " + config_file_path)
             # print("Fichier créé:", config_file_path)
-        else:
-            # print("Le fichier existe déjà:", config_file_path)
-            pass
+
+        parser.parseConfig()
+
+    @staticmethod
+    def get_config_file_path():
+        """Get the path of the config file"""
+        home_directory = os.path.expanduser("~")
+        kdna_directory = os.path.join(home_directory, ".kdna")
+        config_file_path = os.path.join(kdna_directory, Utils.config_file)
+        return config_file_path
 
     @staticmethod
     def get_config_file_path():
@@ -73,12 +82,12 @@ class Utils:
     @staticmethod
     def find_auto_backups_index(lines):
         """Find the index of a specific autobackup"""
-        return Utils.find_section(lines, "[auto-backup]")
+        return Utils.find_section(lines, "[auto-backups]")
 
     @staticmethod
     def find_servers_index(lines: list) -> int:
-        """Find the index of a specific [server]"""
-        return Utils.find_section(lines, "[server]")
+        """Find the index of a specific [servers]"""
+        return Utils.find_section(lines, "[servers]")
 
     @staticmethod
     def delete_line(lines, line_to_delete):

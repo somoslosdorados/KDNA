@@ -7,7 +7,8 @@ listServers = []
 listAutoBackups = []
 
 kdna_path = os.path.join(os.path.expanduser('~'), '.kdna')
-# os.path.join(kdna_path, 'temp')
+
+
 def parseConfig():
     """
     Parse le fichier de configuration
@@ -56,7 +57,7 @@ def line_is_header(line: str) -> str:
     """
     Verifie si la ligne est un header
     """
-    if line.startswith("[") and line.endswith("]\n"):
+    if line.startswith("[") and (line.endswith("]\n") or line.endswith("]")) :
         return line[1:-2]
     return None
 

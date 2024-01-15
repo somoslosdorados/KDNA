@@ -296,7 +296,6 @@ class ServerService:
                 # Si l'alias correspond à celui à mettre à jour
                 if line_alias == alias_to_update:
                     return i + index_servers + 1
-
         return None
 
     @staticmethod

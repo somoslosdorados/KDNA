@@ -48,7 +48,7 @@ class AutoBackupService:
     if str(id) in existing_backups:
         print(
             f"Erreur : L'id de l'auto backup \"{id}\" existe déjà dans la "
-            f"section [auto-backup].")
+            f"section [auto-backups].")
         return
 
     # Ajout de la ligne
@@ -66,11 +66,11 @@ class AutoBackupService:
     # On ouvre le fichier en mode lecture
     lines = Utils.read_file_lines(Utils.config_file)
 
-    # On cherche les indices de [server] et [auto-backup]
+    # On cherche les indices de [server] et [auto-backups]
     index_auto_backups = Utils.find_auto_backups_index(lines)
     if index_auto_backups is None:
         print(
-            "Erreur : Section [auto-backup] non trouvé dans le fichier.")
+            "Erreur : Section [auto-backups] non trouvé dans le fichier.")
         return
 
     # On cherche la ligne à supprimer
@@ -94,10 +94,10 @@ class AutoBackupService:
     # On ouvre le fichier en mode lecture
     lines = Utils.read_file_lines(Utils.config_file)
 
-    # On cherche les indices de [auto-backup]
+    # On cherche les indices de [auto-backups]
     index_auto_backups = Utils.find_auto_backups_index(lines)
 
-    # On regarde si la section [auto-backup] existe
+    # On regarde si la section [auto-backups] existe
     if index_auto_backups is not None:
         # On cherche la ligne à mettre à jour
         line_to_update = self.find_line_to_update(
@@ -116,10 +116,10 @@ class AutoBackupService:
                 existing_line) >= 6 else None
 
             # Mettre à jour les informations si de nouvelles valeurs sont fournies
-            new_frequency = new_frequency if new_frequency is not "" else existing_frequency
-            new_name = new_name if new_name is not "" else existing_name
-            new_timestamp = new_timestamp if new_timestamp is not "" else existing_timestamp
-            new_path = new_path if new_path is not "" else existing_path
+            new_frequency = new_frequency if new_frequency != "" else existing_frequency
+            new_name = new_name if new_name != "" else existing_name
+            new_timestamp = new_timestamp if new_timestamp != "" else existing_timestamp
+            new_path = new_path if new_path != "" else existing_path
 
             # Construire la nouvelle ligne mise à jour
             updated_line = (f"{existing_id_backup}, {new_frequency}, {new_name}, "
@@ -134,15 +134,15 @@ class AutoBackupService:
 
             print(
                 f"L'auto backup avec l'id \"{id}\" a été mis à jour dans la "
-                f"section [auto-backup].")
+                f"section [auto-backups].")
         # Sinon, afficher un message d'erreur
         else:
             print(
                 f"Erreur : Aucun élément trouvé avec l'id \"{id}\" dans la section "
-                f"[auto-backup].")
+                f"[auto-backups].")
     else:
         print(
-            "Erreur : Section [auto-backup] non trouvée dans le fichier.")
+            "Erreur : Section [auto-backups] non trouvée dans le fichier.")
 
   @staticmethod
   def find_line_to_update(lines, index_auto_backups, id_to_update):
@@ -171,7 +171,7 @@ class AutoBackupService:
   @staticmethod
   def extract_existing_backups(lines, index_auto_backups):
     """Extract an existing backup"""
-    # Fonction pour extraire les id_backup dans la section [auto-backup]
+    # Fonction pour extraire les id_backup dans la section [auto-backups]
     return [line.split(',')[0].strip() for line in lines[index_auto_backups + 1:] if
             len(line.split(',')) >= 6 and line.strip()]
     

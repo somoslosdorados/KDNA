@@ -26,19 +26,7 @@ def server():
 @click.option('-r', '--repo', required=True, help="entrer le répertoire de sauvegarde")
 @click.option('-p', '--port', required=True, help="entrer le port")
 def add(id, alias, address, repo, port):
-    """Commande pour ajoute un serveur.
-    :param id: -i l'id du serveur à séléctionner\n
-     :type id: str\n
-     :param alias: -a l'alias du serveur à sélectionner\n
-     :type alias: str\n
-     :param address: -ad libeler de connexion \n
-     :type address: str\n
-     :param repo: -c le repertoire dans lequel les sauvegardes seront envoyé\n
-     :type repo: str\n
-     :param port: -p le port du serveur à sélectionner\n
-     :type port: str\n
-     :return: un message de confirmation ou d'erreur\n
-     :rtype: str"""
+    """Commande pour ajoute un serveur."""
     try:
         connection = SSHClient(address)
         connection.sendCommand("ls > /dev/null")
@@ -54,18 +42,13 @@ def add(id, alias, address, repo, port):
         return None
 
 
+
 # Création de la commande delete
 @server.command()
 @click.option('-a', '--alias', required=False, help="entrer l'alias du serveur à supprimer")
 @click.option('-i', '--id', required=False, help="entrer l'id du serveur à supprimer")
 def delete(alias, id):
-    """Commande pour supprimer un serveur.\n
-    :param alias: -a l'alias du serveur à supprimer\n
-    :type alias: str\n
-    :param id: -i l'ID du serveur à supprimer\n
-    :type id: str\n
-    :return: un message de confirmation ou d'erreur\n
-    :rtype: str"""
+    """Commande pour supprimer un serveur."""
     serverService = ServerService()
     if alias:
         serverService.delete_server(alias, True)
@@ -101,11 +84,7 @@ def update(alias, credentials, port, new_address, new_alias):
 
 @server.command()
 def list():
-    """
-    Commande pour lister les serveurs
-    :return: Liste des serveurs : class: `str`\n
-    :rtype: list
-    """
+    """Commande pour lister les serveurs"""
     serverService = ServerService()
     servers = serverService.find_all()
 

@@ -12,10 +12,6 @@ from kdna.ssh.ssh_client import SSHClient
 from kdna.tags import tags
 from kdna.parsing import parser
 
-parser.parseConfig()
-list_servers = parser.listServers
-
-
 @click.group()
 def tag():
     """Commande pour gérer les tags"""
@@ -34,6 +30,7 @@ def add(project, new_tag, file_to_tag, server):
 #serversCredential = listServers[0].credentials
  #   instance = SSHClient(serversCredential).connect()
     connection_instance = None
+    list_servers = parser.listServers
     for server_i in list_servers:
         if server_i.id_server == server:
             connection_instance = SSHClient(server_i.credentials,server_i.path)
@@ -60,11 +57,12 @@ def add(project, new_tag, file_to_tag, server):
 @click.option('-t', '--old_tag', required=True, help="entrez le tag à supprimer")
 @click.option('-s', '--server', required=True, help="entrez l'id du serveur")
 def delete(project, old_tag, server):
-    """Commande pour ajouter un tag."""
+    """Commande pour supprimer un tag."""
 
 #serversCredential = listServers[0].credentials
  #   instance = SSHClient(serversCredential).connect()
     connection_instance = None
+    list_servers = parser.listServers
     for server_i in list_servers:
         if server_i.id_server == server:
             connection_instance = SSHClient(server_i.credentials,server_i.path)
@@ -95,6 +93,7 @@ def update(project, old_tag, new_tag,server):
     """Commande pour modifier un tag."""
 
     connection_instance = None
+    list_servers = parser.listServers
     for server_i in list_servers:
         if server_i.id_server == server:
             connection_instance = SSHClient(server_i.credentials,server_i.path)
@@ -123,6 +122,7 @@ def list(project, server):
     """Commande pour lister les tags."""
     
     connection_instance = None
+    list_servers = parser.listServers
     for server_i in list_servers:
         if server_i.id_server == server:
             connection_instance = SSHClient(server_i.credentials,server_i.path)
