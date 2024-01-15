@@ -1,8 +1,8 @@
 # KDNA
 
-This is the official repository for the DO2023-2026 python CLI backup project
+This is the official repository for the DO2023-2026 python CLI backup project.
 
-After cloning the repository you need to install all dependencies
+After cloning the repository you need to install all dependencies.
 
 ## Documentation - CRUD of config file
 
@@ -147,12 +147,12 @@ In addition, the id linked to the server cannot be modified, as the back-up is l
 | Signature : |  id_backup  | 
 | :---------- | ----------: |
 | Type :      |   String    |
-| RUle :     | Mandatory |
+| Rule :     | Mandatory |
 
 
 If you want to display an auto-backup by its id, you can use the following command:
 
-```
+``
 autoBackupService.find_by_id("9")
 ```
 
@@ -161,6 +161,6 @@ autoBackupService.find_by_id("9")
 It is possible to display all servers or all auto-backups in our configuration file. To do this, use the following command:
 ```
 autoBackupService.find_all()
-ou
+or
 serverService.find_all()
 ```
