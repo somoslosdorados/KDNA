@@ -57,22 +57,10 @@ def add(project, path, tag):
     Commande pour sauvegarder un fichier ou un dossier.\n
     Arguments obligatoires :\n
     \t- <project>: le nom du projet à sauvegarder\n
-    \t- <path>: le chemin du fichier ou du dossier à sauvegarder\n
+    \t- <path>: le chemin du dossier ou fichier à sauvegarder\n
     \t- <tag>: le tag de la sauvegarde
-
-    author: Baptiste BRONSIN
     """
-
-    click.echo(f"Creating backup in {project} with {tag} tag")
-
-    if len(listServers) == 0:
-        click.echo("Any server found in the configuration file.")
-        return
-
-    if not os.path.exists(path):
-        click.echo("Directory '" + path + "' is missing.")
-        return
-
+    click.echo(f"Creating backup \"{project}\":\n{tag}")
     uuid_backup = str(uuid.uuid4())
     name_of_temp_backup = encrypt.package(path, uuid_backup, kdna_path, listServers[0].encrypt)
     path_to_local_backup = os.path.join(kdna_path, name_of_temp_backup)
@@ -134,11 +122,6 @@ def list(project_name):
     """Commande pour lister les backups d'un projet\n
     Argument obligatoire :\n
     \t- <project_name>: le nom du projet pour lequel lister les backups"""
-
-    if len(listServers) == 0:
-        click.echo("Any server found in the configuration file.")
-        return
-
     try:
         instance = SSHClient(listServers[0].credentials).connect()
     except Exception as e:
@@ -168,6 +151,9 @@ def list(project_name):
               help="entrer le nom du fichier à restaurer et le tag [ name:tag ]")
 @click.argument('path', nargs=1, required=True)
 def restore(nametag, path):
+    """Commande pour restaurer une backup.\n
+        Argument obligatoire :\n
+        \t- <path>: le chemin du fichier ou du dossier à restaurer\n"""
     """Commande pour restaurer une backup.\n
         Argument obligatoire :\n
         \t- <path>: le chemin du fichier ou du dossier à restaurer\n"""
