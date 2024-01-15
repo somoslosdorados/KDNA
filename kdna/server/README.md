@@ -2,165 +2,163 @@
 
 This is the official repository for the DO2023-2026 python CLI backup project
 
-Après avoir cloné le dépôt, vous devrez installer toutes les dépendances
+After cloning the repository you need to install all dependencies
 
-## Documentation - CRUD fichier de config
+## Documentation - CRUD of config file
 
-Pour créer le fichier de configuration faites la commande suivant :
+Creation of the config file :
 
 ```bash
 Utils.initialize_config_file()
 ```
 
-Un fichier est créé :
+A file is created : 
 
 ```
 [server]
 [auto-backup]
 ```
-
-Vous pouvez désormais faire vos commandes dans le fichier `main.py`
+You can now call commands in the file `main.py`
 
 ### Server
 
-Avant toute chose, pensez à instancier le service de serveur comme ceci dans le main.py : 
+Before anything, you need to instanciate the server service in the `main.py` : 
 
 ```
 serviceServer = ServerService()
 ```
 
-1. #### Création
+1. #### Creation
 
-Vous pouvez créer un serveur avec ces différents paramètres :
+You can create a server with these parameters :
 
-| Signature : | id_server | address | credentials |  port  |  alias |
-| :---------- | :-------: | :-----: | :---------: | :----: | -----: |
-| Type :      |  String   | String  |   String    | String | String |
+- id: server ID    (String)
+- address: username@server address  (String)
+- path: path to the SSH key     (String)
+- port: port address    (String)
+- alias: server tag     (String)
+- encrypted: boolean indicating whether the backups for this server are encrypted   (Boolean)
 
-Comme ceci :
+Like this :
 
 ```
-serverService.create_server("S4", "dgrasset@32.432.43.56", "/path/ssh", "5432", "hello")
+serverService.create_server("S4", "dgrasset@32.432.43.56", "/path/ssh", "5432", "hello", True)
 ```
 
-2. #### Suppression
+2. #### Delete
 
-Vous pouvez supprimer un serveur avec ces différents paramètres :
+You can delete a server with these parameters :
 
-| Signature : |  id_server  |   by_alias |
-| :---------- | :---------: | ---------: |
-| Type :      |   String    |    Boolean |
-| Règle :     | Obligatoire | Facultatif |
+- id_server : server ID (String)   (mandatory)
+- by_alias : alias of the server (Boolean)  (optional)
 
-Vous pouvez supprimer un serveur grâce à son id de cette manière :
+You can delete a server with the id like this :
 
 ```
 serverService.delete_server("18")
 ```
 
-Mais vous pouvez aussi supprimer un serveur grâce à son alias de cette manière :
+You can also delete a server using its alias :
 
 ```
 serverService.delete_server("hello", by_alias=True)
 ```
 
-À noter que l'attribut `by_alias` possède de base la valeur `False` c'est pourquoi vous n'avez pas besoin de le préciser lorsque vous voulez effectuer une suppresion par id.
+Note that the `by_alias` attribute has a default value of `False`, so you don't need to specify it when deleting by id.
 
-3. #### Mise à jour
+3. #### Updating
 
-Vous pouvez mettre à jour un serveur grâce à son alias avec ces différents paramètres :
+You can update a server through its alias with these different parameters:
 
 | Signature : |    alias    | address    | credentials |    port    | nouvel alias |
 | :---------- | :---------: | :--------: | :---------: | :--------: | -----------: |
 | Type :      |   String    | String     | String      |   String   |       String |
-| Règle :     | Obligatoire | Facultatif | Facultatif  | Facultatif |   Facultatif |
+| Rule :     | Mandatory | Optional | Mandatory  | Optional |   Optional |
 
 ```
 serverService.update_server("S4", new_port="25", new_address="bplanche@10.0.432.43", new_credentials=".ssh/path", new_alias="SS4")
 ```
 
-À noter que vous n'êtes pas obligé de modifier tous les champs de votre ligne concernant le serveur que vous voulez modifier. Vous pouvez par exemple seulement changer le port en précisant `new_port` en plus de l'`alias` obligatoire dans la signature de votre update.
+Note that you are not obliged to modify all the fields in your line concerning the server you wish to modify. For example, you can only change the port by specifying `new_port` in addition to the mandatory `alias` in your update signature.
 
-De plus l'id du serveur n'est pas modifiable, il sera peut être généré automatiquement plus tard.
+In addition, the server id cannot be modified; it may be generated automatically later.
 
 4. #### Read
 
 | Signature : |  alias_server  | 
 | :---------- | -------------: |
 | Type :      |   String       |
-| Règle :     | Obligatoire    |
+| Rule :     |   Mandatory    |
 
 
-Si vous souhaitez afficher un serveur grace à son alias vous pouvez utiliser la commande suivante :
-
+If you want to display a server by its alias, you can use the following command:
 ```
 serverService.find_by_alias("SS4")
 ```
 
 ### Auto-Backup
 
-Avant toute chose, pensez à instancier le service de serveur comme ceci dans le main.py : 
+First of all, instantiate the server service like this in main.py :
 
 ```
 autoBackupService = AutoBackupService()
 ```
 
-1. #### Création
+1. #### Creation
 
-Vous pouvez créer une auto-backup avec ces différents paramètres :
+You can create an auto-backup with the following parameters:
 
 | Signature : | id_backup | frequency |  name  | timestamp | id_server |   path |
 | :---------- | :-------: | :-------: | :----: | :-------: | :-------: | -----: |
 | Type :      |  String   |  String   | String |  String   |  String   | String |
 
-Comme ceci :
+Like this :
 
 ```
 autoBackupService.create_auto_backup("9", "monthly", "okay", "2021-01-01", "3", "/home/backup")
 ```
 
-2. #### Suppression
+2. #### Deleting
 
-Vous pouvez supprimer une auto-backup grâce à son id de cette manière :
-
+You can delete an auto-backup using its id as follows:
 ```
 autoBackupService.delete_auto_backup("9")
 ```
 
-3. #### Mise à jour
+3. #### Update
 
-Vous pouvez mettre à jour une auto-backup grâce à son id avec ces différents paramètres :
+You can update an auto-backup using its id and these parameters:
 
 | Signature : |  id_backup  | frequency  |    name    | timestamp  |       path |
 | :---------- | :---------: | :--------: | :--------: | :--------: | ---------: |
 | Type :      |   String    |   String   |   String   |   String   |     String |
-| Règle :     | Obligatoire | Facultatif | Facultatif | Facultatif | Facultatif |
+| Rule :     | Mandatory | Optional | Optional | Optional | Optional |
 
 ```
 autoBackupService.update_auto_backup("9", new_frequency="daily", new_timestamp="2021-01-02", new_path="/home/backup")
 ```
 
-À noter que vous n'êtes pas obligé de modifier tous les champs de votre ligne concernant l'auto-backup que vous voulez modifier. Vous pouvez par exemple seulement changer le nom en précisant `new_name` en plus de l'`id` obligatoire dans la signature de votre update.
+Please note that you are not obliged to change all the fields in your line concerning the auto-backup you wish to modify. For example, you can only change the name by specifying `new_name` in addition to the obligatory `id` in the signature of your update.
 
-De plus l'id relié au serveur n'est pas modifiable, car la back-up est lié à celui-ci
+In addition, the id linked to the server cannot be modified, as the back-up is linked to it.
 
 4. #### Read
 
 | Signature : |  id_backup  | 
 | :---------- | ----------: |
 | Type :      |   String    |
-| Règle :     | Obligatoire |
+| RUle :     | Mandatory |
 
 
-Si vous souhaitez afficher une auto-backup grace à son id vous pouvez utiliser la commande suivante :
+If you want to display an auto-backup by its id, you can use the following command:
 
 ```
 autoBackupService.find_by_id("9")
 ```
 
-### Lire tout la partie Auto-Backup & Server
+### Read the entire Auto-Backup & Server section
 
-Il est possible d'afficher tous les serveurs ou d'afficher toutes les auto-backups de notre fichier de configuration. Pour cela utiliser la commande suivante :
+It is possible to display all servers or all auto-backups in our configuration file. To do this, use the following command:
 ```
 autoBackupService.find_all()
 ou
