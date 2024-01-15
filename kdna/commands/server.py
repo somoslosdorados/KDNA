@@ -96,7 +96,7 @@ def list():
     servers = serverService.find_all()
     table = tabulate(
         [[data for data in server.values()] for server in servers],
-        ['id', 'host', 'path', 'port', 'alias'],
+        ['id', 'host', 'path', 'port', 'encrypt', 'alias'],
         tablefmt="grid"
     )
     click.echo(table)
