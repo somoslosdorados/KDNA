@@ -78,8 +78,8 @@ def add(project, path, tag):
         upload_file(instance.connection, path_to_local_backup,
                     path_to_remote_backup)
         os.remove(path_to_local_backup)
-        tags.add_tags(instance.connection, "project",
-                     tag, name_of_temp_backup, True)
+        tags.add_tags(instance.connection, project,
+                     tag, name_of_temp_backup)
     except FileNotFoundError as exc:
         click.echo("Le fichier n'a pas été trouvé")
     except PermissionError as exc:
