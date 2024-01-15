@@ -115,9 +115,29 @@ Managing a backup server
 ```
 kdna server <command> [options] [arguments]
 ```
+
+- ### Init
+    To initialise config file.
+    ```bash 
+    kdna server init
+    ```
+- ### Import
+    To import server from `.ssh/config` file.
+    ```bash
+    kdna server ssh_import
+    ```
+- ### Get status
+    To get status of the server.
+    ```bash
+    kdna server status <alias>
+    ```
+    | Argument|  Type  |        Description         | Required |
+    |:--------|:------:|:--------------------------:|:--------:|
+    |         | String |         alias              |   True   |
+
 - ### Add
 
-    Adding a backup server
+    Adding a backup server.
     ```
     kdna server add -i <id_server> -ad <libele_connexion> -a <alias_server> -r <repo_backup> -p <port_server>
     ```
@@ -298,7 +318,7 @@ kdna auto-backup <command> [options] [arguments]
     ```
     kdna auto-backup list
     ```
-    ---
+---
 
 ### Backup
 
