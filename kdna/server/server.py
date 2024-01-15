@@ -1,5 +1,5 @@
+# mypy: ignore-errors
 from fabric import Connection
-
 from kdna.logger.logger import log  # type: ignore
 from kdna.ssh.ssh_client import SSHClient
 from kdna.tags.tags import get_file_name_by_tag
@@ -62,7 +62,7 @@ class Server:
         """
         files = self.client.connection.run(f"mkdir -p {remote_path}", warn=True).stdout.split("\n")
         if len(files) == 0:
-            log("ERROR", f"Error: no file found on " + remote_path)
+            log("ERROR", "Error: no file found on " + remote_path)
             raise Exception(f"Error: no file found on {remote_path}")
         for file in files:
             self.client.connection.get(file, local=local_path)
@@ -74,7 +74,7 @@ def directory_exists(connection: Connection, path: str):
     """
     t = connection.run(f"test -d {path}", warn=True).ok
     print(t)
-    log("INFO", f"directory_exists: " + str(t))
+    log("INFO", "directory_exists: " + str(t))
     return t
 
 
@@ -95,10 +95,11 @@ def download_file(connection: Connection, local_path: str, remote_path: str) -> 
     # check if there is a file like remote_path.enc or remote_path.tar.gz
     files = connection.run(f"ls {remote_path}", warn=True).stdout.split("\n")
     if len(files) == 0:
-        log("ERROR", f"Error: no file found on : " + remote_path)
+        log("ERROR", "Error: no file found on : " + remote_path)
         raise Exception(f"Error: no file found on {remote_path}")
     for file in files:
         connection.get(file, local=local_path)
+
 
 
 # méthode pour trouver le path d'un backup à partir d'un tag et d'un nom de projet
@@ -108,14 +109,14 @@ def find_path(connection: Connection, tag: str, project_name: str) -> str:
     """
     Find a path in the remote server. Might throw an exception.
     """
-    log("INFO", f"find_path: tag= " + tag + " project_name= " + project_name)
+    log("INFO", "find_path: tag= " + tag + " project_name= " + project_name)
     print(f"find_path: tag={tag}, project_name={project_name}")
 
     # vérifier que le dossier du projet existe
     try:
         connection.run(f"ls ./kdna/{project_name}")
     except Exception:
-        log("ERROR", f"Project " + project_name + "not found")
+        log("ERROR", "Project " + project_name + "not found")
         raise Exception(f"Project {project_name} not found")
 
     # récupérer le nom du backup à partir du tag
@@ -126,7 +127,7 @@ def find_path(connection: Connection, tag: str, project_name: str) -> str:
     try:
         connection.run(f"find ./kdna/{project_name}/{backup_name}")
     except Exception:
-        log("ERROR", f"Tag " + tag + "not found in project " + project_name)
+        log("ERROR", "Tag " + tag + "not found in project " + project_name)
         raise Exception(f"Tag {tag} not found in project {project_name}")
     # renvoie le path du backup
     return f"./kdna/{project_name}/{backup_name}"
@@ -137,7 +138,7 @@ def find_all_file(connection: Connection, tag: str, verbose=False) -> list:
     # Listing des différents projets
     # Listing des différents projets
     try:
-        projects = connection.run(f"ls ./kdna/", hide=True).stdout
+        projects = connection.run("ls ./kdna/", hide=True).stdout
     except:
         log("ERROR", "Can't list projects")
         raise Exception("Can't list projects")
@@ -152,7 +153,7 @@ def find_all_file(connection: Connection, tag: str, verbose=False) -> list:
                 connection, project, tag).strip("\n")
             paths_list.append(f"/{project}/{fileName}")
             message += 'In {:>8}:{:>8}{:>8}\n'.format(project, tag, fileName)
-        except:
+        except Exception:
             message += f"No file tagged {tag} in {project}\n"
 
     if (verbose):

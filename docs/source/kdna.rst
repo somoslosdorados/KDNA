@@ -11,22 +11,12 @@ Subpackages
    kdna.conf_utils
    kdna.connexion_ssh
    kdna.encrypt
+   kdna.logger
    kdna.parsing
    kdna.read_backups
    kdna.server
    kdna.ssh
    kdna.tags
-
-Submodules
-----------
-
-kdna.main module
-----------------
-
-.. automodule:: kdna.main
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 Module contents
 ---------------

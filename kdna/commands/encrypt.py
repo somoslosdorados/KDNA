@@ -16,7 +16,8 @@ def encrypt():
 
 
 @encrypt.command(name='key-gen')
-@click.option('-p', '--path', required=False, default="", help="entrer le path du fichier si vous voulez")
+@click.option('-p', '--path', required=False, default="", help="entrer le path du "
+                                                               "fichier si vous voulez")
 def keygen(path):
     """Command to generate encryption key
     :param path: option to specify the path of the key"""

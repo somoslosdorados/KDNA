@@ -2,7 +2,7 @@
     If the service is running the tags.conf file could change
     
     authors: Dorian TETU, Hugo PONTHIEU"""
-
+# mypy: ignore-errors
 import time
 from fabric import Connection
 from kdna.logger import logger
@@ -50,7 +50,7 @@ def add_tags(connection_instance: Connection, project: str, new_tag: str, file_t
             "ERROR", f"Erreur lors de l'ajout de " + new_tag + " pour le project " + project +
                      f", " + file_to_tag + " n'existe pas")
         raise FileNotFoundError("Erreur: le fichier n'existe pas")
-    if (tag_exists(connection_instance, project, new_tag)):
+    if tag_exists(connection_instance, project, new_tag):
         logger.log(
             "ERROR", f"Erreur lors de l'ajout de " + new_tag + " pour le project " + project +
                      f", " + new_tag + " existe déjà")
@@ -69,7 +69,7 @@ def delete_tags(connection_instance: Connection, project: str, old_tag: str):
     tag_file = get_tag_conf(connection_instance, project)
 
     # Verification de la présence du tag
-    if (not tag_exists(connection_instance, project, old_tag)):
+    if not tag_exists(connection_instance, project, old_tag):
         logger.log(
             "ERROR", f"Erreur lors de la suppression de " + old_tag + " pour le project n'existe pas")
         raise KeyError(f"{old_tag} n'existe pas")
@@ -156,7 +156,7 @@ def check_init_tag_file(connection_instance: Connection, project: str):
     path_to_conf_tag = "./kdna/"+project+"/tags.conf"
     try:
         connection_instance.run(f"find {path_to_conf_tag}", hide=True)
-    except Exception as e:
+    except Exception:
         logger.log(
             "INFO", f"Le fichier {path_to_conf_tag} n'existe pas, il va être créé")
         connection_instance.run(

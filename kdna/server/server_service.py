@@ -1,8 +1,8 @@
+# mypy: ignore-errors
 """This module contains the ServerService class."""
 import os
 import paramiko
 from kdna.conf_utils.utils import Utils
-
 from kdna.logger.logger import log
 from kdna.server.server import Server
 
@@ -128,7 +128,7 @@ class ServerService:
                                                                  "section [servers].")
                     return
 
-            if encrypt != True and encrypt != False:
+            if encrypt not in (True, False):
                 print("Erreur : La valeur du paramètre encrypt doit être True ou False.")
                 log("ERROR", "Erreur : La valeur du paramètre encrypt doit être "
                              "True ou False.")

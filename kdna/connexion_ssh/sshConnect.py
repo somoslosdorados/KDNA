@@ -1,9 +1,9 @@
+"""module for ssh connection."""
 from fabric import Connection
-
 from kdna.logger.logger import log
 
-
 class SSHClient:
+    """SSHClient class."""
 
     def __init__(self, name, ip) -> None:
         self.user = name
@@ -27,14 +27,17 @@ class SSHClient:
         :rtype: Connection or None
         :raises: Exception if an error occurs during the connection process.
 
-        This method attempts to establish a connection to the SSH server using the SSH parameters obtained from the
-        `getSSHParameter` method. If the connection is successful, it returns the SSH connection instance. If an error
-        occurs during the connection process, an exception is raised and an error message is printed and logged.
+        This method attempts to establish a connection to the SSH server using the SSH parameters
+         obtained from the
+        `getSSHParameter` method. If the connection is successful, it returns the SSH connection
+         instance. If an error
+        occurs during the connection process, an exception is raised and an error message is printed
+         and logged.
 
         """
         try:
             self.SSHInstance = Connection(self.getSSHParameter())
-        except:
+        except Exception:
             print("An error as occured on connection")
             log("ERROR", "An error as occured on connection")
             return None
@@ -43,7 +46,8 @@ class SSHClient:
         """
         Closes the SSH connection.
 
-        This method closes the SSH connection by calling the close() method of the SSHInstance object.
+        This method closes the SSH connection by calling the close() method of the SSHInstance
+         object.
 
         :return: None
         :rtype: None
@@ -51,7 +55,7 @@ class SSHClient:
         """
         try:
             self.SSHInstance.close()
-        except:
+        except Exception:
             print("An error as occured while closing ssh instance")
             log("ERROR", "An error as occured while closing ssh instance")
             return None
@@ -66,7 +70,8 @@ class SSHClient:
         :rtype: str or None
         :raises: Exception if an error occurs during command execution.
 
-        This method sends the specified command to the SSH instance and returns the result of the command execution.
+        This method sends the specified command to the SSH instance and returns the result of the
+         command execution.
         If an error occurs during command execution, an exception is raised and logged.
 
         Example usage:
@@ -75,7 +80,7 @@ class SSHClient:
         try:
             result = self.SSHInstance.run(command, hide=True)
             msg = "\n{0.stdout}"
-        except:
+        except Exception:
             print("An error as occured: " + "\n{0.stderr}")
             log("ERROR", "An error as occured: " + "\n{0.stderr}")
             return None

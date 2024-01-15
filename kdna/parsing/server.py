@@ -5,7 +5,8 @@ class Server:
     port: int
     alias: str
     """
-    def __init__(self, id_server: str, credentials: str, path: str,  port: int, alias: str,
+
+    def __init__(self, id_server: str, credentials: str, path: str, port: int, alias: str,
                  encrypt: bool):
         """Constructeur de la classe"""
         self.id_server = id_server

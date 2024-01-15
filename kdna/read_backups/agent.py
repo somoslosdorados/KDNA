@@ -1,7 +1,5 @@
 from fabric import Connection
 from kdna.logger.logger import log  # type: ignore
-from fabric import Connection
-from kdna.logger.logger import log  # type: ignore
 from kdna.server.server import directory_exists
 
 
@@ -14,7 +12,8 @@ def list_projects(connection: Connection) -> list | None:
     try:
         result = connection.run("ls -l kdna/ | grep '^d'", hide=True)
 
-        return ["".join((":".join(line.split(':')[1:]))[3:]) for line in result.stdout.split('\n')[:-1]]
+        return ["".join((":".join(line.split(':')[1:]))[3:]) for line in
+                result.stdout.split('\n')[:-1]]
     except:
         print("Une erreur est survenue lors de la récupération des projets")
         log("ERROR", "An error as occured when getting projects")
@@ -46,5 +45,5 @@ def list_backups(connection: Connection, project_name: str) -> list | None:
         return backups
     except Exception as e:
         print("An error as occured when getting backups")
-        log("ERROR", "An error as occured when getting backups" + e.__str__())
+        log("ERROR", "An error as occured when getting backups" + e)
         return None

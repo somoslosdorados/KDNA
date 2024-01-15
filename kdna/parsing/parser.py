@@ -1,4 +1,4 @@
-from kdna.logger.logger import log
+""""Module permettant de parser le fichier de configuration kdna.conf"""
 from kdna.logger.logger import log
 from kdna.parsing.server import parseServer
 from kdna.parsing.autobackup import parse
@@ -29,8 +29,8 @@ def parseConfig():
     try:
         path_to_config = os.path.join(kdna_path, "kdna.conf")
     except Exception as e:
-        print("kdna.conf n'existe pas : " + e.__str__())
-        log("ERROR", "kdna.conf does not exist" + e.__str__())
+        print("kdna.conf n'existe pas : " + e)
+        log("ERROR", "kdna.conf does not exist" + e)
         return 1
 
 
@@ -62,7 +62,7 @@ def parseConfig():
             log("ERROR", f"Unknown header :" + header)
 
 
-def line_is_header(line: str) -> str:
+def line_is_header(line: str):
     """
     Verifie si la ligne est un header
     """
@@ -72,12 +72,12 @@ def line_is_header(line: str) -> str:
 
 
 def cb_server_parser(line: str):
-    '''
-    Callback permettant de parser un serveur'''
+    """
+    Callback permettant de parser un serveur"""
     return parseServer(line)
 
 
 def cb_autobackup_parser(line: str):
-    '''
-    Callback permettant de parser un backup automatique'''
+    """
+    Callback permettant de parser un backup automatique"""
     return parse(line)

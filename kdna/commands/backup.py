@@ -12,7 +12,7 @@ import uuid
 
 import click
 
-import kdna.tags.tags as tags
+from kdna.tags import tags
 from kdna.encrypt import encrypt
 from kdna.logger import logger
 from kdna.logger.logger import log

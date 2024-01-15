@@ -36,6 +36,14 @@ kdna.commands.server module
    :undoc-members:
    :show-inheritance:
 
+kdna.commands.tag module
+------------------------
+
+.. automodule:: kdna.commands.tag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

@@ -1,8 +1,7 @@
 """Utils"""
-
-import os
 from kdna.logger import logger
 from kdna.parsing import parser
+import os
 
 
 class Utils:
@@ -21,7 +20,7 @@ class Utils:
             logger.log("INFO", "Dossier créé: " + kdna_directory)
         # Vérifier si le fichier kdna.conf existe, sinon le créer
         if not os.path.exists(config_file_path):
-            with open(config_file_path, "w") as config_file:
+            with open(config_file_path, "w", encoding='utf-8') as config_file:
                 config_file.write(config_content)
             logger.log("INFO", "Fichier créé: " + config_file_path)
         parser.parseConfig()
