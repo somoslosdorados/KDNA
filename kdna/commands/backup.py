@@ -57,7 +57,7 @@ def add(project, path, tag):
     Commande pour créer une backup.\n
     Arguments obligatoires :\n
     \t- <project>: le nom du projet à sauvegarder\n
-    \t- <path>: le chemin du fichier ou du dossier à sauvegarder\n
+    \t- <path>: le chemin du dossier ou fichier à sauvegarder\n
     \t- <tag>: le tag de la sauvegarde
     """
 
