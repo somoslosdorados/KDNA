@@ -102,6 +102,8 @@ def add(project, path, tag):
 
     try:
         os.remove(path_to_local_backup)
+        tags.add_tags(instance.connection, project,
+                     tag, name_of_temp_backup)
     except FileNotFoundError as exc:
         click.echo("Suppression de la buckup locale : le fichier n'a pas été trouvé")
         return
