@@ -19,6 +19,12 @@ def server():
 
 
 #! Création des commandes du groupe server
+
+# Création de la commande init
+@server.command()
+def init():
+    Utils.initialize_config_file()
+
 # Création de la commande add
 @server.command()
 @click.option('-i', '--id', default='', required=False, help="entrer l'id Ex: 1")
@@ -98,6 +104,7 @@ def list():
 @server.command()
 @click.argument('alias', required=True)
 def status(alias):
+    """Commande pour afficher le statut d'un serveur"""
     serverService = ServerService()
     server = serverService.find_by_alias(alias)
     click.echo(server.get_status())

@@ -27,25 +27,6 @@ def backup():
     """Commande pour sauvegarder un fichier ou un dossier"""
 
 
-# Création de la fonction display pour afficher le contenu d'un fichier
-def display(path):
-    """
-    Fonction pour afficher le contenu d'un fichier\n
-    :param path: le path du fichier à afficher\n
-    :type path: str\n
-    :return: le contenu du fichier\n
-    :rtype: str
-    """
-    try:
-        with open(path, mode="r", encoding="utf-8") as file:
-            return file.read()
-    except FileNotFoundError as exc:
-        raise FileNotFoundError("Fichier non trouvé") from exc
-
-    except PermissionError as exc:
-        raise PermissionError("Oups, Pas les droits") from exc
-
-
 # Création des commandes du groupe backup
 
 # Création de la commande add
@@ -77,7 +58,7 @@ def add(project, path, tag, prefix=None):
     name_of_temp_backup = encrypt.package(
         path, uuid_backup, kdna_path, listServers[0].encrypt)
     path_to_local_backup = os.path.join(kdna_path, name_of_temp_backup)
-    path_to_remote_backup = os.path.join("kdna", project)
+    path_to_remote_backup = os.path.join("~/kdna", project)
     serversCredential = listServers[0].credentials
 
     try:
