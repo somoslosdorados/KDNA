@@ -23,6 +23,15 @@ class ServerService:
     def __int__(self):
         pass
 
+    def get_max_id():
+        """Get the maximum ID among the servers"""
+        lines = ServerService.find_all()
+        max_id = 0;
+        for line in lines:
+            if line[0] > max_id:
+                max_id = line[0]
+        return max_id
+
     def find_all(self):
         lines = Utils.read_file_lines(Utils.get_config_file_path())
         i = Utils.find_servers_index(lines) + 1
