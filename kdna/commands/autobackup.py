@@ -116,6 +116,7 @@ update_cron_job("python /path/to/your/script.py", "python /path/to/your/updated_
 delete_cron_job("python /path/to/your/updated_script.py")
 
 
+from kdna.server.autobackup_service import AutoBackupService
 
 # Creation du groupe de commande autobackup
 @click.group(name='auto-backup')
@@ -341,4 +342,11 @@ def list():
     """Commande pour lister les autobackups
     :return: Liste des autobackups : class: `str`\n
     :rtype: list"""
-    click.echo(f"List of autobackups : \n...\n...")
+    autobackupService = AutoBackupService()
+    autobackups = autobackupService.find_all()
+    table = tabulate(
+        [[data for data in autobackup.values()] for autobackup in autobackups],
+        ['id', 'frequency', 'name', 'timestamp', 'id_server', 'path'],
+        tablefmt="grid"
+    )
+    click.echo(table)
