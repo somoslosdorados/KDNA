@@ -66,9 +66,9 @@ class ServerService:
         index_auto_backups = Utils.find_auto_backups_index(lines)
 
         existing_aliases = self.extract_existing_aliases(
-        lines,
-        index_servers,
-        index_auto_backups
+            lines,
+            index_servers,
+            index_auto_backups
         )
         if alias in existing_aliases:
             line_to_print = self.find_line_to_delete(lines, index_servers, alias, by_alias=True)
