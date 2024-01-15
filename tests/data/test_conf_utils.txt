@@ -1,2 +1,2 @@
-[server]
-[auto-backup]
+[servers]
+[auto-backups]
