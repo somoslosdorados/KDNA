@@ -30,6 +30,14 @@ class AutoBackupService:
 
         return li
 
+    def find_by_id(self, id):
+        lines = Utils.read_file_lines(Utils.get_config_file_path())
+        i = Utils.find_auto_backups_index(lines) + 1
+        data = [v.split(',') for v in lines[i:]]
+        for line in data:
+            if line[0].strip() == id:
+                return create_dic_autobackup([line])[0]
+
     def create_auto_backup(self, id, frequency, name, timestamp, id_server, path):
         """Add a new backup"""
         # On ouvre le fichier en mode lecture
