@@ -42,7 +42,7 @@ class AutoBackupService:
             f"Erreur : L'id du serveur \"{id_server}\" de votre auto backup n'existe "
             f"pas dans la section ["
             f"servers].")
-        log("error", f"Erreur : L'id du serveur \"{id_server}\" de votre auto backup pas dans la section [servers].")
+        log("ERROR", f"Erreur : L'id du serveur \"{id_server}\" de votre auto backup pas dans la section [servers].")
         return
 
     # Construction de la nouvelle ligne
@@ -56,14 +56,14 @@ class AutoBackupService:
         print(
             f"Erreur : L'id de l'auto backup \"{id}\" existe déjà dans la "
             f"section [auto-backups].")
-        log("error", f"Erreur : L'id de l'auto backup \"{id}\" existe déjà dans la section [auto-backups].")
+        log("ERROR", f"Erreur : L'id de l'auto backup \"{id}\" existe déjà dans la section [auto-backups].")
         return
 
     # Ajout de la ligne
     print(
         f"L'auto backup avec l'id \"{id}\" a été ajouté dans la section ["
         f"auto-backups].")
-    log("info", f"L'auto backup avec l'id \"{id}\" a été ajouté dans la section [auto-backups].")
+    log("INFO", f"L'auto backup avec l'id \"{id}\" a été ajouté dans la section [auto-backups].")
     lines.insert(index_auto_backups + 1, new_line)
 
     # Écrire les lignes mises à jour dans le fichier
@@ -80,7 +80,7 @@ class AutoBackupService:
     if index_auto_backups is None:
         print(
             "Erreur : Section [auto-backups] non trouvé dans le fichier.")
-        log("error", "Erreur : Section [auto-backups] non trouvé dans le fichier.")
+        log("ERROR", "Erreur : Section [auto-backups] non trouvé dans le fichier.")
         return
 
     # On cherche la ligne à supprimer
@@ -93,13 +93,13 @@ class AutoBackupService:
         print(
             f"L'auto backup avec l'id \"{id}\" a été supprimé de la section ["
             f"auto-backups].")
-        log("info", f"L'auto backup avec l'id \"{id}\" a été supprimé de la section [auto-backups].")
+        log("INFO", f"L'auto backup avec l'id \"{id}\" a été supprimé de la section [auto-backups].")
     # Sinon on affiche un message d'erreur
     else:
         print(
             f"Erreur : Aucun élément trouvé avec l'id \"{id}\" dans la section ["
             f"auto-backups].")
-        log("error", f"Erreur : Aucun élément trouvé avec l'id \"{id}\" dans la section [auto-backups].")
+        log("ERROR", f"Erreur : Aucun élément trouvé avec l'id \"{id}\" dans la section [auto-backups].")
         
   def update_auto_backup(self, id, new_frequency="", new_name="", new_timestamp="", new_path=""):
     """update a specific backup"""
@@ -147,17 +147,17 @@ class AutoBackupService:
             print(
                 f"L'auto backup avec l'id \"{id}\" a été mis à jour dans la "
                 f"section [auto-backups].")
-            log("info", f"L'auto backup avec l'id \"{id}\" a été mis à jour dans la section [auto-backups].")
+            log("INFO", f"L'auto backup avec l'id \"{id}\" a été mis à jour dans la section [auto-backups].")
         # Sinon, afficher un message d'erreur
         else:
             print(
                 f"Erreur : Aucun élément trouvé avec l'id \"{id}\" dans la section "
                 f"[auto-backups].")
-            log("error", f"Erreur : Aucun élément trouvé avec l'id \"{id}\" dans la section [auto-backups].")
+            log("ERROR", f"Erreur : Aucun élément trouvé avec l'id \"{id}\" dans la section [auto-backups].")
     else:
         print(
             "Erreur : Section [auto-backups] non trouvée dans le fichier.")
-        log("error", "Erreur : Section [auto-backups] non trouvée dans le fichier.")
+        log("ERROR", "Erreur : Section [auto-backups] non trouvée dans le fichier.")
 
   @staticmethod
   def find_line_to_update(lines, index_auto_backups, id_to_update):

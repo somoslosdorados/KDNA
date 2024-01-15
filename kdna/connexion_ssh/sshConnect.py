@@ -20,7 +20,7 @@ class SSHClient:
             self.SSHInstance=Connection(self.getSSHParameter())
         except:
             print("An error as occured on connection")
-            log("error", "An error as occured on connection")
+            log("ERROR", "An error as occured on connection")
             return None
         
     def closeConnection(self):
@@ -28,7 +28,7 @@ class SSHClient:
             self.SSHInstance.close()
         except:
             print("An error as occured while closing ssh instance")
-            log("error", "An error as occured while closing ssh instance")
+            log("ERROR", "An error as occured while closing ssh instance")
             return None
             
     def sendCommand(self,command):
@@ -37,7 +37,7 @@ class SSHClient:
             msg = "\n{0.stdout}"            
         except:
             print("An error as occured: "+ "\n{0.stderr}")
-            log("error", "An error as occured: "+ "\n{0.stderr}")
+            log("ERROR", "An error as occured: "+ "\n{0.stderr}")
             return None
         
 

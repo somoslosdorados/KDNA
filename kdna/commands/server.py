@@ -48,7 +48,7 @@ def add(id, alias, address, repo, port, encrypt):
         serverService.create_server(id, address, repo, port, encrypt, alias)
     except Exception as e:
         print("An error occurred while connecting to this address.")
-        log("error", "An error occurred while connecting to this address.")
+        log("ERROR", "An error occurred while connecting to this address.")
         return None
 
 

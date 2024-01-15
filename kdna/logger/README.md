@@ -41,5 +41,6 @@ Writes the given input to the logs file.
 
 ```python
 from logger import log
+```
 
 log("ERROR", "An error occurred in the application.")

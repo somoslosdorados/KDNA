@@ -49,7 +49,7 @@ class SSHClient:
         system_info['resource_usage'] = resource_usage
     except Exception as e:
         print(f"Error getting system information on {self.host}: {e}")
-        log("error", f"Error getting system information on {self.host}: {e}")
+        log("ERROR", f"Error getting system information on {self.host}: {e}")
     return system_info
 
     def sendCommand(self, command):
@@ -61,6 +61,6 @@ class SSHClient:
                 return msg.format(command_return)
         except Exception as e:
             print(f"Error sending command {command} to {self.host}: {e}")
-            log("error", f"Error sending command {command} to {self.host}: {e}")
+            log("ERROR", f"Error sending command {command} to {self.host}: {e}")
     def run(self, command: str):
       return self.connection.run(command, warn=True)
