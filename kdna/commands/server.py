@@ -120,3 +120,9 @@ def list():
 @server.command()
 def status():
     click.echo("Server Status")
+    
+@server.command()
+def import_s():
+    """Import server from ~/.ssh/config file"""
+    serverService = ServerService()
+    serverService.import_server()
