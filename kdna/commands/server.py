@@ -103,7 +103,7 @@ def status(alias):
     click.echo(server.get_status())
 
 @server.command()
-def import_s():
+def ssh_import():
     """Import server from ~/.ssh/config file"""
     serverService = ServerService()
     serverService.import_server()
