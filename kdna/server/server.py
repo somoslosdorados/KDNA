@@ -5,19 +5,27 @@ from kdna.ssh.ssh_client import SSHClient
 class Server:
   def __init__(self, creds):
     self.client: SSHClient = SSHClient(creds)
+    self.client.connect()
     self.creds = creds
 
   def directory_exists(self, path: str) -> bool:
-    return self.client.run()
+    return self.client.connection.run(f"test -d {path}", warn=True).ok
+
+  def upload_file(self, local_path: str, remote_path: str):
+    if not self.directory_exists(remote_path):
+      self.client.connection.run(f"mkdir -p {remote_path}")
+    self.client.connection.put(local_path, remote=remote_path)
 
   def get_status(self):
     return self.client.status()
 
-def directory_exists(connection: Connection, path: str) -> bool:
+def directory_exists(connection: Connection, path: str):
   """
   Check if a directory exists on the remote server. Might throw an exception.
   """
-  return connection.run(f"test -d {path}", warn=True).ok
+  t = connection.run(f"test -d {path}", warn=True).ok
+  print(t)
+  return t
 
 
 def upload_file(connection: Connection, local_path: str, remote_path: str) -> None:

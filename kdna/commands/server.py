@@ -62,8 +62,6 @@ def delete(alias, id):
             click.echo("L'argument alias ou id doit être renseigné.")
 
 # Création de la commande update
-
-
 @server.command()
 @click.argument('alias', required=True)
 @click.option('-r', '--new_repo', default='', required=False, help="entrer le répertoire de sauvegarde Ex: /home/user/backup")
