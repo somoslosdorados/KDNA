@@ -7,46 +7,46 @@ config_file = "tests/data/test_conf_utils.txt"
 
 def test_find_servers_index():
     lines = [
-        '[server]\n',
-        '[auto-backup]'
+        '[servers]\n',
+        '[auto-backups]'
     ]
     index = Utils.find_servers_index(lines)
     assert index == 0
     
 def test_find_auto_backups_index():
     lines = [
-        '[server]\n',
-        '[auto-backup]'
+        '[servers]\n',
+        '[auto-backups]'
     ]
     index = Utils.find_auto_backups_index(lines)
     assert index == 1
 
 def test_find_section1():
     lines = [
-        '[server]\n',
-        '[auto-backup]'
+        '[servers]\n',
+        '[auto-backups]'
     ]
-    index = Utils.find_section(lines, "[server]")
+    index = Utils.find_section(lines, "[servers]")
     assert index == 0
     
 def test_find_section2():
     lines = [
-        '[server]\n',
-        '[auto-backup]'
+        '[servers]\n',
+        '[auto-backups]'
     ]
-    index = Utils.find_section(lines, "[auto-backup]")
+    index = Utils.find_section(lines, "[auto-backups]")
     assert index == 1
 
 def test_delete_line():
     lines = [
-        "[server]\n",
+        "[servers]\n",
         "1",
         "2",
         "3",
         "4",
     ]
     lines2 = [
-        "[server]\n",
+        "[servers]\n",
         "1",
         "2",
         "4",
@@ -56,8 +56,8 @@ def test_delete_line():
     
 def test_read_file_lines():
     lines = [
-        '[server]\n',
-        '[auto-backup]'
+        '[servers]\n',
+        '[auto-backups]'
     ]
     lines2 = Utils.read_file_lines(config_file)
     print(lines2)
