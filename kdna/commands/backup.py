@@ -53,39 +53,61 @@ def display(path):
 @click.argument('path', nargs=1, required=True)
 @click.argument('tag', nargs=1, required=True)
 def add(project, path, tag):
-    """
-    Commande pour sauvegarder un fichier ou un dossier.\n
-    Arguments obligatoires :\n
-    \t- <project>: le nom du projet à sauvegarder\n
-    \t- <path>: le chemin du dossier ou fichier à sauvegarder\n
-    \t- <tag>: le tag de la sauvegarde
-    """
-    click.echo(f"Creating backup \"{project}\":\n{tag}")
+    """Commande pour sauvegarder un fichier\n
+    :param name: le nom du fichier à sauvegarder\n
+    :type name: str\n
+    :param path: le path du fichier à sauvegarder\n
+    :type path: str\n
+    :return: un message de confirmation ou d'erreur\n
+    :rtype: str"""
+    click.echo(f"Creating backup in \"{project}\" with {tag} tag")
+
+    if len(listServers) == 0:
+        click.echo("Any server found in the configuration file.")
+        return
     uuid_backup = str(uuid.uuid4())
-    name_of_temp_backup = encrypt.package(path, uuid_backup, kdna_path, True)
+    name_of_temp_backup = encrypt.package(path, uuid_backup, kdna_path, listServers[0].encrypt)
     path_to_local_backup = os.path.join(kdna_path, name_of_temp_backup)
-    path_to_remote_backup = os.path.join("kdna", "project")
+    path_to_remote_backup = os.path.join("kdna", project)
     serversCredential = listServers[0].credentials
+
     try:
         instance = SSHClient(serversCredential).connect()
     except FileNotFoundError as exc:
-        click.echo("Le fichier n'a pas été trouvé")
+        click.echo("Connexion SSH : Le fichier n'a pas été trouvé")
     except PermissionError as exc:
-        click.echo("Vous n'avez pas les droits")
+        click.echo("Connexion SSH : Vous n'avez pas les droits")
     except Exception as e:
-        print("error2 = "+e.__str__())
+        print("Connexion SSH : error2 = "+e.__str__())
+
     try:
         upload_file(instance.connection, path_to_local_backup,
                     path_to_remote_backup)
-        os.remove(path_to_local_backup)
-        tags.add_tags(instance.connection, "project",
-                     tag, name_of_temp_backup, True)
     except FileNotFoundError as exc:
-        click.echo("Le fichier n'a pas été trouvé")
+        click.echo("Envoie de la backup : Le fichier n'a pas été trouvé")
     except PermissionError as exc:
-        click.echo("Vous n'avez pas les droits")
+        click.echo("Envoie de la backup : Vous n'avez pas les droits")
     except Exception as e:
-        print("error = "+e.__str__())
+        print("Envoie de la backup : error = "+e.__str__())
+
+    try:
+        os.remove(path_to_local_backup)
+    except FileNotFoundError as exc:
+        click.echo("Suppression de la backup locale : Le fichier n'a pas été trouvé")
+    except PermissionError as exc:
+        click.echo("Suppression de la backup locale : Vous n'avez pas les droits")
+    except Exception as e:
+        print("Suppression de la backup locale : error = "+e.__str__())
+
+    try:
+        tags.add_tags(instance.connection, project, tag, name_of_temp_backup)
+    except FileNotFoundError as exc:
+        click.echo("Ajout du tag : Le fichier n'a pas été trouvé")
+    except PermissionError as exc:
+        click.echo("Ajout du tag : Vous n'avez pas les droits")
+    except Exception as e:
+        print("Ajout du tag : error = "+e.__str__())
+
 
 # Création de la commande delete
 @backup.command()
@@ -102,13 +124,13 @@ def list(project_name):
     """Commande pour lister les fichiers sauvegardés
     :return: Liste des fichiers sauvegardés : class: `str`\n
     :rtype: list"""
-    
+
     if len(listServers) == 0:
         click.echo("Any server found in the configuration file.")
         return
 
     try:
-        instance = SSHClient(listServers[0].credentials, "/home/baptiste/.ssh/id_rsa_test").connect()
+        instance = SSHClient(listServers[0].credentials).connect()
     except Exception as e:
         print("error = "+e.__str__())
 
@@ -116,8 +138,9 @@ def list(project_name):
 
     try:
         backups = list_backups(instance.connection, project_name)
-        for (key, value) in tags.get_tag_conf(instance.connection, project_name):
-            click.echo(f"Backup : {value} - Tag : {key}")
+        dic = tags.get_tag_conf(instance.connection, project_name)
+        for key in dic.keys():
+            click.echo(f"Backup : {dic[key]} - Tag : {key}")
 
     except Exception as e:
         print("error2 = "+e.__str__())

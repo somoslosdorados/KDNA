@@ -5,7 +5,6 @@ from kdna.commands.autobackup import autobackup
 from kdna.commands.tag import tag
 from kdna.conf_utils.utils import Utils
 from kdna.commands.encrypt import encrypt
-from kdna.encrypt import encrypt
 from kdna.parsing.parser import parseConfig
 
 
