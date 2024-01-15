@@ -10,10 +10,10 @@ packages = [
     { include = "kdna" },
 ]
 [tool.poetry.scripts]
-kdna = "kdna.main:kdna"
+kdna = "kdna.__main__:kdna"
 
 [tool.setuptools]
-script-files = ["kdna = kdna.main:kdna"]
+script-files = ["kdna = kdna.__main__:kdna"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
