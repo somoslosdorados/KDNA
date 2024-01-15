@@ -1,16 +1,30 @@
 from kdna.conf_utils.utils import Utils
 
+def create_dic_autobackup(data):
+    li = []
+    for ligne in data:
+        dic = {
+            "id": ligne[0].strip(),
+            "frequency": ligne[1].strip(),
+            "name": ligne[2].strip(),
+            "timestamp": ligne[3].strip(),
+            "id_server": ligne[4].strip(),
+            "path": ligne[5].strip()
+        }
+        li.append(dic)
+    return li
+
 class AutoBackupService:
   def __int__(self):
     pass
 
   def find_all(self):
-    lines = Utils.read_file_lines(Utils.config_file)
-    i = Utils.find_auto_backups_index(lines) + 1
-    endfile = len(lines)
-    while(i != endfile):
-        print(lines[i].strip())
-        i += 1   
+        lines = Utils.read_file_lines(Utils.get_config_file_path())
+        i = Utils.find_auto_backups_index(lines) + 1
+        data = [v.split(',') for v in lines[i:]]
+        li = create_dic_autobackup(data)
+
+        return li
 
   def find_by_id(self, id):
     lines = Utils.read_file_lines(Utils.config_file)

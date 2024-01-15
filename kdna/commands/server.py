@@ -87,10 +87,9 @@ def list():
     """Commande pour lister les serveurs"""
     serverService = ServerService()
     servers = serverService.find_all()
-
     table = tabulate(
         [[data for data in server.values()] for server in servers],
-        ['id', 'host', 'credentials', 'port', 'alias'],
+        ['id', 'host', 'path', 'port', 'alias'],
         tablefmt="grid"
     )
     click.echo(table)
