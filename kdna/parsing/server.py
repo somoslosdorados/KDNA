@@ -22,5 +22,5 @@ class Server:
 def parseServer(line):
     '''Methode permettant de parser un serveur'''
     values = line.strip().split(', ')
-    id_server, credentials, path, port, alias, encrypt = values
-    return Server(id_server, credentials, path, port, alias, encrypt)
+    id_server, credentials, path, port, encrypt, alias = values
+    return Server(id_server, credentials, path, port, encrypt, alias)

@@ -17,6 +17,7 @@ from kdna.parsing.parser import kdna_path
 from kdna.ssh.ssh_client import SSHClient
 from kdna.server.server import upload_file, download_file, find_path
 from kdna.read_backups.agent import list_backups
+from kdna.logger import logger
 
 # Creation du groupe de commande backup
 
@@ -63,6 +64,7 @@ def add(project, path, tag, prefix=None):
 
     author: Baptiste BRONSIN
     """
+
     if len(listServers) == 0:
         click.echo("Any server found in the configuration file.")
         return
@@ -82,48 +84,58 @@ def add(project, path, tag, prefix=None):
         instance = SSHClient(serversCredential).connect()
     except PermissionError as exc:
         click.echo("Création d'une connexion SSH : vous n'avez pas les droits")
+        logger.log("ERROR", "Erreur lors de l'instanciation d'une connexion SSH, il s'agit d'un problème de droits")
         return
     except Exception as e:
         print("Création d'une connexion SSH : error2 = " + e.__str__())
+        logger.log("ERROR", "Erreur lors de l'instanciation d'une connexion SSH")
         return
     
     try:
         if prefix is not None:
             tag = tags.generate_tag_name(instance.connection, project, tag)
+            logger.log("INFO", "Un tag unique a été généré avec le préfixe : " + tag)
     except PermissionError as exc:
         click.echo("Génération du tag préfixé : vous n'avez pas les droits")
+        logger.log("ERROR", "Erreur lors de la création d'un tag unique, il s'agit d'un problème de droits")
         return
     except Exception as e:
         click.echo("Génération du tag préfixé : error" + e.__str__())
+        logger.log("ERROR", "Erreur lors de la création d'un tag unique")
         return
 
     click.echo(f"Creating backup in {project} with {tag} tag")
 
     try:
-        upload_file(instance.connection, path_to_local_backup,
-                    path_to_remote_backup)
+        upload_file(instance.connection, path_to_local_backup, path_to_remote_backup)
+        logger.log("INFO", "La backup a été uploadée sur le serveur distant")
     except FileNotFoundError as exc:
-        click.echo(
-            "Envoi du fichier sur le serveur : le fichier n'a pas été trouvé")
+        click.echo("Envoi du fichier sur le serveur : le fichier n'a pas été trouvé")
+        logger.log("ERROR", "Erreur lors de l'upload de la backup sur le serveur distant, le fichier n'a pas été trouvé")
         return
     except PermissionError as exc:
         click.echo("Envoi du fichier sur le serveur : vous n'avez pas les droits")
+        logger.log("ERROR", "Erreur lors de l'upload de la backup sur le serveur distant, il s'agit d'un problème de droits")
         return
     except Exception as e:
-        print("Envoi du fichier sur le serveur : error = " + e.__str__())
+        click.echo("Envoi du fichier sur le serveur : error = " + e.__str__())
+        logger.log("ERROR", "Erreur lors de l'upload de la backup sur le serveur distant")
         return
 
     try:
         os.remove(path_to_local_backup)
+        logger.log("INFO", "La backup locale a été supprimée à '" + path_to_local_backup + "'")
     except FileNotFoundError as exc:
-        click.echo(
-            "Suppression de la buckup locale : le fichier n'a pas été trouvé")
+        click.echo("Suppression de la buckup locale : le fichier n'a pas été trouvé")
+        logger.log("ERROR", "Erreur lors de la suppression de la backup locale à '" + path_to_local_backup + "', le fichier n'a pas été trouvé")
         return
     except PermissionError as exc:
         click.echo("Suppression de la buckup locale : vous n'avez pas les droits")
+        logger.log("ERROR", "Erreur lors de la suppression de la backup locale à '" + path_to_local_backup + "', il s'agit d'un problème de droits")
         return
     except Exception as e:
-        print("Suppression de la buckup locale : error = " + e.__str__())
+        click.echo("Suppression de la buckup locale : error = " + e.__str__())
+        logger.log("ERROR", "Erreur lors de la suppression de la backup locale à '" + path_to_local_backup + "'")
         return
 
     try:
@@ -151,7 +163,10 @@ def delete(pathtag):
 def list(project_name):
     """Commande pour lister les backups d'un projet\n
     Argument obligatoire :\n
-    \t- <project_name>: le nom du projet pour lequel lister les backups"""
+    \t- <project_name>: le nom du projet pour lequel lister les backups
+    
+    author: Baptiste BRONSIN
+    """
 
     if len(listServers) == 0:
         click.echo("Any server found in the configuration file.")
