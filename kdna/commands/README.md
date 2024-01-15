@@ -1,12 +1,11 @@
-# Commandes
+# Commands
 
-## Aide
+## Help
 
-Obtenir les informations nécessaires à l'utilisation de chaque commande
-
+Get the information you need to use each command
 ```
-kdna <commande> --help
-kdna <commande> <sous-commande> --help
+kdna <command> --help
+kdna <command> <subcommand> --help
 ```
 
 ## Server
@@ -15,28 +14,27 @@ kdna <commande> <sous-commande> --help
 
 ### Description
 
-Gérer un serveur de backups
+Managing a backup server
 
 ```
-kdna server <commande> [options] [arguments]
+kdna server <command> [options] [arguments]
 ```
 
 ---
 
-### Ajout
+### Add
 
-#### Usage
+#### Use
 
-Ajout d'un serveur de backup
+Adding a backup server
+```
+kdna server add -i <id_server> -ad <libele_connexion> -a <alias_server> -r <repo_backup> -p <port_server>
+```
+
+#### Example
 
 ```
-kdna server add -i <id_serveur> -ad <libelle_connexion> -a <alias_serveur> -r <repo_backup> -p <port_serveur>
-```
-
-#### Exemple
-
-```
-kdna server add -i S1 -ad kdna@162.38.112.110 -a alias -r /mon/repertoire/backup/ -p 22
+kdna server add -i S1 -ad kdna@162.38.112.110 -a alias -r /my/repository/backup/ -p 22
 ```
 
 #### 
@@ -45,26 +43,25 @@ kdna server add -i S1 -ad kdna@162.38.112.110 -a alias -r /mon/repertoire/backup
 
 | Options |  Type  |        Description         | Required |
 |:--------|:------:|:--------------------------:|:--------:|
-| -i      |  int   |         id_server          |   Faux   |
+| -i      | String |         id_server          |   Vrai   |
 | -ad     | String |    libellé de connexion     |   Vrai   |
 | -a      | String |           alias            |   Vrai   |
 | -r      | String | répertoire pour les backup |   Vrai   |
 | -p      | String |            port            |   Vrai   |
-| -e      | Boolean |         encryptage         |   Faux   |
-
+| -e      | Boolean |         encrypt           |   False   |
 ---
 
-### Suppression d'un serveur de backup
+### Deleting a backup server
 
-#### Usage
+#### Use
 
-Retirer un serveur de backup
+Remove a backup server
 
 ```
-kdna server delete -a <alias_serveur> -i <id_serveur>
+kdna server delete -a <alias_server> -i <id_server>
 ```
 
-#### Exemple
+#### Example
 
 ```
 kdna server delete -i 1
@@ -74,62 +71,61 @@ kdna server delete -i 1
 
 | Options |  Type  | Description | Required |
 |:--------|:------:|:-----------:|:--------:|
-| -i      | String |  id_server  |   Faux   |
-| -a      | String |    alias    |   Faux   |
+| -i      | String |  id_server  |   False  |
+| -a      | String |    alias    |   False  |
 
-A noter : Une seule des deux options doit être impérativement choisie
+Please note: Only one of the two options must be chosen.
 
 ---
 
 ### Update
 
-#### Usage
+#### Use
 
-Mettre à jour un serveur
+Updating a server
+```
+kdna server update <alias_server> -c <new_credentials> -p <new_port_server> -ad <new_address> -a <new_alias>
+```
+
+#### Example
 
 ```
-kdna server update <alias_serveur> -c <new_credentials> -p <new_port_serveur> -ad <new_address> -a <new_alias>
-```
-
-#### Exemple
-
-```
-kdna server update alias_serveur -c new_credentials
+kdna server update alias_server -c new_credentials
 ```
 
 #### Options
 
 | Options |  Type  |   Description    | Required |
 |:--------|:------:|:----------------:|:--------:|
-|         | String |      alias       |   Vrai   |
-| -c      | String | new_credentials  |   Faux   |
-| -p      | String | new_port_serveur |   Faux   |
-| -ad     | String |   new_address    |   Faux   |
-| -a      | String |    new_alias     |   Faux   |
+|         | String |      alias       |   True   |
+| -c      | String | new_credentials  |   False  |
+| -p      | String | new_port_serveur |   False  |
+| -ad     | String |   new_address    |   False  |
+| -a      | String |    new_alias     |   False  |
 
 ---
 
 ### List
 
-#### Usage
+#### Use
 
-Lister les serveurs de backup
+List backup servers:
 
 ```
 kdna server list <project_name>
 ```
 
-### Exemple
+### Example
 
 ```
-kdna server list project_name
+kdna server list <project_name>
 ```
 
 #### Options
 
 | Options |  Type  |   Description    | Required |
 |:--------|:------:|:----------------:|:--------:|
-|         | String |   project_name   |   Vrai   |
+|         | String |   project_name   |   True   |
 
 ---
 
@@ -141,25 +137,25 @@ kdna server list project_name
 
 ### Description
 
-Gérer des backups régulières
+Manage regular backups
 
 ```
-kdna auto-backup <commande> [options] [arguments]
+kdna auto-backup <command> [options] [arguments]
 ```
 
 ---
 
-### Création
+### Creation
 
-#### Usage
+#### Use
 
-Créer une backup régulière
+Create a regular backup 
 
 ```
-kdna auto-backup create -i <id_backup> -n <nom_backup> -t <tag> <cron_schedule> <custom_schedule> -d <date_debut> -s <id_server> -p <path_fichier/dossier_backup>
+kdna auto-backup create -i <id_backup> -n <backup_name> -t <tag> <cron_schedule> <custom_schedule> -d <start_date> -s <id_server> -p <path_file/file_backup>
 ``` 
 
-#### Exemple
+#### Example
 
 ```
 kdna auto-backup create -i 1 -n backup -t tag -d 2021-01-01 -s 1 -p /home
@@ -169,28 +165,28 @@ kdna auto-backup create -i 1 -n backup -t tag -d 2021-01-01 -s 1 -p /home
 
 | Options |  Type  |   Description   | Required |
 |:--------|:------:|:---------------:|:--------:|
-| -i      | String |    id_backup    |   Vrai   |
-| -n      | String |   nom_backup    |   Vrai   |
-| -t      | String |       tag       |   Vrai   |
-|         | String |  cron_schedule  |   Vrai   |
-|         | String | custom_schedule |   Faux   |
-| -d      | String |   date_debut    |   Vrai   |
-| -s      | String |    id_server    |   Vrai   |
-| -p      | String |   path_backup   |   Vrai   |
+| -i      | String |    id_backup    |   True   |
+| -n      | String |   backup_name   |   True   |
+| -t      | String |       tag       |   True   |
+|         | String |  cron_schedule  |   True   |
+|         | String | custom_schedule |   False  |
+| -d      | String |   start_date    |   True   |
+| -s      | String |    id_server    |   True   |
+| -p      | String |   path_backup   |   True   |
 
 ---
 
-### Suppression
+### Delete
 
-#### Usage
+#### Use
 
-Supprimer une backup régulière
+Delete a regular backup
 
 ```
 kdna auto-backup delete -i <id_backup>
 ```
 
-#### Exemple
+#### Example
 
 ```
 kdna auto-backup delete -i 1
@@ -200,21 +196,20 @@ kdna auto-backup delete -i 1
 
 | Options |  Type  | Description | Required |
 |:--------|:------:|:-----------:|:--------:|
-| -i      | String |  id_server  |   Vrai   |
+| -i      | String |  id_server  |   True   |
 
 ---
 
 ### Update
 
-#### Usage
+#### Use
 
-Mettre à jour une backup régulière
-
+Update a regular backup
 ```
-kdna auto-backup update -i <id_backup> -t <tag> <tag_updated> cron_schedule <<custom_schedule>> -d <date_debut> -p <path_backup>
+kdna auto-backup update -i <id_backup> -t <tag> <tag_updated> cron_schedule <<custom_schedule>> -d <start_date> -p <path_backup>
 ```
 
-#### Exemple
+#### Example
 
 ```
 kdna auto-backup update -i 1 -d 2021-01-01 -p /home
@@ -224,23 +219,21 @@ kdna auto-backup update -i 1 -d 2021-01-01 -p /home
 
 | Options |  Type  |     Description      | Required |
 |:--------|:------:|:--------------------:|:--------:|
-| -i      | String |      id_backup       |   Vrai   |
-| -t      | String | tag & tag mis à jour |   Faux   |
-|         | String |    cron_schedule     |   Faux   |
-|         | String |   custom_schedule    |   Faux   |
-| -d      | String |      date_debut      |   Faux   |
-| -p      | String |     path_backup      |   Faux   |
+| -i      | String |      id_backup       |   True   |
+| -t      | String | tag & tag updated    |   False  |
+|         | String |    cron_schedule     |   False  |
+|         | String |   custom_schedule    |   False  |
+| -d      | String |      start_date      |   False  |
+| -p      | String |     path_backup      |   False  |
 
-A noter: on ne peut pas modifier l'id du serveur car la backup est liée à celui-ci
-
+Please note: you cannot change the server id, as the backup is linked to it.
 ---
 
 ### List
 
-#### Usage
+#### Use
 
-Lister les backups régulières
-
+List regular backups
 ```
 kdna auto-backup list
 ```
@@ -253,25 +246,25 @@ kdna auto-backup list
 
 ### Description
 
-Gérer des backups manuelles
+Managing manual backups
 
 ```
-kdna backup <commande> [options] [arguments]
+kdna backup <command> [options] [arguments]
 ```
 
 ---
 
-### Création
+### Creation
 
-Créer une backup
+Create a backup
 
-#### Usage
+#### Use
 
 ```
-kdna backup add <nom:tag_backup> <path_backup>
+kdna backup add <name:tag_backup> <path_backup>
 ``` 
 
-#### Exemple
+#### Example
 
 ```
 kdna backup add backup:tag /home
@@ -281,22 +274,22 @@ kdna backup add backup:tag /home
 
 | Options |  Type  | Description | Required |
 |:--------|:------:|:-----------:|:--------:|
-|         | String | nom:tag_backup  |   Vrai   |
-|         | String | path_backup |   Vrai   |
+|         | String | name:tag_backup  |   True   |
+|         | String | path_backup |   True   |
 
 ---
 
-### Suppression
+### Delete
 
-#### Usage
+#### Use
 
-Supprimer une backup
+Delete a backup
 
 ```
 kdna backup delete -t <path:tag>
 ```
 
-#### Exemple
+#### Example
 
 ```
 kdna backup delete -t /home:tag
@@ -306,21 +299,20 @@ kdna backup delete -t /home:tag
 
 | Options |  Type  | Description | Required |
 |:--------|:------:|:-----------:|:--------:|
-| -t      | String |  path:tag   |   Vrai   |
+| -t      | String |  path:tag   |   True   |
 
 ---
 
 ### Restore
 
-#### Usage
+#### Use
 
-Restaurer une backup
-
+Restore a backup
 ```
 kdna backup restore -t <name:tag> <path_backup>
 ```
 
-Exemple
+Example
 
 ```
 kdna backup restore -t backup:tag /home
@@ -330,16 +322,16 @@ kdna backup restore -t backup:tag /home
 
 | Options |  Type  | Description | Required |
 |:--------|:------:|:-----------:|:--------:|
-| -t      | String |  name:tag   |   Vrai   |
-|         | String | path_backup |   Faux   |
+| -t      | String |  name:tag   |   True   |
+|         | String | path_backup |   False   |
 
 ---
 
 ### List
 
-#### Usage
+#### Use
 
-Lister les backups
+List backups
 
 ```
 kdna backup list
@@ -353,25 +345,25 @@ kdna backup list
 
 ### Description
 
-Gérer l'encryption des backups
+Backup encryption management
 
 ```
-kdna encrypt <commande> [options]
+kdna encrypt <command> [options]
 ```
 
 ---
 
-### Génération
+### Generate
 
-Générer une clé de cryptage
+Generate an encryption key
 
-#### Usage
+#### Use
 
 ```
 kdna encrypt keygen <path>
 ``` 
 
-#### Exemple
+#### Example
 
 ```
 kdna encrypt keygen /home
@@ -381,15 +373,15 @@ kdna encrypt keygen /home
 
 | Options |  Type  | Description | Required |
 |:--------|:------:|:-----------:|:--------:|
-|         | String |    path     |   Vrai   |
+|         | String |    path     |   True   |
 
 ---
 
 ### Activation
 
-#### Usage
+#### Use
 
-Activer l'encryption
+Activate encryption
 
 ```
 kdna encrypt activate
@@ -400,10 +392,9 @@ kdna encrypt activate
 
 ### Désactivation
 
-#### Usage
+#### Use
 
-Désactiver l'encryption
-
+Desactivate encryption
 ```
 kdna encrypt deactivate
 ```
@@ -416,46 +407,46 @@ kdna encrypt deactivate
 
 ### Description
 
-Gérer les tags
+Manage tags 
 
 ```
-kdna tag <commande> [options]
+kdna tag <command> [options]
 ```
 
 ---
 
-### Création
+### Creation
 
-Créer un tag 
+Create a tag
 
-#### Usage
+#### Use
 
 ```
 kdna tag add -t <tag> -p <project> -f <file>
 ``` 
 
-#### Exemple
+#### Example
 
 ```
-kdna tag -t tag -p un_projet -f a_file
+kdna tag -t tag -p project_name -f a_file
 ```
 
 #### Options
 
 | Options |  Type  | Description | Required |
 |:--------|:------:|:-----------:|:--------:|
-| -t      | String |     tag     |   Vrai   |
-| -p      | String |   project   |   Vrai   |
-| -f      | String |    file     |   Vrai   |
+| -t      | String |     tag     |   True   |
+| -p      | String |   project   |   True   |
+| -f      | String |    file     |   True   |
 
 
 ---
 
 ### List
 
-#### Usage
+#### Use
 
-Lister les tags
+List tags
 
 ```
 kdna tag list
