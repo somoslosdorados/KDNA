@@ -12,8 +12,8 @@ import click
 from kdna.logger.logger import log
 from kdna.server.autobackup_service import AutoBackupService  # import du C(R)UD de kdna.conf
 from kdna.parsing.parser import parseConfig  # import du parseur
+from kdna.tags import tags
 from tabulate import tabulate
-from crontab import CronTab  # Doit ajouter à poetry
 
 
 # Fonctions CRUD pour le crond
@@ -133,13 +133,14 @@ def translate_cron_schedule(cron_schedule):
 @autobackup.command()
 @click.option('-i', '--idcron', nargs=1, required=True, help="entrer l'id du cron")
 @click.option('-n', '--nameofcron', nargs=1, required=True, help="entrer le nom du cron")
+@click.option('-p', '--project', nargs=1, required=True, help="entrer le nom du projet")
 @click.option('-t', '--tag', nargs=1, required=True, help="entrer le tag")
 @click.argument('cron_schedule', type=click.Choice(['daily', 'monthly', 'weekly', 'custom']), required=True)
 @click.argument('custom_cron', nargs=-1)
 @click.option('-d', '--date', nargs=1, required=True, help="entrer la date de la première backup [ xxxx-xx-xx ]")
 @click.option('-s', '--server', nargs=1, required=True, help="entrer l'id du serveur")
-@click.option('-p', '--path', nargs=1, required=True, help="entrer le chemin de la backup")
-def create(idcron, nameofcron, cron_schedule, custom_cron, date, server, path):
+@click.option('-h', '--path', nargs=1, required=True, help="entrer le chemin de la backup")
+def create(idcron, nameofcron, project, tag, cron_schedule, custom_cron, date, server, path):
     """
     Commande pour prévoir une auto-backup.\n
     Arguments obligatoires :\n
@@ -165,7 +166,7 @@ def create(idcron, nameofcron, cron_schedule, custom_cron, date, server, path):
             click.echo("L'argument cron_schedule ne correspond pas à {daily, monthly, weekly, custom}")
     log("Info", "Calling kdna.conf CRUD...")
     AutoBackupService().create_auto_backup(idcron, custom_cron, nameofcron, date, server, path)  # Écrit dans kdna.conf
-    #ici écrire tag dans tag.conf (doriant, hugo)
+    tags.add_tags(project, tag, os.path.basename(path))
     log("Info", "Calling parser...")
     parseConfig()  # Lance le parseur
 
@@ -224,7 +225,6 @@ def update(idcron, new_cron_schedule="", custom_cron="", new_date="", new_path="
 # Création de la commande list
 @autobackup.command()
 def list():
-    pass
     """
     Commande pour lister les backups régulières\n
     """
