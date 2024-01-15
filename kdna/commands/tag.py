@@ -42,7 +42,7 @@ def add(project, new_tag, file_to_tag, server):
         raise click.Abort()
 
     try:
-        tags.add_tags(connection_instance.connection, project, new_tag, file_to_tag, True)
+        tags.add_tags(connection_instance.connection, project, new_tag, file_to_tag)
     except FileNotFoundError:
         click.echo("Le fichier n'a pas été trouvé")
     except PermissionError:
