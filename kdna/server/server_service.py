@@ -42,8 +42,8 @@ class ServerService:
         #     if line[0] > max_id:
         #         max_id = line[0]
         for server in lines:
-            if server['id'] > max_id:
-                max_id = server['id']
+            if int(server['id']) > max_id:
+                max_id = int(server['id'])
         return max_id
 
     def find_all(self):
