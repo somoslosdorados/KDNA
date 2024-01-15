@@ -1,5 +1,5 @@
 # Documentation - encryption library
-## How to create a backup ??
+## How to create a backup 
 ### Not encrypted
 ```python
 from encrypt import encrypt
