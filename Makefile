@@ -1,7 +1,7 @@
 .PHONY: install run test clear
 
 run:
-	poetry run python kdna/main.py
+	poetry run python kdna/__main__.py
 
 test:
 	poetry run pytest tests

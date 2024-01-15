@@ -31,7 +31,7 @@ poetry install
 ### Start the app
 
 ```bash
-poetry run python kdna/main.py
+poetry run python kdna/__main__.py
 ```
 
 ### Run the tests

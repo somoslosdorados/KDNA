@@ -19,11 +19,11 @@ Un fichier est créé :
 [auto-backup]
 ```
 
-Vous pouvez désormais faire vos commandes dans le fichier `main.py`
+Vous pouvez désormais faire vos commandes dans le fichier `__main__.py`
 
 ### Server
 
-Avant toute chose, pensez à instancier le service de serveur comme ceci dans le main.py : 
+Avant toute chose, pensez à instancier le service de serveur comme ceci dans le `__main__.py` : 
 
 ```
 serviceServer = ServerService()
@@ -99,7 +99,7 @@ serverService.find_by_alias("SS4")
 
 ### Auto-Backup
 
-Avant toute chose, pensez à instancier le service de serveur comme ceci dans le main.py : 
+Avant toute chose, pensez à instancier le service de serveur comme ceci dans le `__main__.py` : 
 
 ```
 autoBackupService = AutoBackupService()
