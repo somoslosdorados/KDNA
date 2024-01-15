@@ -26,8 +26,8 @@ def server():
 @click.option('-a', '--alias', required=True, help="entrer l'alias Ex: serveur1")
 @click.option('-r', '--repo', required=True, help="entrer le répertoire de sauvegarde Ex: /home/user/backup")
 @click.option('-p', '--port', required=True, help="entrer le port Ex: 22")
-@click.option('-e', '--encrypt', required=False, help="Encrypt les sauvegardes sur le serveur (valeur par defaut : True) Ex: False")
-def add(alias, address, repo, port, id=None, encrypt=True):
+@click.option('-e', '--encrypt', default=True, required=False, help="Encrypt les sauvegardes sur le serveur (valeur par defaut : True) Ex: False")
+def add(alias, address, repo, port, encrypt, id=None):
     """Commande pour ajouter un serveur.
     :param id: -i l'id du serveur à sélectionner\n
     :type id: str\n
@@ -43,10 +43,10 @@ def add(alias, address, repo, port, id=None, encrypt=True):
     :rtype: str
     :param encrypt: -e encrypt les sauvegardes sur le serveur\n
     :type encrypt: bool\n"""
-    if id is None:
-        # Obtenir la valeur maximale de l'id existant
-        max_id = ServerService.get_max_id()
-        id = max_id + 1
+    # if id is None:
+    #     # Obtenir la valeur maximale de l'id existant
+    #     max_id = ServerService.get_max_id()
+    #     id = max_id + 1
         
     try:
         connection = SSHClient(address)
@@ -84,7 +84,7 @@ def delete(alias, id):
 
 @server.command()
 @click.argument('alias', required=True)
-@click.option('-r', '--new_repo', required=False, help="entrer le répertoire de sauvegarde Ex: /home/user/backup")
+@click.option('-r', '--new_repo', default='', required=False, help="entrer le répertoire de sauvegarde Ex: /home/user/backup")
 @click.option('-p', 'port', default='', required=False, help="entrer le nouveau port")
 @click.option('-ad', 'new_address', default='', required=False, help="entrer la nouvelle adresse")
 @click.option('-a', 'new_alias', default='', required=False, help="entrer le nouvel alias")
@@ -97,7 +97,7 @@ def update(alias, new_repo, port, new_address, encrypt, new_alias):
     """
     serverService = ServerService()
     if alias and new_address or alias and new_repo or alias and port or alias and encrypt or alias and new_alias:
-        serverService.update_server(alias, new_repo, port, new_address, new_repo, encrypt, new_alias)
+        serverService.update_server(alias, new_repo, port, new_address, encrypt, new_alias)
     else:
         click.echo("Les arguments à mettre à jour doivent être renseignés.")
 # Création de la commande list
