@@ -4,6 +4,17 @@ import paramiko
 from kdna.conf_utils.utils import Utils
 
 from kdna.logger.logger import log
+from kdna.server.server import Server
+
+
+def array_to_dic(array):
+  return {
+    'id': array[0].strip(),
+    'host': array[1].strip(),
+    'path': array[2].strip(),
+    'port': array[3].strip(),
+    'alias': array[4].strip()
+  }
 
 def create_dic_server(data):
     """Create a dictionnary with the data of the server"""
@@ -95,7 +106,8 @@ class ServerService:
                     f'Erreur : L\'id du serveur "{id}" existe déjà dans la '
                     f"section [servers]."
                 )
-                log("ERROR", "Erreur : L\'id du serveur " + {id} + " existe déjà dans la section [servers].")
+                log("ERROR", "Erreur : L\'id du serveur " + {id} + " existe déjà dans la"
+                                                                   " section [servers].")
                 return
 
             if id != "":
@@ -110,14 +122,18 @@ class ServerService:
                 if alias in existing_aliases:
                     print(f"Erreur : L'alias \"{alias}\" existe déjà dans la section ["
                           f"servers].")
-                    log("ERROR", "Erreur : L'alias " + {alias} + " existe déjà dans la section [servers].")
-                    log("ERROR", "Erreur : L'alias " + {alias} + " existe déjà dans la section [servers].")
+                    log("ERROR", "Erreur : L'alias " + {alias} + " existe déjà dans la "
+                                                                 "section [servers].")
+                    log("ERROR", "Erreur : L'alias " + {alias} + " existe déjà dans la "
+                                                                 "section [servers].")
                     return
 
             if encrypt != True and encrypt != False:
                 print("Erreur : La valeur du paramètre encrypt doit être True ou False.")
-                log("ERROR", "Erreur : La valeur du paramètre encrypt doit être True ou False.")
-                log("ERROR", "Erreur : La valeur du paramètre encrypt doit être True ou False.")
+                log("ERROR", "Erreur : La valeur du paramètre encrypt doit être "
+                             "True ou False.")
+                log("ERROR", "Erreur : La valeur du paramètre encrypt doit être True "
+                             "ou False.")
                 return
 
             # Construction de la nouvelle ligne
@@ -165,14 +181,16 @@ class ServerService:
                     f"L'élément avec l'{element_type} {id} a été supprimé de la "
                     f"section [servers]."
                 )
-                log("INFO", "L'élément avec l\'" + {element_type} + {id} + "a été supprimé de la section [servers].")
+                log("INFO", "L'élément avec l\'" + {element_type} + {id} + "a été "
+                                                               "supprimé de la section [servers].")
             # Sinon on affiche un message d'erreur
             else:
                 print(
                     f'Erreur : Aucun élément trouvé avec l\'{element_type} "{id}" dans '
                     f"la section [servers]."
                 )
-                log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + {element_type} + {id} + "dans la section [servers].")
+                log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + {element_type} +
+                    {id} + "dans la section [servers].")
         # Sinon on affiche un message d'erreur
         else:
             if not by_alias and id == "None":
@@ -180,7 +198,8 @@ class ServerService:
                     f'Erreur : Aucun élément trouvé avec l\'{element_type} "{id}" dans '
                     f"la section [servers]."
                 )
-                log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + {element_type} + {id} + "dans la section [servers].")
+                log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + {element_type} +
+                    {id} + "dans la section [servers].")
 
     def update_server(
         self,
@@ -232,12 +251,15 @@ class ServerService:
                     print(
                         "Erreur : Le nouvel alias existe déjà dans la liste des serveurs."
                     )
-                    log("ERROR", "Erreur : Le nouvel alias existe déjà dans la liste des serveurs.")
-                    log("ERROR", "Erreur : Le nouvel alias existe déjà dans la liste des serveurs.")
+                    log("ERROR", "Erreur : Le nouvel alias existe déjà dans la liste"
+                                 " des serveurs.")
+                    log("ERROR", "Erreur : Le nouvel alias existe déjà dans la liste"
+                                 " des serveurs.")
                     return
 
                 # Construire la nouvelle ligne mise à jour
-                updated_line = f"{existing_id}, {new_address}, {new_path}, {new_port}, {new_encrypt}, {new_alias}\n"
+                updated_line = (f"{existing_id}, {new_address}, {new_path}, {new_port}, "
+                                f"{new_encrypt}, {new_alias}\n")
 
                 # Mettre à jour la ligne
                 lines[line_to_update] = updated_line
@@ -250,14 +272,16 @@ class ServerService:
                     f'Les informations du serveur avec l\'alias "{alias_to_update}" ont été '
                     f"mises à jour."
                 )
-                log("INFO", "Les informations du serveur avec l\'alias " + {alias_to_update} + " ont été mises à jour.")
+                log("INFO", "Les informations du serveur avec l\'alias " +
+                    {alias_to_update} + " ont été mises à jour.")
             # Sinon, afficher un message d'erreur
             else:
                 print(
                     f'Erreur : Aucun serveur trouvé avec l\'alias "{alias_to_update}" dans la '
                     f"section [servers]."
                 )
-                log("ERROR", "Erreur : Aucun serveur trouvé avec l\'alias " + {alias_to_update} + " dans la section [servers].")
+                log("ERROR", "Erreur : Aucun serveur trouvé avec l\'alias " +
+                    {alias_to_update} + " dans la section [servers].")
         # Sinon, afficher un message d'erreur
         else:
             print("Erreur : Section [servers] non trouvée dans le fichier.")
@@ -341,7 +365,8 @@ class ServerService:
             f"Erreur : Aucun élément trouvé avec "
             f"l'{'alias' if by_alias else 'id'} \"{id}\" dans la section [servers]."
         )
-        log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + {'alias' if by_alias else 'id'} + {id} + " dans la section [servers].")
+        log("ERROR", "Erreur : Aucun élément trouvé avec l\'" +
+            {'alias' if by_alias else 'id'} + {id} + " dans la section [servers].")
         return None
 
     @staticmethod
@@ -398,14 +423,18 @@ class ServerService:
                 if os.path.exists(os.path.expanduser("~/.ssh/id_rsa")):
                     cfg["credentials"] = os.path.expanduser("~/.ssh/id_rsa")
                     print(
-                        "You dosent's have IdentityFile field in your ssh config file, we use the default key (id_rsa)."
+                        "You dosent's have IdentityFile field in your ssh config file, we use the"
+                        " default key (id_rsa)."
                     )
                 else:
                     print(
-                        "Error: You dosent's have IdentityFile field in your ssh config file, and no default key (id_rsa)."
+                        "Error: You dosent's have IdentityFile field in your ssh config file, and"
+                        " no default key (id_rsa)."
                     )
-                log ("ERROR", "Erreur : Aucune champ 'identityfile' trouvée dans le fichier de configuration.")
-                log ("ERROR", "Erreur : Aucune champ 'identityfile' trouvée dans le fichier de configuration.")
+                log ("ERROR", "Erreur : Aucune champ 'identityfile' trouvée dans le"
+                              " fichier de configuration.")
+                log ("ERROR", "Erreur : Aucune champ 'identityfile' trouvée dans le"
+                              " fichier de configuration.")
                 return None
             if "port" in user_config:
                 cfg["port"] = user_config["port"]

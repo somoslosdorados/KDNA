@@ -1,8 +1,10 @@
 """
     This is the logger program. It implements the "log" function. 
-    Logs the timestamp, the alert_level, the path from where the log is called and the message, in ~/.kdna/kdna.log
+    Logs the timestamp, the alert_level, the path from where the log is called and the message,
+    in ~/.kdna/kdna.log
     
-    Notice: if you need to log anything, import this module and use the log function provided (logs its input).
+    Notice: if you need to log anything, import this module and use the log function provided
+    (logs its input).
 
     Authors: Sarah THEOULLE, Théo TCHILINGUIRIAN
 """
@@ -12,7 +14,7 @@ import os
 import time
 
 
-def log(alert_level:str, msg:str):
+def log(alert_level: str, msg: str):
     """
     This function writes the given input to the logs file (log file is kdna/logs/kdna.log").\n
     :param alert_level: the importance or type of the logged message\n
@@ -31,7 +33,6 @@ def log(alert_level:str, msg:str):
     path = os.path.abspath(caller_filename)
     timestamp = "on " + time.strftime("%Y-%m-%d") + " at " + time.strftime("%Hh %Mm %Ss")
     text = timestamp + " : " + alert_level + " : " + path + " : " + msg + "\n"
-    with open(os.path. expanduser('~') + "/.kdna/kdna.log", 'a') as file:
+    with open(os.path.expanduser('~') + "/.kdna/kdna.log", 'a', encoding='utf-8') as file:
         res = file.write(text)
     return res
-

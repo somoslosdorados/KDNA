@@ -7,18 +7,21 @@ restore : commande pour restaurer une backup
 list : Commande pour lister les backups
 """
 
-import click
-import uuid
 import os
-from kdna.logger.logger import log
+import uuid
+
+import click
+
 import kdna.tags.tags as tags
-from kdna.parsing.parser import listServers
 from kdna.encrypt import encrypt
-from kdna.parsing.parser import kdna_path
-from kdna.ssh.ssh_client import SSHClient
-from kdna.server.server import upload_file, download_file, find_path
-from kdna.read_backups.agent import list_backups
 from kdna.logger import logger
+from kdna.logger.logger import log
+from kdna.parsing.parser import kdna_path
+from kdna.parsing.parser import listServers
+from kdna.read_backups.agent import list_backups
+from kdna.server.server import upload_file, download_file, find_path
+from kdna.ssh.ssh_client import SSHClient
+
 
 # Creation du groupe de commande backup
 
@@ -88,13 +91,15 @@ def add(project, path, tag, prefix=None):
     except PermissionError as exc:
         log("ERROR", "Création d'une connexion SSH : vous n'avez pas les droits")
         click.echo("Création d'une connexion SSH : vous n'avez pas les droits")
-        logger.log("ERROR", "Erreur lors de l'instanciation d'une connexion SSH, il s'agit d'un problème de droits")
+        logger.log("ERROR", "Erreur lors de l'instanciation d'une connexion SSH, il "
+                            ""
+                            "s'agit d'un problème de droits")
         return
     except Exception as e:
-        print("Création d'une connexion SSH : error2 = " + e.__str__())
+        print("Création d'une connexion SSH : error2 = " + e)
         logger.log("ERROR", "Erreur lors de l'instanciation d'une connexion SSH")
         return
-    
+
     try:
         if prefix is not None:
             tag = tags.generate_tag_name(instance.connection, project, tag)
@@ -102,11 +107,12 @@ def add(project, path, tag, prefix=None):
     except PermissionError as exc:
         log("ERROR", "Génération du tag préfixé : vous n'avez pas les droits")
         click.echo("Génération du tag préfixé : vous n'avez pas les droits")
-        logger.log("ERROR", "Erreur lors de la création d'un tag unique, il s'agit d'un problème de droits")
+        logger.log("ERROR", "Erreur lors de la création d'un tag unique, il s'agit"
+                            " d'un problème de droits")
         return
     except Exception as e:
-        log("ERROR", "Génération du tag préfixé : error" + e.__str__() )
-        click.echo("Génération du tag préfixé : error" + e.__str__())
+        log("ERROR", "Génération du tag préfixé : error" + e)
+        click.echo("Génération du tag préfixé : error" + e)
         logger.log("ERROR", "Erreur lors de la création d'un tag unique")
         return
 
@@ -119,32 +125,33 @@ def add(project, path, tag, prefix=None):
         click.echo(
             "Envoi du fichier sur le serveur : le fichier n'a pas été trouvé")
         log("ERROR", "Sending file to server : file not found")
-        return 
+        return
     except PermissionError as exc:
         click.echo("Envoi du fichier sur le serveur : vous n'avez pas les droits")
         log("ERROR", "Sending file to server : you don't have the rights")
-        return 
+        return
     except Exception as e:
-        print("Envoi du fichier sur le serveur : error = " + e.__str__())
-        log("ERROR", "Envoi du fichier sur le serveur : error = " + e.__str__())
-        return 
+        print("Envoi du fichier sur le serveur : error = " + e)
+        log("ERROR", "Envoi du fichier sur le serveur : error = " + e)
+        return
 
     try:
         os.remove(path_to_local_backup)
-        logger.log("INFO", "La backup locale a été supprimée à '" + path_to_local_backup + "'")
+        logger.log("INFO", "La backup locale a été supprimée à '" + path_to_local_backup
+                   + "'")
     except FileNotFoundError as exc:
         click.echo(
             "Suppression de la backup locale : le fichier n'a pas été trouvé")
         log("ERROR", "Delete local backup : file not found")
-        return 
+        return
     except PermissionError as exc:
         click.echo("Suppression de la buckup locale : vous n'avez pas les droits")
         log("ERROR", "Delete local backup : you don't have the rights")
-        return 
+        return
     except Exception as e:
-        print("Suppression de la buckup locale : error = " + e.__str__())
-        log("ERROR", "Suppression de la buckup locale : error = " + e.__str__())
-        return 
+        print("Suppression de la buckup locale : error = " + e)
+        log("ERROR", "Suppression de la buckup locale : error = " + e)
+        return
 
     try:
         tags.add_tags(instance.connection, project, tag, name_of_temp_backup)
@@ -153,14 +160,15 @@ def add(project, path, tag, prefix=None):
         log("ERROR", "Add tag on backup : you don't have the rights")
         return
     except Exception as e:
-        click.echo("Ajout du tag sur la backup : error" + e.__str__())
-        log("ERROR", "Ajout du tag sur la backup : error" + e.__str__())
+        click.echo("Ajout du tag sur la backup : error" + e)
+        log("ERROR", "Ajout du tag sur la backup : error" + e)
         return
 
 
 # Création de la commande delete
 @backup.command()
-@click.option('-t', 'pathtag', nargs=1, required=True, help="entrer le path du fichier et le tag [ path:tag ]")
+@click.option('-t', 'pathtag', nargs=1, required=True, help="entrer le path du fichier "
+                                                            "et le tag [ path:tag ]")
 def delete(pathtag):
     """Commande pour supprimer une backup.\n"""
     click.echo(f"Suppression du fichier : \"{pathtag}\"")
@@ -186,8 +194,8 @@ def list(project_name):
     try:
         instance = SSHClient(listServers[0].credentials).connect()
     except Exception as e:
-        print("error while trying to connect : "+e.__str__())
-        log("ERROR", "error while trying to connect : "+e.__str__())
+        print("error while trying to connect : " + e)
+        log("ERROR", "error while trying to connect : " + e)
 
     backups = []
 
@@ -198,13 +206,13 @@ def list(project_name):
             click.echo(f"Backup : {dic[key]} - Tag : {key}")
 
     except Exception as e:
-        print("error while trying to list the backups "+e.__str__())
-        log("ERROR", "error while trying to list the backups "+e.__str__())
+        print("error while trying to list the backups " + e)
+        log("ERROR", "error while trying to list the backups " + e)
 
     if backups is None:
         click.echo(f'Project {project_name} not found')
     # else:
-        # click.echo('Backups : ' + str(backup
+    # click.echo('Backups : ' + str(backup
 
 
 @backup.command()
@@ -223,7 +231,7 @@ def restore(project, nametag, path):
         instance = SSHClient(listServers[0].credentials).connect()
     except Exception as e:
         print("error while trying to connect to the server : " + e)
-        log("ERROR", "error while trying to connect to the server : " + e.__str__())
+        log("ERROR", "error while trying to connect to the server : " + e)
 
     remote_path = find_path(instance.connection, nametag, project)
 
@@ -234,13 +242,13 @@ def restore(project, nametag, path):
         download_file(instance.connection, local_temp_path, remote_path)
     except Exception as e:
         print("Error while trying to download the backup : " + e)
-        log("ERROR", "Error while trying to download the backup : " + e.__str__())
+        log("ERROR", "Error while trying to download the backup : " + e)
 
     try:
-        restored_path= encrypt.restore(local_temp_path, path)
+        restored_path = encrypt.restore(local_temp_path, path)
     except Exception as e:
         print("Error while trying to restore the backup : " + e)
-        log("ERROR", "Error while trying to restore the backup " + e.__str__())
+        log("ERROR", "Error while trying to restore the backup " + e)
 
     click.echo(f"Restauration faite : \"{restored_path}\"")
     log("INFO", f"Restauration faite : \"{restored_path}\"")

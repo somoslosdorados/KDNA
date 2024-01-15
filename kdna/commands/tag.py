@@ -124,8 +124,8 @@ def update(project, old_tag, new_tag,server):
         click.echo("Vous n'avez pas les droits")
         log("ERROR", "You don't have the rights")
     except Exception as e:
-        print("error = "+e.__str__())
-        log("ERROR", "error = "+e.__str__())
+        print("error = "+e)
+        log("ERROR", "error = "+e)
 
 
 # Création de la commande list
@@ -143,7 +143,7 @@ def list(project, server):
             connection_instance.connect()
             break
     
-    if(connection_instance == None):
+    if(connection_instance is None):
         click.echo("Le serveur n'a pas été trouvé")
         log("ERROR", "Le serveur n'a pas été trouvé")
         raise click.Abort()
@@ -158,5 +158,5 @@ def list(project, server):
         click.echo("Vous n'avez pas les droits")
         log("ERROR", "Vous n'avez pas les droits pour réaliser cette action")
     except Exception as e:
-        print("Une erreur est survenue"+e.__str__())
-        log("ERROR", "An error occurred "+e.__str__())
+        print("Une erreur est survenue"+e)
+        log("ERROR", "An error occurred "+e)

@@ -52,7 +52,8 @@ def load_key() -> bytes:
 def package(path: str, name: str, out: str, encrypt: bool) -> str:
     """:param path: path to folder to backup
     :param out: path to output file
-    :param encrypt: encrypt the file if True then the output file will be a .enc file else it will be a .tar.gz file
+    :param encrypt: encrypt the file if True then the output file will be a .enc file else it will
+    be a .tar.gz file
     :return: path to output file
     """
     old_path = os.path.abspath(os.getcwd())

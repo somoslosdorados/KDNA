@@ -15,7 +15,8 @@ def parseConfig():
     """
     Parse le fichier de configuration
     Repère les headers et les lignes associées
-    Applique le bon parser en fonction du header si il est présent dans le dictionnaire parsers_strategy
+    Applique le bon parser en fonction du header si il est présent dans le dictionnaire
+    parsers_strategy
     """
     line = ""
     header = ""
