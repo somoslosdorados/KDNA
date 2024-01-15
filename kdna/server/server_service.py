@@ -33,9 +33,12 @@ class ServerService:
         """Get the maximum ID among the servers"""
         lines = self.find_all()
         max_id = 0
-        # for line in lines:
-        #     if line[0] > max_id:
-        #         max_id = line[0]
+        # # for line in lines:
+        # #     if line[0] > max_id:
+        # #         max_id = line[0]
+        for server in lines:
+            if server['id'] > max_id:
+                max_id = server['id']
         for server in lines:
             if int(server['id']) > max_id:
                 max_id = int(server['id'])
@@ -107,8 +110,8 @@ class ServerService:
             print(confirmation_message)
             log("INFO", confirmation_message)
         else:
-            print("Erreur : Section [server] non trouvé dans le fichier.")
-            log("ERROR", "Erreur : Section [server] non trouvé dans le fichier.")
+            print("Erreur : Section [servers] non trouvé dans le fichier.")
+            log("ERROR", "Erreur : Section [servers] non trouvé dans le fichier.")
 
     def delete_server(self, id: str, by_alias=False):
         """Delete a server in the config file"""
