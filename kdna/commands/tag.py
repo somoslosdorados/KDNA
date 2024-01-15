@@ -5,6 +5,7 @@ list: Commande pour lister les tags
 """
 
 import click
+from kdna.logger.logger import log
 from kdna.server.server_service import ServerService
 from kdna.parsing.parser import listServers
 from tabulate import tabulate
@@ -49,6 +50,7 @@ def add(project, new_tag, file_to_tag, server):
         click.echo("Vous n'avez pas les droits")
     except Exception as e:
         print("error = "+e.__str__())
+        log("error", "error = "+e.__str__())
 
 
 # Création de la commande delete
@@ -82,6 +84,7 @@ def delete(project, old_tag, server):
         click.echo("Vous n'avez pas les droits")
     except Exception as e:
         print("error = "+e.__str__())
+        log("error", "error = "+e.__str__())
 
 # Création de la commande update
 @tag.command()
@@ -112,6 +115,7 @@ def update(project, old_tag, new_tag,server):
         click.echo("Vous n'avez pas les droits")
     except Exception as e:
         print("error = "+e.__str__())
+        log("error", "error = "+e.__str__())
 
 
 # Création de la commande list
@@ -142,3 +146,4 @@ def list(project, server):
         click.echo("Vous n'avez pas les droits")
     except Exception as e:
         print("error = "+e.__str__())
+        log("error", "error = "+e.__str__())

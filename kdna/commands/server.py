@@ -7,6 +7,7 @@ list : Commande pour lister les serveurs
 """
 
 import click
+from kdna.logger.logger import log
 from kdna.server.server_service import ServerService
 from tabulate import tabulate
 from kdna.ssh.ssh_client import SSHClient
@@ -46,8 +47,8 @@ def add(id, alias, address, repo, port, encrypt):
             click.echo("Le dossier existe déjà")
         serverService.create_server(id, address, repo, port, encrypt, alias)
     except Exception as e:
-        print(e)
-        print("An errror occured connection on this adress fail.")
+        print("An error occurred while connecting to this address.")
+        log("error", "An error occurred while connecting to this address.")
         return None
 
 

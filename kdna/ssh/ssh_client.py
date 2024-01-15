@@ -1,4 +1,6 @@
 from fabric import Connection
+from kdna.logger.logger import log
+
 
 class SSHClient:
 
@@ -42,23 +44,23 @@ class SSHClient:
         system_info['os_info'] = os_info
 
         # Utilisation des ressources
-        resource_usage = conn.run("top -bn1 | grep 'Cpu(s)'", hide=True).stdout.strip()
+        resource_usage = conn.run(
+            "top -bn1 | grep 'Cpu(s)'", hide=True).stdout.strip()
         system_info['resource_usage'] = resource_usage
     except Exception as e:
-      print(f"Error getting system information on {self.host}: {e}")
+        print(f"Error getting system information on {self.host}: {e}")
+        log("error", f"Error getting system information on {self.host}: {e}")
     return system_info
 
-  def sendCommand(self, command):
-    try:
-      with Connection(host=self.host, user=self.user) as conn:
-        # Récupère le retour de la commande
-        command_return = conn.run(command, hide=True)
-        msg = "\n{0.stdout}"
-        print(msg.format(command_return))
-        return msg.format(command_return)
-    except Exception as e:
-      raise Exception(
-        f"Error sending command {command} to {self.host}: {e}")
-
-  def run(self, command: str):
-    return self.connection.run(command, warn=True)
+    def sendCommand(self, command):
+        try:
+            with Connection(host=self.host, user=self.user) as conn:
+                # Récupère le retour de la commande
+                command_return = conn.run(command, hide=True)
+                msg = "\n{0.stdout}"
+                return msg.format(command_return)
+        except Exception as e:
+            print(f"Error sending command {command} to {self.host}: {e}")
+            log("error", f"Error sending command {command} to {self.host}: {e}")
+    def run(self, command: str):
+      return self.connection.run(command, warn=True)

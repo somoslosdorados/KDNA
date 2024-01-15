@@ -8,8 +8,6 @@ DATA_PATH = "tests/data"
 
 def gen_file_structure_bin(nb_files: int = 10) -> dict:
     file_and_content = {}
-    print(os.getcwd())
-    print(os.listdir(DATA_PATH))
     os.mkdir(DATA_PATH+"/test")
 
     for k in range(0, nb_files):
@@ -21,7 +19,6 @@ def gen_file_structure_bin(nb_files: int = 10) -> dict:
 
 
 def gen_deeper_file_structure_bin(nb_files: int = 10) -> dict:
-    print(os.getcwd())
     os.mkdir(DATA_PATH+"/test")
     os.mkdir(DATA_PATH+"/test/test")
 
@@ -39,7 +36,6 @@ def gen_deeper_file_structure_bin(nb_files: int = 10) -> dict:
 
 
 def delete_file_structure():
-    print(os.getcwd())
     shutil.rmtree(DATA_PATH+"/test")
 
 
@@ -67,7 +63,6 @@ def test_backup_encrypted():
     gen_file_structure_bin()
     file_out = encrypt.package(
         DATA_PATH+"/test", "backup", DATA_PATH+"/test/backup", True)
-    print(file_out)
     assert os.path.exists(file_out)
     assert file_out == DATA_PATH+"/test/backup.enc"
     os.remove(DATA_PATH+"/test/backup.enc")
@@ -80,7 +75,6 @@ def test_backup_decrypted():
         DATA_PATH+"/test", "backup", DATA_PATH+"/test/backup", True)
     restore_out = encrypt.restore(file_out,
                                   DATA_PATH+"/test/backup_decrypted", True)
-    print("restore_out = " + restore_out)
     assert os.path.exists(restore_out)
     assert restore_out == DATA_PATH+"/test/backup_decrypted/test/backup"
     for file in backup_content:
@@ -93,7 +87,6 @@ def test_backup_encrypted_deeper():
     gen_deeper_file_structure_bin()
     file_out = encrypt.package(
         DATA_PATH+"/test", DATA_PATH+"/test/backup", True)
-    print(file_out)
     assert os.path.exists(file_out)
     assert file_out == DATA_PATH+"/test/backup.enc"
     os.remove(DATA_PATH+"/test/backup.enc")
@@ -106,7 +99,6 @@ def test_backup_decrypted_deeper():
         DATA_PATH+"/test", DATA_PATH+"/test/backup", True)
     restore_out = encrypt.restore(file_out,
                                   DATA_PATH+"/test/backup_decrypted", True)
-    print("restore_out = " + restore_out)
     assert os.path.exists(restore_out)
     assert restore_out == DATA_PATH+"/test/backup_decrypted/tests/data/test"
     for file in backup_content:

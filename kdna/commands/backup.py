@@ -10,6 +10,7 @@ list : Commande pour lister les backups
 import click
 import uuid
 import os
+from kdna.logger.logger import log
 import kdna.tags.tags as tags
 from kdna.parsing.parser import listServers
 from kdna.encrypt import encrypt
@@ -157,6 +158,7 @@ def list(project_name):
         instance = SSHClient(listServers[0].credentials).connect()
     except Exception as e:
         print("error = "+e.__str__())
+        log("error", "error = "+e.__str__())
 
     backups = []
 
@@ -168,6 +170,7 @@ def list(project_name):
 
     except Exception as e:
         print("error2 = "+e.__str__())
+        log("error", "error2 = "+e.__str__())
 
     if backups is None:
         click.echo(f'Project {project_name} not found')
@@ -191,6 +194,7 @@ def restore(project, nametag, path):
         instance = SSHClient(listServers[0].credentials).connect()
     except Exception as e:
         print(e)
+        log("error", e.__str__())
 
     remote_path = find_path(instance.connection, nametag, project)
 
@@ -201,11 +205,13 @@ def restore(project, nametag, path):
         download_file(instance.connection, local_temp_path, remote_path)
     except Exception as e:
         print(e)
+        log("error", e.__str__())
 
     try:
         restored_path= encrypt.restore(local_temp_path, path)
     except Exception as e:
         print(e)
+        log("error", e.__str__())
 
     click.echo(f"Restauration faite : \"{restored_path}\"")
     os.remove(local_temp_path)

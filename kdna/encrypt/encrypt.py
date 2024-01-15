@@ -7,6 +7,8 @@ import os
 import tarfile
 from cryptography.fernet import Fernet
 
+from kdna.logger.logger import log
+
 
 kdna_default_path = os.path.join(os.path.expanduser('~'), '.kdna/key.key')
 kdna_path_to_path = os.path.join(os.path.expanduser('~'), '.kdna/path')
@@ -73,6 +75,7 @@ def restore(path: str, out: str) -> str:
     :return: path to output folder
     """
     print("restoring = ", path)
+    log("info", "restoring = "+ path)
     encrypted = path.endswith(".enc")
     tar_name = path
     if encrypted:
