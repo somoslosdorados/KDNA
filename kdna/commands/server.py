@@ -97,8 +97,7 @@ def update(alias, new_repo, port, new_address, encrypt, new_alias):
     """
     serverService = ServerService()
     if alias and new_address or alias and new_repo or alias and port or alias and encrypt or alias and new_alias:
-        serverService.update_server(
-            alias, new_repo, port, new_address, new_repo, new_alias)
+        serverService.update_server(alias, new_repo, port, new_address, new_repo, encrypt, new_alias)
     else:
         click.echo("Les arguments à mettre à jour doivent être renseignés.")
 # Création de la commande list
