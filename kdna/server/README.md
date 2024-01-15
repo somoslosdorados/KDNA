@@ -18,11 +18,11 @@ A file is created :
 [server]
 [auto-backup]
 ```
-You can now call commands in the file `main.py`
+You can now call commands in the file `__main__.py`
 
 ### Server
 
-Before anything, you need to instanciate the server service in the `main.py` : 
+Before anything, you need to instanciate the server service in the `__main__.py` : 
 
 ```
 serviceServer = ServerService()
@@ -98,7 +98,7 @@ serverService.find_by_alias("SS4")
 
 ### Auto-Backup
 
-First of all, instantiate the server service like this in main.py :
+First of all, instantiate the server service like this in `__main__.py` :
 
 ```
 autoBackupService = AutoBackupService()
