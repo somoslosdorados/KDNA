@@ -11,6 +11,7 @@ from kdna.server.server_service import ServerService
 from tabulate import tabulate
 from kdna.ssh.ssh_client import SSHClient
 from kdna.server.server import directory_exists
+from kdna.conf_utils.utils import Utils
 
 @click.group()
 def server():
@@ -20,13 +21,28 @@ def server():
 #! Création des commandes du groupe server
 # Création de la commande add
 @server.command()
-@click.option('-i', '--id', required=True, help="entrer l'id")
-@click.option('-ad', '--address', required=True, help="entrer le libelé de connexion")
-@click.option('-a', '--alias', required=True, help="entrer l'alias")
-@click.option('-r', '--repo', required=True, help="entrer le répertoire de sauvegarde")
-@click.option('-p', '--port', required=True, help="entrer le port")
-def add(id, alias, address, repo, port):
-    """Commande pour ajoute un serveur."""
+@click.option('-i', '--id', required=False, help="entrer l'id Ex: 1")
+@click.option('-ad', '--address', required=True, help="entrer le libelé de connexion Ex: user@host")
+@click.option('-a', '--alias', required=True, help="entrer l'alias Ex: serveur1")
+@click.option('-r', '--repo', required=True, help="entrer le répertoire de sauvegarde Ex: /home/user/backup")
+@click.option('-p', '--port', required=True, help="entrer le port Ex: 22")
+@click.option('-e', '--encrypt', required=False, help="Encrypt les sauvegardes sur le serveur (valeur par defaut : True) Ex: False")
+def add(alias, address, repo, port, id=None, encrypt=True):
+    """Commande pour ajouter un serveur.
+    :param id: -i l'id du serveur à sélectionner\n
+    :type id: str\n
+    :param alias: -a l'alias du serveur à sélectionner\n
+    :type alias: str\n
+    :param address: -ad libeler de connexion \n
+    :type address: str\n
+    :param repo: -r le repertoire dans lequel les sauvegardes seront envoyé\n
+    :type repo: str\n
+    :param port: -p le port du serveur à sélectionner\n
+    :type port: str\n
+    :return: un message de confirmation ou d'erreur\n
+    :rtype: str
+    :param encrypt: -e encrypt les sauvegardes sur le serveur\n
+    :type encrypt: bool\n"""
     try:
         connection = SSHClient(address)
         connection.sendCommand("ls > /dev/null")
@@ -35,10 +51,10 @@ def add(id, alias, address, repo, port):
             connection.sendCommand(f"test ! -d {repo} && mkdir {repo}")
         except Exception:
             click.echo("Le dossier existe déjà")
-        ServerService().create_server(id, address, repo, port, alias)
+        ServerService().create_server(id, address, repo, port, encrypt, alias)
     except Exception as e:
         print(e)
-        print("An errror occured connection on this adress fail.")
+        print("An error occurred while connecting to this address.")
         return None
 
 

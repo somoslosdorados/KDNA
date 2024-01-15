@@ -51,7 +51,7 @@ class ServerService:
                 f"section [server]."
             )
 
-    def create_server(self, id, address, path, port, alias):
+    def create_server(self, id, address, credentials, port,  encrypt, alias):
         # On ouvre le fichier en mode lecture
         lines = Utils.read_file_lines(Utils.get_config_file_path())
 
@@ -77,14 +77,16 @@ class ServerService:
                     lines, index_servers, index_auto_backups
                 )
                 if alias in existing_aliases:
-                    print(
-                        f'Erreur : L\'alias "{alias}" existe déjà dans la section ['
-                        f"servers]."
-                    )
+                    print(f"Erreur : L'alias \"{alias}\" existe déjà dans la section ["
+                          f"servers].")
                     return
 
+            if encrypt != "True" and encrypt != "False":
+                print("Erreur : La valeur du paramètre encrypt doit être True ou False.")
+                return
+            
             # Construction de la nouvelle ligne
-            new_line = f"{id}, {address}, {path}, {port}, {alias}\n"
+            new_line = f"{id}, {address}, {credentials}, {port}, {encrypt},{alias}\n"
 
             # Ajout de la ligne seulement si l'id_server et l'alias sont uniques
             lines.insert(index_servers + 1, new_line)
@@ -137,7 +139,7 @@ class ServerService:
                     f"la section [server]."
                 )
 
-    def update_server(self, alias_to_update, new_path="", new_port="", new_address="", new_alias=""):
+    def update_server(self, alias_to_update, new_credentials="", new_port="", new_address="", new_encrypt="",new_alias=""):
         lines = Utils.read_file_lines(Utils.get_config_file_path())
 
         index_servers = Utils.find_servers_index(lines)
@@ -156,15 +158,16 @@ class ServerService:
                 existing_address = existing_line[1].strip()
                 existing_path = existing_line[2].strip()
                 existing_port = existing_line[3].strip()
-                existing_alias = (
-                    existing_line[4].strip() if len(existing_line) >= 5 else None
-                )
+                existing_encrypt = existing_line[4].strip()
+                existing_alias = existing_line[5].strip() if len(
+                    existing_line) >= 5 else None
 
                 # Mettre à jour les informations si de nouvelles valeurs sont fournies
                 new_address = new_address if new_address != "" else existing_address
                 new_path = new_path if new_path != "" else existing_path
                 new_port = new_port if new_port != "" else existing_port
                 new_alias = new_alias if new_alias != "" else existing_alias
+                new_encrypt = new_encrypt if new_encrypt != "" else existing_encrypt
 
                 # Vérifier si le nouvel alias  existe déjà
                 if (
@@ -179,7 +182,7 @@ class ServerService:
                     return
 
                 # Construire la nouvelle ligne mise à jour
-                updated_line = f"{existing_id}, {new_address}, {new_path}, {new_port}, {new_alias}\n"
+                updated_line = f"{existing_id}, {new_address}, {new_credentials}, {new_port}, {new_encrypt}, {new_alias}\n"
 
                 # Mettre à jour la ligne
                 lines[line_to_update] = updated_line
