@@ -102,15 +102,11 @@ class SSHClient:
         :rtype: str
         :raises Exception: If there is an error sending the command.
         """
-        try:
-            with Connection(host=self.host, user=self.user) as conn:
-                # Récupère le retour de la commande
-                command_return = conn.run(command, hide=True)
-                msg = "\n{0.stdout}"
-                return msg.format(command_return)
-        except Exception as e:
-            print(f"Error sending command {command} to {self.host}: {e}")
-            log("ERROR", f"Error sending command " + command + " to " + self.host + " : " + e)
+        with Connection(host=self.host, user=self.user) as conn:
+            # Récupère le retour de la commande
+            command_return = conn.run(command, hide=True)
+            msg = "\n{0.stdout}"
+            return msg.format(command_return)
 
     def run(self, command: str):
         """

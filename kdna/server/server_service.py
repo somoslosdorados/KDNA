@@ -5,16 +5,18 @@ import paramiko
 from kdna.conf_utils.utils import Utils
 from kdna.logger.logger import log
 from kdna.server.server import Server
+from kdna.ssh.ssh_client import SSHClient
 
 
 def array_to_dic(array):
-  return {
-    'id': array[0].strip(),
-    'host': array[1].strip(),
-    'path': array[2].strip(),
-    'port': array[3].strip(),
-    'alias': array[4].strip()
-  }
+    return {
+        "id": array[0].strip(),
+        "host": array[1].strip(),
+        "path": array[2].strip(),
+        "port": array[3].strip(),
+        "alias": array[4].strip(),
+    }
+
 
 def create_dic_server(data):
     """Create a dictionnary with the data of the server"""
@@ -42,15 +44,9 @@ class ServerService:
         """Get the maximum ID among the servers"""
         lines = self.find_all()
         max_id = 0
-        # # for line in lines:
-        # #     if line[0] > max_id:
-        # #         max_id = line[0]
         for server in lines:
-            if server['id'] > max_id:
-                max_id = server['id']
-        for server in lines:
-            if int(server['id']) > max_id:
-                max_id = int(server['id'])
+            if int(server["id"]) > max_id:
+                max_id = int(server["id"])
         return max_id
 
     def find_all(self):
@@ -73,24 +69,48 @@ class ServerService:
         index_auto_backups = Utils.find_auto_backups_index(lines)
 
         existing_aliases = self.extract_existing_aliases(
-            lines,
-            index_servers,
-            index_auto_backups
+            lines, index_servers, index_auto_backups
         )
         if alias in existing_aliases:
-            line_to_print = self.find_line_to_delete(lines, index_servers, alias, by_alias=True)
-            #print(lines[line_to_print].strip())
-            data_server = array_to_dic(lines[line_to_print].split(','))
-            server = Server(data_server['host'])
+            line_to_print = self.find_line_to_delete(
+                lines, index_servers, alias, by_alias=True
+            )
+            # print(lines[line_to_print].strip())
+            data_server = array_to_dic(lines[line_to_print].split(","))
+            server = Server(data_server["host"])
             return server
 
         else:
-            print(f"Erreur : Aucun serveur trouvé avec l'alias \"{alias}\" dans la "
-                f"section [servers].")
+            print(
+                f'Erreur : Aucun serveur trouvé avec l\'alias "{alias}" dans la '
+                f"section [servers]."
+            )
 
-    def create_server(self, id, address, credentials, port,  encrypt, alias):
+    def create_server(self, id, address, dst, port, encrypt, alias):
+        """Commande pour ajouter un serveur."""
+        try:
+            connection = SSHClient(address)
+            connection.sendCommand("ls > /dev/null")
+
+            try:
+                connection.sendCommand(f"test ! -d {dst}")
+            except Exception:
+                log("ERROR", "Le dossier existe déjà")
+                print("Le dossier existe déjà")
+
+        except Exception:
+            print("An error occurred while connecting to this address.")
+            log("ERROR", "An error occurred while connecting to this address.")
+            return None
+
         # On ouvre le fichier en mode lecture
-        lines = Utils.read_file_lines(Utils.get_config_file_path())
+        lines = None
+        try:
+            lines = Utils.read_file_lines(Utils.get_config_file_path())
+        except FileNotFoundError:
+            print("Error : configuration file not found.")
+            log("ERROR", "Error : configuration file not found.")
+            return None
 
         # On cherche la ligne contenant [servers]
         index_servers = Utils.find_servers_index(lines)
@@ -106,50 +126,65 @@ class ServerService:
                     f'Erreur : L\'id du serveur "{id}" existe déjà dans la '
                     f"section [servers]."
                 )
-                log("ERROR", "Erreur : L\'id du serveur " + id + " existe déjà dans la"
-                                                                   " section [servers].")
+                log(
+                    "ERROR",
+                    "Erreur : L'id du serveur " + id + " existe déjà dans la"
+                    " section [servers].",
+                )
                 return
 
             if id != "":
                 id = int(id)
             else:
                 id = self.get_max_id() + 1
+
             # On vérifie de l'unicité de l'alias
             if alias is not None:
                 existing_aliases = self.extract_existing_aliases(
                     lines, index_servers, index_auto_backups
                 )
                 if alias in existing_aliases:
-                    print(f"Erreur : L'alias " + alias + " existe déjà dans la section ["
-                          f"servers].")
-                    log("ERROR", "Erreur : L'alias " + alias + " existe déjà dans la "
-                                                                 "section [servers].")
-                    log("ERROR", "Erreur : L'alias " + alias + " existe déjà dans la "
-                                                                 "section [servers].")
+                    print(
+                        f"Erreur : L'alias " + alias + " existe déjà dans la section ["
+                        f"servers]."
+                    )
+                    log(
+                        "ERROR",
+                        "Erreur : L'alias " + alias + " existe déjà dans la "
+                        "section [servers].",
+                    )
                     return
 
             if encrypt not in (True, False):
-                print("Erreur : La valeur du paramètre encrypt doit être True ou False.")
-                log("ERROR", "Erreur : La valeur du paramètre encrypt doit être "
-                             "True ou False.")
-                log("ERROR", "Erreur : La valeur du paramètre encrypt doit être True "
-                             "ou False.")
+                print(
+                    "Erreur : La valeur du paramètre encrypt doit être True ou False."
+                )
+                log(
+                    "ERROR",
+                    "Erreur : La valeur du paramètre encrypt doit être "
+                    "True ou False.",
+                )
                 return
 
+            try:
+                connection.sendCommand(f"mkdir -p {dst}")
+            except Exception:
+                print("Error: error while creating host directory.")
+                log("ERROR", "Error: error while creating host directory.")
+
             # Construction de la nouvelle ligne
-            new_line = f"{id}, {address}, {credentials}, {port}, {encrypt}, {alias}\n"
+            new_line = f"{id}, {address}, {dst}, {port}, {encrypt}, {alias}\n"
 
             # Ajout de la ligne seulement si l'id_server et l'alias sont uniques
             lines.insert(index_servers + 1, new_line)
 
             with open(Utils.get_config_file_path(), "w", encoding="utf-8") as f:
                 f.writelines(lines)
-            confirmation_message = f'Le server avec l\'id "{id}"'
+            confirmation_message = f"Le server avec l'id {id} "
             if alias is not None:
                 confirmation_message += f'et l\'alias "{alias}"'
             confirmation_message += " a été ajouté dans la section [servers]."
             print(confirmation_message)
-            log("INFO", confirmation_message)
             log("INFO", confirmation_message)
         else:
             print("Erreur : Section [servers] non trouvé dans le fichier.")
@@ -181,16 +216,24 @@ class ServerService:
                     f"L'élément avec l'{element_type} {id} a été supprimé de la "
                     f"section [servers]."
                 )
-                log("INFO", "L'élément avec l\'" + element_type + id + "a été "
-                                                               "supprimé de la section [servers].")
+                log(
+                    "INFO",
+                    "L'élément avec l'" + element_type + id + "a été "
+                    "supprimé de la section [servers].",
+                )
             # Sinon on affiche un message d'erreur
             else:
                 print(
                     f'Erreur : Aucun élément trouvé avec l\'{element_type} "{id}" dans '
                     f"la section [servers]."
                 )
-                log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + element_type +
-                    id + "dans la section [servers].")
+                log(
+                    "ERROR",
+                    "Erreur : Aucun élément trouvé avec l'"
+                    + element_type
+                    + id
+                    + "dans la section [servers].",
+                )
         # Sinon on affiche un message d'erreur
         else:
             if not by_alias and id == "None":
@@ -198,8 +241,13 @@ class ServerService:
                     f'Erreur : Aucun élément trouvé avec l\'{element_type} "{id}" dans '
                     f"la section [servers]."
                 )
-                log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + element_type +
-                    id + "dans la section [servers].")
+                log(
+                    "ERROR",
+                    "Erreur : Aucun élément trouvé avec l'"
+                    + element_type
+                    + id
+                    + "dans la section [servers].",
+                )
 
     def update_server(
         self,
@@ -251,15 +299,18 @@ class ServerService:
                     print(
                         "Erreur : Le nouvel alias existe déjà dans la liste des serveurs."
                     )
-                    log("ERROR", "Erreur : Le nouvel alias existe déjà dans la liste"
-                                 " des serveurs.")
-                    log("ERROR", "Erreur : Le nouvel alias existe déjà dans la liste"
-                                 " des serveurs.")
+                    log(
+                        "ERROR",
+                        "Erreur : Le nouvel alias existe déjà dans la liste"
+                        " des serveurs.",
+                    )
                     return
 
                 # Construire la nouvelle ligne mise à jour
-                updated_line = (f"{existing_id}, {new_address}, {new_path}, {new_port}, "
-                                f"{new_encrypt}, {new_alias}\n")
+                updated_line = (
+                    f"{existing_id}, {new_address}, {new_path}, {new_port}, "
+                    f"{new_encrypt}, {new_alias}\n"
+                )
 
                 # Mettre à jour la ligne
                 lines[line_to_update] = updated_line
@@ -272,16 +323,24 @@ class ServerService:
                     f'Les informations du serveur avec l\'alias "{alias_to_update}" ont été '
                     f"mises à jour."
                 )
-                log("INFO", "Les informations du serveur avec l\'alias " +
-                    alias_to_update + " ont été mises à jour.")
+                log(
+                    "INFO",
+                    "Les informations du serveur avec l'alias "
+                    + alias_to_update
+                    + " ont été mises à jour.",
+                )
             # Sinon, afficher un message d'erreur
             else:
                 print(
                     f'Erreur : Aucun serveur trouvé avec l\'alias "{alias_to_update}" dans la '
                     f"section [servers]."
                 )
-                log("ERROR", "Erreur : Aucun serveur trouvé avec l\'alias " +
-                    alias_to_update + " dans la section [servers].")
+                log(
+                    "ERROR",
+                    "Erreur : Aucun serveur trouvé avec l'alias "
+                    + alias_to_update
+                    + " dans la section [servers].",
+                )
         # Sinon, afficher un message d'erreur
         else:
             print("Erreur : Section [servers] non trouvée dans le fichier.")
@@ -305,9 +364,8 @@ class ServerService:
         if config_info is None:
             print("Erreur : Fichier de configuration SSH non trouvé.")
             log("ERROR", "Erreur : Fichier de configuration SSH non trouvé.")
-            log("ERROR", "Erreur : Fichier de configuration SSH non trouvé.")
             return None
-        
+
         encrypt = input("Encrypt the backups (Y/n): ")
         if encrypt == "y":
             encrypt = True
@@ -315,11 +373,13 @@ class ServerService:
             encrypt = False
         else:
             encrypt = True
-            
+
+        dst_path = input("Enter the destination path of your backup on the remote : ")
+
         self.create_server(
             "",
             config_info["address"],
-            config_info["credentials"],
+            dst_path,
             config_info["port"],
             encrypt,
             config_info["alias"],
@@ -430,10 +490,16 @@ class ServerService:
                         "Error: You dosent's have IdentityFile field in your ssh config file, and"
                         " no default key (id_rsa)."
                     )
-                log ("ERROR", "Erreur : Aucune champ 'identityfile' trouvée dans le"
-                              " fichier de configuration.")
-                log ("ERROR", "Erreur : Aucune champ 'identityfile' trouvée dans le"
-                              " fichier de configuration.")
+                log(
+                    "ERROR",
+                    "Erreur : Aucune champ 'identityfile' trouvée dans le"
+                    " fichier de configuration.",
+                )
+                log(
+                    "ERROR",
+                    "Erreur : Aucune champ 'identityfile' trouvée dans le"
+                    " fichier de configuration.",
+                )
                 return None
             if "port" in user_config:
                 cfg["port"] = user_config["port"]
