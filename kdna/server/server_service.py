@@ -106,7 +106,7 @@ class ServerService:
                     f'Erreur : L\'id du serveur "{id}" existe déjà dans la '
                     f"section [servers]."
                 )
-                log("ERROR", "Erreur : L\'id du serveur " + {id} + " existe déjà dans la"
+                log("ERROR", "Erreur : L\'id du serveur " + id + " existe déjà dans la"
                                                                    " section [servers].")
                 return
 
@@ -120,11 +120,11 @@ class ServerService:
                     lines, index_servers, index_auto_backups
                 )
                 if alias in existing_aliases:
-                    print(f"Erreur : L'alias \"{alias}\" existe déjà dans la section ["
+                    print(f"Erreur : L'alias " + alias + " existe déjà dans la section ["
                           f"servers].")
-                    log("ERROR", "Erreur : L'alias " + {alias} + " existe déjà dans la "
+                    log("ERROR", "Erreur : L'alias " + alias + " existe déjà dans la "
                                                                  "section [servers].")
-                    log("ERROR", "Erreur : L'alias " + {alias} + " existe déjà dans la "
+                    log("ERROR", "Erreur : L'alias " + alias + " existe déjà dans la "
                                                                  "section [servers].")
                     return
 
@@ -189,8 +189,8 @@ class ServerService:
                     f'Erreur : Aucun élément trouvé avec l\'{element_type} "{id}" dans '
                     f"la section [servers]."
                 )
-                log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + {element_type} +
-                    {id} + "dans la section [servers].")
+                log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + element_type +
+                    id + "dans la section [servers].")
         # Sinon on affiche un message d'erreur
         else:
             if not by_alias and id == "None":
@@ -198,8 +198,8 @@ class ServerService:
                     f'Erreur : Aucun élément trouvé avec l\'{element_type} "{id}" dans '
                     f"la section [servers]."
                 )
-                log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + {element_type} +
-                    {id} + "dans la section [servers].")
+                log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + element_type +
+                    id + "dans la section [servers].")
 
     def update_server(
         self,
@@ -273,7 +273,7 @@ class ServerService:
                     f"mises à jour."
                 )
                 log("INFO", "Les informations du serveur avec l\'alias " +
-                    {alias_to_update} + " ont été mises à jour.")
+                    alias_to_update + " ont été mises à jour.")
             # Sinon, afficher un message d'erreur
             else:
                 print(
@@ -281,7 +281,7 @@ class ServerService:
                     f"section [servers]."
                 )
                 log("ERROR", "Erreur : Aucun serveur trouvé avec l\'alias " +
-                    {alias_to_update} + " dans la section [servers].")
+                    alias_to_update + " dans la section [servers].")
         # Sinon, afficher un message d'erreur
         else:
             print("Erreur : Section [servers] non trouvée dans le fichier.")
@@ -365,8 +365,7 @@ class ServerService:
             f"Erreur : Aucun élément trouvé avec "
             f"l'{'alias' if by_alias else 'id'} \"{id}\" dans la section [servers]."
         )
-        log("ERROR", "Erreur : Aucun élément trouvé avec l\'" +
-            {'alias' if by_alias else 'id'} + {id} + " dans la section [servers].")
+        log("ERROR", "Erreur : Aucun élément trouvé dans la section [servers].")
         return None
 
     @staticmethod

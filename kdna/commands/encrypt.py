@@ -29,7 +29,7 @@ def keygen(path):
             click.echo("Path must lead to a file not a directory")
             return
     click.echo(f"Key generated at {output_path}")
-    log("INFO", f"Key generated at {output_path}")
+    log("INFO", f"Key generated at " + output_path)
 
 
 @encrypt.command(name='activate')

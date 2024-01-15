@@ -31,8 +31,8 @@ def backup_exist(connection_instance: Connection, project: str, file_to_tag: str
             f"ls ./kdna/{project}/{file_to_tag}", hide=True)
     except Exception as e:
         logger.log(
-            "ERROR", f"Erreur lors de la vérification de l'existence de {file_to_tag}"
-                     f" pour le project {project}: {e}")
+            "ERROR", f"Erreur lors de la vérification de l'existence de " + file_to_tag +
+                     f" pour le project " + project + ": " + e)
         return False
     return True
 
@@ -47,22 +47,20 @@ def add_tags(connection_instance: Connection, project: str, new_tag: str, file_t
     # Vérification que la backup existe sur le serveur
     if not backup_exist(connection_instance, project, file_to_tag):
         logger.log(
-            "ERROR", f"Erreur lors de l'ajout de {new_tag} pour le project {project}"
-                     f", {file_to_tag} n'existe pas")
+            "ERROR", f"Erreur lors de l'ajout de " + new_tag + " pour le project " + project +
+                     f", " + file_to_tag + " n'existe pas")
         raise FileNotFoundError("Erreur: le fichier n'existe pas")
     if (tag_exists(connection_instance, project, new_tag)):
         logger.log(
-            "ERROR", f"Erreur lors de l'ajout de {new_tag} pour le project {project},"
-                     f" {new_tag} existe déjà")
+            "ERROR", f"Erreur lors de l'ajout de " + new_tag + " pour le project " + project +
+                     f", " + new_tag + " existe déjà")
         raise KeyError(f"{new_tag} existe déjà")
 
     dico = get_tag_conf(connection_instance, project)
     # Ecrire dans le fichier tag.conf le nouveau tag
     dico[new_tag] = file_to_tag
     write_tag_conf(connection_instance, project, dico)
-    logger.log(
-        "INFO", f"Le tag {new_tag} a été ajouté au fichier {file_to_tag} du projet"
-                f" {project}")
+    logger.log("INFO", f"Le tag " + new_tag+ "  a été ajouté au projet " + project)
 
 
 def delete_tags(connection_instance: Connection, project: str, old_tag: str):
@@ -73,14 +71,13 @@ def delete_tags(connection_instance: Connection, project: str, old_tag: str):
     # Verification de la présence du tag
     if (not tag_exists(connection_instance, project, old_tag)):
         logger.log(
-            "ERROR", f"Erreur lors de la suppression de {old_tag} pour le project"
-                     f" {project}, {old_tag} n'existe pas")
+            "ERROR", f"Erreur lors de la suppression de " + old_tag + " pour le project n'existe pas")
         raise KeyError(f"{old_tag} n'existe pas")
     # Deletion de du tag à enlever
     tag_file.pop(old_tag)
     # Ecriture dans le fichier
     write_tag_conf(connection_instance, project, tag_file)
-    logger.log("INFO", f"Le tag {old_tag} a été supprimé du projet {project}")
+    logger.log("INFO", f"Le tag " + old_tag + " a été supprimé du projet ")
 
 
 def update_tags(connection_instance: Connection, project: str, old_tag: str, new_tag: str):
@@ -101,14 +98,14 @@ def update_tags(connection_instance: Connection, project: str, old_tag: str, new
     file_to_tag = tag_file[old_tag]
     if not tag_exists(connection_instance, project, old_tag):
         logger.log(
-            "ERROR", f"Erreur lors de l'update de {old_tag} en {new_tag} pour le"
-                     f" project {project}, {old_tag} n'existe pas")
+            "ERROR", f"Erreur lors de l'update de du tag pour le"
+                     f" project , " +  old_tag + " n'existe pas")
         raise KeyError(f"{old_tag} n'existe pas")
 
     if tag_exists(connection_instance, project, new_tag):
         logger.log(
-            "ERROR", f"Erreur lors de l'update de {old_tag} en {new_tag} pour le"
-                     f" project {project}, {new_tag} existe déjà")
+            "ERROR", f"Erreur lors de l'update de du tag pour le"
+                     f" project , " +  new_tag + "  existe deja")
         raise KeyError(f"{new_tag} existe déjà")
 
     tag_file.pop(old_tag)
@@ -116,8 +113,7 @@ def update_tags(connection_instance: Connection, project: str, old_tag: str, new
 
     write_tag_conf(connection_instance, project, tag_file)
     logger.log(
-        "INFO", f"Le tag {old_tag} a été modifié en {new_tag} dans le projet"
-                f" {project}")
+        "INFO", f"Le tag " + old_tag + "  a été modifié en " + new_tag + " dans le projet")
 
 
 def get_file_name_by_tag(connection_instance: Connection, project: str, tag: str) -> str:

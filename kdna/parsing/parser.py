@@ -59,7 +59,7 @@ def parseConfig():
                     listAutoBackups.append(parsed)
         else:
             print(f"Unknown header: {header}")
-            log("ERROR", f"Unknown header: {header}")
+            log("ERROR", f"Unknown header :" + header)
 
 
 def line_is_header(line: str) -> str:

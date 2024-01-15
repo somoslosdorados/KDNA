@@ -46,7 +46,7 @@ class AutoBackupService:
                 f"pas dans la section ["
                 f"servers].")
             log("ERROR",
-                f"Erreur : L'id du serveur \"{id_server}\" de votre auto backup pas dans la "
+                f"Erreur : L'id du serveur "+ id_server  + "  de votre auto backup pas dans la "
                 f"section [servers].")
             return
 
@@ -61,7 +61,7 @@ class AutoBackupService:
             print(
                 f"Erreur : L'id de l'auto backup \"{id}\" existe déjà dans la "
                 f"section [auto-backups].")
-            log("ERROR", f"Erreur : L'id de l'auto backup \"{id}\" existe déjà dans "
+            log("ERROR", f"Erreur : L'id de l'auto backup " + id + " existe déjà dans "
                          f"la section [auto-backups].")
             return
 
@@ -69,7 +69,7 @@ class AutoBackupService:
         print(
             f"L'auto backup avec l'id \"{id}\" a été ajouté dans la section ["
             f"auto-backups].")
-        log("INFO", f"L'auto backup avec l'id \"{id}\" a été ajouté dans la section"
+        log("INFO", f"L'auto backup avec l'id " + id +" a été ajouté dans la section"
                     f" [auto-backups].")
         lines.insert(index_auto_backups + 1, new_line)
 
@@ -101,14 +101,14 @@ class AutoBackupService:
             print(
                 f"L'auto backup avec l'id \"{id}\" a été supprimé de la section ["
                 f"auto-backups].")
-            log("INFO", f"L'auto backup avec l'id \"{id}\" a été supprimé de la"
+            log("INFO", f"L'auto backup avec l'id  " + id + " a été supprimé de la"
                         f" section [auto-backups].")
         # Sinon on affiche un message d'erreur
         else:
             print(
                 f"Erreur : Aucun élément trouvé avec l'id \"{id}\" dans la section ["
                 f"auto-backups].")
-            log("ERROR", f"Erreur : Aucun élément trouvé avec l'id \"{id}\" dans"
+            log("ERROR", f"Erreur : Aucun élément trouvé avec l'id " + id + " dans"
                          f" la section [auto-backups].")
 
     def update_auto_backup(self, id, new_frequency="", new_name="", new_timestamp="", new_path=""):
@@ -157,14 +157,14 @@ class AutoBackupService:
                 print(
                     f"L'auto backup avec l'id \"{id}\" a été mis à jour dans la "
                     f"section [auto-backups].")
-                log("INFO", f"L'auto backup avec l'id \"{id}\" a été mis à jour dans"
+                log("INFO", f"L'auto backup avec l'id " + id + " a été mis à jour dans"
                             f" la section [auto-backups].")
             # Sinon, afficher un message d'erreur
             else:
                 print(
                     f"Erreur : Aucun élément trouvé avec l'id \"{id}\" dans la section "
                     f"[auto-backups].")
-                log("ERROR", f"Erreur : Aucun élément trouvé avec l'id \"{id}\" dans"
+                log("ERROR", f"Erreur : Aucun élément trouvé avec l'id " + id + "  dans"
                              f" la section [auto-backups].")
         else:
             print(
