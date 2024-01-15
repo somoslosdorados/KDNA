@@ -15,8 +15,8 @@ Utils.initialize_config_file()
 A file is created : 
 
 ```
-[server]
-[auto-backup]
+[servers]
+[auto-backups]
 ```
 You can now call commands in the file `__main__.py`
 
