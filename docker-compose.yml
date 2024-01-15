@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  e2e-server:
+    image: kdna/e2e-backend
+    container_name: e2e-server
+    build: 
+      context: ./docker
+      args:
+        SSH_PUB_KEY: "${SSH_PUB_KEY}"
+    networks:
+      kdna-e2e:
+        aliases:
+          - e2e-server
+
+    ports:
+      - 127.0.0.1:22:22
+
+networks:
+  kdna-e2e:
+    external: true

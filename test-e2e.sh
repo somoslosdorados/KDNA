@@ -1,7 +1,18 @@
 #!/bin/bash
 
+command=""
+
+build_command(){
+  command="docker run --network kdna-e2e -it kdna/e2e-client:latest poetry run $1"
+}
+
+add_command(){
+  command="$command && $1"
+}
+
 test_key_gen() {
-  command="docker run -it kdna/e2e-client:latest poetry run python kdna/main.py encrypt key-gen"
+  echo "Testing key gen..."
+  build_command "python kdna/main.py encrypt key-gen"
   if $command; then
     echo "Tests key gen passed!"
   else
@@ -9,8 +20,17 @@ test_key_gen() {
   fi
 }
 
+test_create_project(){
+  build_command "python kdna/main.py server add -i S1 -ad test@e2e-server -a jul -r test -p 2"
+  if $command; then
+    echo "Tests create project passed!"
+  else
+    echo "Tests create project failed!"
+  fi
+}
+
 test_create_tag(){
-  command="poetry run python kdna/main.py tag add -p test -t test -f test.tar.gz -s S1"
+  build_command "python kdna/main.py encrypt create-tag --tag-name test --tag-value test"
   if $command; then
     echo "Tests create tag passed!"
   else
@@ -19,12 +39,13 @@ test_create_tag(){
 }
 
 run_tests() {
+  echo "Running tests..."
   test_key_gen
+  test_create_project
 }
 
 if [ $# == 2 ]; then
   if [ "$1" == "-i" ]; then
-    echo "Running tests..."
     run_tests
   fi
 else
@@ -32,5 +53,3 @@ else
   docker build -t kdna/e2e-client:latest .
   run_tests
 fi
-
-
