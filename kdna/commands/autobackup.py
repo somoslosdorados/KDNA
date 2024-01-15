@@ -65,93 +65,11 @@ update_cron_job("python /path/to/your/script.py", "python /path/to/your/updated_
 delete_cron_job("python /path/to/your/updated_script.py")
 
 
-from kdna.server.autobackup_service import AutoBackupService
-
-# Fonctions CRUD pour le crond
-# The crond (cron daemon) reads the cron tables to configure the schedule
-
-def create_cron_job(schedule, command):
-    current_user = os.getlogin()
-    cron = CronTab("")
-    job = cron.new(command=command)
-    job.setall(schedule)
-    cron.write()
-
-def read_cron_jobs():
-    cron = CronTab(user='your_username')
-    jobs = cron.find_comment('your_comment')  # Use a comment to identify your jobs
-    return [(job.comment, job.command, str(job.slices)) for job in jobs]
-
-def update_cron_job(old_command, new_command, new_schedule):
-    cron = CronTab(user='your_username')
-    jobs = cron.find_command(old_command)
-    
-    for job in jobs:
-        job.set_command(new_command)
-        job.setall(new_schedule)
-    
-    cron.write()
-
-def delete_cron_job(command):
-    cron = CronTab(user='your_username')
-    jobs = cron.find_command(command)
-    
-    for job in jobs:
-        cron.remove(job)
-    
-    cron.write()
-
-# Create a new cron job
-create_cron_job("0 2 * * *", "python /path/to/your/script.py")  # Run every day at 2:00 AM
-
-# Read all cron jobs
-jobs = read_cron_jobs()
-for job in jobs:
-    print(f"Command: {job[1]}, Schedule: {job[2]}")
-
-# Update an existing cron job
-update_cron_job("python /path/to/your/script.py", "python /path/to/your/updated_script.py", "30 1 * * *")  # Run every day at 1:30 AM
-
-# Delete a cron job
-delete_cron_job("python /path/to/your/updated_script.py")
-
-
 
 # Creation du groupe de commande autobackup
 @click.group(name='auto-backup')
 def autobackup():
     """Commande pour mettre en place un daemon de sauvegarde"""
-
-
-def get_type_cron(cron):
-    for char in cron:
-        if char == ':':
-            return ':'
-        elif char == '-':
-            return '-'
-    return -1
-
-
-def is_valid_cron(cron):
-    print(get_type_cron(cron))  # test pour voir à quoi ressemble la variable cron
-    if get_type_cron(cron) == ':':
-        cron_parts = cron.split(':')
-        if len(cron_parts) != 5:
-            return False
-        if 0 >= cron_parts[0] <= 59 and 0 >= cron_parts[1] <= 23 and 1 >= cron_parts[2] <= 31 and 1 >= cron_parts[
-            3] <= 12:
-            return True
-        return False
-    elif get_type_cron(cron) == '-':
-        cron_parts = cron.split(':')
-        if len(cron_parts) != 5:
-            return False
-        if 0 >= cron_parts[0] <= 59 and 0 >= cron_parts[1] <= 23 and 1 >= cron_parts[2] <= 31 and 1 >= cron_parts[
-            3] <= 12:
-            return True
-        return False
-    else:
-        return False
 
 
 def get_custom_cron(sched_part_type: str, cond_inf: int, cond_sup: int):
@@ -209,44 +127,6 @@ def translate_cron_schedule(cron_schedule):
         return False
 
 
-def validate_cron_schedule(custom_cron:str):
-    schedule_list = custom_cron.split(':')
-    if len(schedule_list) != 5:
-        return False
-    else:
-        for part in schedule_list:  # Check that every part is made only of numbers
-            if not (part.isnumeric() or part == ''):
-                return False
-        # Check that numbers are in the correct range
-        if not (0 < int(schedule_list[0]) <= 59 and 0 < int(schedule_list[1]) <= 23 and 1 < int(schedule_list[2]) <= 31 and 1 < int(schedule_list[3]) <= 12 and 0 < int(schedule_list[4]) <= 6):
-            return False
-    return True
-
-
-def translate_cron_schedule(cron_schedule):
-    if cron_schedule == 'daily':
-        return '0:0:::'
-    elif cron_schedule == 'monthly':
-        return '0:0:0::'
-    elif cron_schedule == 'weekly':  # Every saturday at 00:00
-        return '0:0:::6'
-    else:
-        return False
-
-
-def validate_cron_schedule(custom_cron:str):
-    schedule_list = custom_cron.split(':')
-    if len(schedule_list) != 5:
-        return False
-    else:
-        for part in schedule_list:  # Check that every part is made only of numbers
-            if not (part.isnumeric() or part == ''):
-                return False
-        # Check that numbers are in the correct range
-        if not (0 < int(schedule_list[0]) <= 59 and 0 < int(schedule_list[1]) <= 23 and 0 < int(schedule_list[2]) <= 31 and 1 < int(schedule_list[3]) <= 12 and 0 < int(schedule_list[4]) <= 6):
-            return False
-    return True
-
 # Création des commandes du groupe autobackup
 
 # Création de la commande schedule
@@ -280,7 +160,6 @@ def create(idcron, nameofcron, project, tag, cron_schedule, custom_cron, date, s
             click.echo("L'argument custom_cron n'est pas au format '0-59:0-23:1-31:1-12:0-6'. Ne définissez pas l'option pour la définir interactivement.")
             log("Error", "Chosen custom cron schedule is :", custom_cron)
     else:
-        log("Info", "Cron schedule is :", cron_schedule)
         custom_cron = translate_cron_schedule(cron_schedule)
         log("Info", "Cron schedule is : \"{cron_schedule}\"")
         if custom_cron == False:  # translate_cron_schedule() error
@@ -309,7 +188,6 @@ def delete(idcron):
 @autobackup.command()
 @click.option('-i', '--idcron', nargs=1, required=True, help="entrer l'id du cron à mettre à jour")
 #@click.option('-t', '--tag', nargs=2, required=False, help="entrer le tag du cron à mettre à jour et le tag mis à jour")
-@click.option('-t', '--tag', nargs=1, required=False, help="entrer le tag du cron à mettre à jour")
 @click.argument('cron_schedule', type=click.Choice(['daily', 'monthly', 'weekly',
                                                     'custom']), required=False)
 @click.argument('custom_cron', nargs=-1, required=False)
@@ -366,25 +244,7 @@ def list():
 @autobackup.command()
 @click.option('-n', '--nameofcron', nargs=1, required=True, help="entrer le nom du cron à stopper")
 def stop(nameofcron):
-    """Commande pour stopper une backup régulière\n
-    :param nameofcron: -n le nom du cron à stopper\n
-    :type nameofcron: str\n
-    :return: un message de confirmation ou d'erreur\n
-    :rtype: str"""
+    """
+    Commande pour stopper une backup régulière\n
+    """
     click.echo(f"Stopped cron : \"{nameofcron}\"")
-
-
-# Création de la commande list
-@autobackup.command()
-def list():
-    """Commande pour lister les autobackups
-    :return: Liste des autobackups : class: `str`\n
-    :rtype: list"""
-    autobackupService = AutoBackupService()
-    autobackups = autobackupService.find_all()
-    table = tabulate(
-        [[data for data in autobackup.values()] for autobackup in autobackups],
-        ['id', 'frequency', 'name', 'timestamp', 'id_server', 'path'],
-        tablefmt="grid"
-    )
-    click.echo(table)
