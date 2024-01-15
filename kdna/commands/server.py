@@ -29,19 +29,19 @@ def server():
 @click.option('-e', '--encrypt', default=True, required=False, help="Encrypt les sauvegardes sur le serveur (valeur par defaut : True) Ex: False")
 def add(id, alias, address, repo, port, encrypt):
     """Commande pour ajouter un serveur."""
-            
+    serverService = ServerService()
     try:
         connection = SSHClient(address)
         connection.sendCommand("ls > /dev/null")
 
         try:
-            connection.sendCommand(f"test ! -d {repo} && mkdir -p {repo}")
+            connection.sendCommand(f"test ! -d {repo} && mkdir {repo}")
         except Exception:
             click.echo("Le dossier existe déjà")
-        ServerService().create_server(id, address, repo, port, encrypt, alias)
+        serverService.create_server(id, address, repo, port, alias)
     except Exception as e:
         print(e)
-        print("An error occurred while connecting to this address.")
+        print("An errror occured connection on this adress fail.")
         return None
 
 
@@ -96,10 +96,11 @@ def list():
     click.echo(table)
 
 @server.command()
-def status():
+@click.argument('alias', required=True)
+def status(alias):
     serverService = ServerService()
-    server = serverService.find_by_alias('test')
-    print(server.get_status())
+    server = serverService.find_by_alias(alias)
+    click.echo(server.get_status())
 
 @server.command()
 def import_s():

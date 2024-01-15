@@ -19,6 +19,13 @@ class Server:
   def get_status(self):
     return self.client.status()
 
+  def download_file(self, local_path: str, remote_path: str):
+    files = self.client.connection.run(f"mkdir -p {remote_path}", warn=True).stdout.split("\n")
+    if len(files) == 0:
+      raise Exception(f"Error: no file found on {remote_path}")
+    for file in files:
+      self.client.connection.get(file, local=local_path)
+
 def directory_exists(connection: Connection, path: str):
   """
   Check if a directory exists on the remote server. Might throw an exception.

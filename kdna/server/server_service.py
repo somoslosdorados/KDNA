@@ -2,6 +2,7 @@
 import os
 import paramiko
 from kdna.conf_utils.utils import Utils
+from kdna.server.server import Server
 
 def array_to_dic(array):
   return {
