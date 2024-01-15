@@ -22,9 +22,6 @@ class Utils:
             os.makedirs(kdna_directory)
             logger.log("INFO", "Dossier créé: " + kdna_directory)
             # print("Dossier créé:", kdna_directory)
-        else:
-            # print("Le dossier existe déjà:", kdna_directory)
-            pass
 
         # Vérifier si le fichier kdna.conf existe, sinon le créer
         if not os.path.exists(config_file_path):
@@ -32,9 +29,7 @@ class Utils:
                 config_file.write(config_content)
             logger.log("INFO", "Fichier créé: " + config_file_path)
             # print("Fichier créé:", config_file_path)
-        else:
-            # print("Le fichier existe déjà:", config_file_path)
-            pass
+
         parser.parseConfig()
 
     @staticmethod
@@ -78,12 +73,12 @@ class Utils:
     @staticmethod
     def find_auto_backups_index(lines):
         """Find the index of a specific autobackup"""
-        return Utils.find_section(lines, "[auto-backup]")
+        return Utils.find_section(lines, "[auto-backups]")
 
     @staticmethod
     def find_servers_index(lines: list) -> int:
-        """Find the index of a specific [server]"""
-        return Utils.find_section(lines, "[server]")
+        """Find the index of a specific [servers]"""
+        return Utils.find_section(lines, "[servers]")
 
     @staticmethod
     def delete_line(lines, line_to_delete):

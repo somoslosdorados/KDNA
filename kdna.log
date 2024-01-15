@@ -1,2 +1,7 @@
 on 2024-01-13 at 12h 13m 09s : INFO : /home/mihai/Projets/kdna/kdna/conf_utils/utils.py : Dossier créé: /home/mihai/.kdna
 on 2024-01-13 at 12h 13m 09s : INFO : /home/mihai/Projets/kdna/kdna/conf_utils/utils.py : Fichier créé: /home/mihai/.kdna/kdna.conf
+on 2024-01-15 at 08h 56m 45s : INFO : /home/baptiste/Bureau/Polytech/DO3/S5/python/KDNA/kdna/tags/tags.py : Le fichier ./kdna/projet16/tags.conf n'existe pas, il va être créé
+on 2024-01-15 at 09h 02m 48s : ERROR : /home/baptiste/Bureau/Polytech/DO3/S5/python/KDNA/kdna/tags/tags.py : Erreur lors de l'ajout de v2 pour le project projet16, v2 existe déjà
+on 2024-01-15 at 09h 02m 55s : INFO : /home/baptiste/Bureau/Polytech/DO3/S5/python/KDNA/kdna/tags/tags.py : Le tag v30 a été ajouté au fichier 1de2330c-59d4-4f33-8f8c-d6878a4f9e2c.enc du projet projet16
+on 2024-01-15 at 09h 07m 02s : INFO : /home/baptiste/Bureau/Polytech/DO3/S5/python/KDNA/kdna/tags/tags.py : Le fichier ./kdna/projet1/tags.conf n'existe pas, il va être créé
+on 2024-01-15 at 09h 07m 02s : INFO : /home/baptiste/Bureau/Polytech/DO3/S5/python/KDNA/kdna/tags/tags.py : Le tag v1 a été ajouté au fichier efdbdd61-1e9f-4634-abeb-a4e27f952fc9.enc du projet projet1
