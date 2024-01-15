@@ -30,7 +30,7 @@ kdna server <commande> [options] [arguments]
 Ajout d'un serveur de backup
 
 ```
-kdna server add -i <id_serveur> -ad <libele_connexion> -a <alias_serveur> -r <repo_backup> -p <port_serveur>
+kdna server add -i <id_serveur> -ad <libelle_connexion> -a <alias_serveur> -r <repo_backup> -p <port_serveur>
 ```
 
 #### Exemple
@@ -46,7 +46,7 @@ kdna server add -i S1 -ad kdna@162.38.112.110 -a alias -r /mon/repertoire/backup
 | Options |  Type  |        Description         | Required |
 |:--------|:------:|:--------------------------:|:--------:|
 | -i      | String |         id_server          |   Vrai   |
-| -ad     | String |    libelé de connexion     |   Vrai   |
+| -ad     | String |    libellé de connexion     |   Vrai   |
 | -a      | String |           alias            |   Vrai   |
 | -r      | String | répertoire pour les backup |   Vrai   |
 | -p      | String |            port            |   Vrai   |
