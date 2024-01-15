@@ -505,9 +505,9 @@ The configuration file will be automatically created in `~/.kdna/kdna.conf` if i
 After adding servers/auto-backup, the knda.conf file will contain the following data in order:
 
 ```
-[server]
+[servers]
 id, address, path, port, alias, encrypted
-[auto-backup]
+[auto-backups]
 id, frequency, name, timestamp, id_server, path
 ```
 

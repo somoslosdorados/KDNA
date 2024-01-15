@@ -2,10 +2,8 @@
 import os
 import paramiko
 from kdna.conf_utils.utils import Utils
-import os
 
 from kdna.logger.logger import log
-
 
 def create_dic_server(data):
     """Create a dictionnary with the data of the server"""
@@ -54,8 +52,6 @@ class ServerService:
 
         return li
 
-<<<<<<< HEAD
-=======
     def find_by_alias(self, alias):
         """Find a server by his alias"""
         lines = Utils.read_file_lines(Utils.get_config_file_path())
@@ -79,15 +75,13 @@ class ServerService:
 
         else:
             print(f"Erreur : Aucun serveur trouvé avec l'alias \"{alias}\" dans la "
-                f"section [server].")
+                f"section [servers].")
 
-
->>>>>>> 53f2617 (add logs)
     def create_server(self, id, address, credentials, port,  encrypt, alias):
         # On ouvre le fichier en mode lecture
         lines = Utils.read_file_lines(Utils.get_config_file_path())
 
-        # On cherche la ligne contenant [server]
+        # On cherche la ligne contenant [servers]
         index_servers = Utils.find_servers_index(lines)
         index_auto_backups = Utils.find_auto_backups_index(lines)
 
@@ -99,10 +93,9 @@ class ServerService:
             if str(id) in existing_servers:
                 print(
                     f'Erreur : L\'id du serveur "{id}" existe déjà dans la '
-                    f"section [server]."
+                    f"section [servers]."
                 )
-                log("ERROR", "Erreur : L\'id du serveur " + {id} + " existe déjà dans la section [server].")
-                log("ERROR", "Erreur : L\'id du serveur " + {id} + " existe déjà dans la section [server].")
+                log("ERROR", "Erreur : L\'id du serveur " + {id} + " existe déjà dans la section [servers].")
                 return
 
             if id != "":
@@ -143,13 +136,8 @@ class ServerService:
             log("INFO", confirmation_message)
             log("INFO", confirmation_message)
         else:
-<<<<<<< HEAD
             print("Erreur : Section [servers] non trouvé dans le fichier.")
-            log("error", "Erreur : Section [server] non trouvé dans le fichier.")
-=======
-            print("Erreur : Section [server] non trouvé dans le fichier.")
-            log("ERROR", "Erreur : Section [server] non trouvé dans le fichier.")
->>>>>>> 53f2617 (add logs)
+            log("ERROR", "Erreur : Section [servers] non trouvé dans le fichier.")
 
     def delete_server(self, id: str, by_alias=False):
         """Delete a server in the config file"""
@@ -157,9 +145,8 @@ class ServerService:
         index_servers = Utils.find_servers_index(lines)
         element_type = "alias" if by_alias else "id"
         if index_servers is None:
-            print("Erreur : Section [server] non trouvée dans le fichier.")
-            log("ERROR", "Erreur : Section [server] non trouvée dans le fichier.")
-            log("ERROR", "Erreur : Section [server] non trouvée dans le fichier.")
+            print("Erreur : Section [servers] non trouvée dans le fichier.")
+            log("ERROR", "Erreur : Section [servers] non trouvée dans le fichier.")
             return
 
         line_to_delete = self.find_line_to_delete(lines, index_servers, id, by_alias)
@@ -176,27 +163,24 @@ class ServerService:
                 # On affiche un message de confirmation
                 print(
                     f"L'élément avec l'{element_type} {id} a été supprimé de la "
-                    f"section [server]."
+                    f"section [servers]."
                 )
-                log("INFO", "L'élément avec l\'" + {element_type} + {id} + "a été supprimé de la section [server].")
-                log("INFO", "L'élément avec l\'" + {element_type} + {id} + "a été supprimé de la section [server].")
+                log("INFO", "L'élément avec l\'" + {element_type} + {id} + "a été supprimé de la section [servers].")
             # Sinon on affiche un message d'erreur
             else:
                 print(
                     f'Erreur : Aucun élément trouvé avec l\'{element_type} "{id}" dans '
-                    f"la section [server]."
+                    f"la section [servers]."
                 )
-                log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + {element_type} + {id} + "dans la section [server].")
-                log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + {element_type} + {id} + "dans la section [server].")
+                log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + {element_type} + {id} + "dans la section [servers].")
         # Sinon on affiche un message d'erreur
         else:
             if not by_alias and id == "None":
                 print(
                     f'Erreur : Aucun élément trouvé avec l\'{element_type} "{id}" dans '
-                    f"la section [server]."
+                    f"la section [servers]."
                 )
-                log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + {element_type} + {id} + "dans la section [server].")
-                log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + {element_type} + {id} + "dans la section [server].")
+                log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + {element_type} + {id} + "dans la section [servers].")
 
     def update_server(
         self,
@@ -267,20 +251,17 @@ class ServerService:
                     f"mises à jour."
                 )
                 log("INFO", "Les informations du serveur avec l\'alias " + {alias_to_update} + " ont été mises à jour.")
-                log("INFO", "Les informations du serveur avec l\'alias " + {alias_to_update} + " ont été mises à jour.")
             # Sinon, afficher un message d'erreur
             else:
                 print(
                     f'Erreur : Aucun serveur trouvé avec l\'alias "{alias_to_update}" dans la '
-                    f"section [server]."
+                    f"section [servers]."
                 )
-                log("ERROR", "Erreur : Aucun serveur trouvé avec l\'alias " + {alias_to_update} + " dans la section [server].")
-                log("ERROR", "Erreur : Aucun serveur trouvé avec l\'alias " + {alias_to_update} + " dans la section [server].")
+                log("ERROR", "Erreur : Aucun serveur trouvé avec l\'alias " + {alias_to_update} + " dans la section [servers].")
         # Sinon, afficher un message d'erreur
         else:
-            print("Erreur : Section [server] non trouvée dans le fichier.")
-            log("ERROR", "Erreur : Section [server] non trouvée dans le fichier.")
-            log("ERROR", "Erreur : Section [server] non trouvée dans le fichier.")
+            print("Erreur : Section [servers] non trouvée dans le fichier.")
+            log("ERROR", "Erreur : Section [servers] non trouvée dans le fichier.")
 
     def import_server(self):
         """Import server from ~/.ssh/config file"""
@@ -358,10 +339,9 @@ class ServerService:
                     return i + index_servers + 1
         print(
             f"Erreur : Aucun élément trouvé avec "
-            f"l'{'alias' if by_alias else 'id'} \"{id}\" dans la section [server]."
+            f"l'{'alias' if by_alias else 'id'} \"{id}\" dans la section [servers]."
         )
-        log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + {'alias' if by_alias else 'id'} + {id} + " dans la section [server].")
-        log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + {'alias' if by_alias else 'id'} + {id} + " dans la section [server].")
+        log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + {'alias' if by_alias else 'id'} + {id} + " dans la section [servers].")
         return None
 
     @staticmethod

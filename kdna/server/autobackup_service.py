@@ -33,11 +33,11 @@ class AutoBackupService:
     # On ouvre le fichier en mode lecture
     lines = Utils.read_file_lines(Utils.config_file)
 
-    # On cherche les indices de [server] et [auto-backup]
+    # On cherche les indices de [servers] et [auto-backups]
     index_servers = Utils.find_servers_index(lines)
     index_auto_backups = Utils.find_auto_backups_index(lines)
 
-    # Vérification de l'existence de l'id_server dans la section [server]
+    # Vérification de l'existence de l'id_server dans la section [servers]
     if not self.check_id_server(lines, index_servers, index_auto_backups, id_server):
         print(
             f"Erreur : L'id du serveur \"{id_server}\" de votre auto backup n'existe "
@@ -76,7 +76,7 @@ class AutoBackupService:
     # On ouvre le fichier en mode lecture
     lines = Utils.read_file_lines(Utils.config_file)
 
-    # On cherche les indices de [server] et [auto-backups]
+    # On cherche les indices de [servers] et [auto-backups]
     index_auto_backups = Utils.find_auto_backups_index(lines)
     if index_auto_backups is None:
         print(
@@ -178,7 +178,7 @@ class AutoBackupService:
         
   def check_id_server(self, lines, index_servers, index_auto_backups, id_server):
     """Check the id of a specific server"""
-    # Fonction pour vérifier l'existence de l'id_server dans la section [server]
+    # Fonction pour vérifier l'existence de l'id_server dans la section [servers]
     existing_servers = \
         [line.split(',')[0].strip() for line in lines[index_servers + 1:index_auto_backups] if
           len(line.split(',')) >= 4 and line.strip()]
