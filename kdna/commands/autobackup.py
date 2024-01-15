@@ -1,4 +1,8 @@
 """
+This is the autoback Click commands program. It implements the Click commands function to make auto-backups.
+
+Authors: Théo TCHILINGUIRIAN
+
 Groupe de commandes auto-backup qui permet de gérer les auto-backups (backups régulières)
 schedule : Commande pour prévoir une auto-backup
 delete : Commande pour supprimer une auto-backup
@@ -10,11 +14,11 @@ list : Commande pour lister les auto-backups
 import os
 import subprocess
 import click
-from kdna.logger.logger import log
-from kdna.server.autobackup_service import AutoBackupService  # import du C(R)UD de kdna.conf
-from kdna.parsing.parser import parseConfig  # import du parseur
+from kdna.logger.logger import log  # Logging ability import
+from kdna.server.autobackup_service import AutoBackupService  # kdna.conf C(R)UD import
+from kdna.parsing.parser import parseConfig  # parser import
 from kdna.tags import tags
-from tabulate import tabulate
+from tabulate import tabulate  # tabulate import for list command. (prettier list)
 
 
 # Fonctions CRUD pour le crond
