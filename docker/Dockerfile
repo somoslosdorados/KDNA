@@ -5,6 +5,7 @@ ARG SSH_PUB_KEY
 USER root
 
 RUN useradd -ms /bin/bash test
+RUN echo "test:test" | chpasswd
 WORKDIR /home/test
 
 RUN apt update && apt install -y \
@@ -15,6 +16,7 @@ RUN apt update && apt install -y \
 
 
 USER test
+
 
 
 RUN mkdir -p /home/test/.ssh && \
