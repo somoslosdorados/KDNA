@@ -65,6 +65,7 @@ update_cron_job("python /path/to/your/script.py", "python /path/to/your/updated_
 delete_cron_job("python /path/to/your/updated_script.py")
 
 
+from kdna.server.autobackup_service import AutoBackupService
 
 # Creation du groupe de commande autobackup
 @click.group(name='auto-backup')
