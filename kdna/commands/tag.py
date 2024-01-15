@@ -116,7 +116,7 @@ def update(project, old_tag, new_tag,server):
     try:
         tags.update_tags(connection_instance.connection, project, old_tag, new_tag)
         click.echo(f"Le tag {old_tag} a été modifié en {new_tag}")
-        log("INFO", f"Tag {old_tag} has been modified to {new_tag}")
+        log("INFO", f"Tag " + old_tag + " has been modified to " + new_tag)
     except FileNotFoundError:
         click.echo("Le fichier n'a pas été trouvé")
         log("ERROR", "File to update not found")

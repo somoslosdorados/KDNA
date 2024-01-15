@@ -62,8 +62,7 @@ class SSHClient:
                 return msg.format(command_return)
         except Exception as e:
             print(f"Error sending command {command} to {self.host}: {e}")
-            log("ERROR",
-                f"Error sending command {command} to {self.host}: {e}")
+            log("ERROR", f"Error sending command " + command + " to " + self.host + " : " + e)
 
     def run(self, command: str):
         return self.connection.run(command, warn=True)
