@@ -4,7 +4,8 @@
 
 This is the official repository for the DO2023-2026 python CLI backup project.
 
-We will see how to create local server backups, as well as automatic backups.
+As part of the python program, we were responsible for carrying out the KDNA project.
+This project consists of the creation of local server backups as well as automatic backups.
 
 ### Install the KDNA project
 ```bash
