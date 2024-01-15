@@ -129,3 +129,5 @@ dmypy.json
 
 */*/__pycache__
 */__pycache__
+
+kdna.log
