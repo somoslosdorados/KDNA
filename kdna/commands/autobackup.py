@@ -107,14 +107,14 @@ def schedule(idcron, nameofcron, tag, cron_schedule, custom_cron, date, server, 
             click.echo("L'argument custom_cron doit être suivi d'un schedule de cron personnalisé.")
             custom_cron = concatenate_custom_cron()  # le custom_cron est donc demandé en input interactif
             print("Custom cron schedule is :", custom_cron)
-            log("info", "Custom cron schedule is :" + custom_cron)
+            log("INFO", "Custom cron schedule is :" + custom_cron)
         else:
             print("Custom cron schedule is :", custom_cron[0])
             print(is_valid_cron(str(custom_cron)))
-            log("info", "Custom cron schedule is :" + custom_cron[0])
+            log("INFO", "Custom cron schedule is :" + custom_cron[0])
     else:
         print("Cron schedule is :", cron_schedule, "(not custom)")
-        log ("info", "Cron schedule is :" + cron_schedule + "(not custom)")
+        log("INFO", "Cron schedule is :" + cron_schedule + "(not custom)")
 
 
 # Création de la commande delete

@@ -28,6 +28,27 @@ def backup():
     """Commande pour sauvegarder un fichier ou un dossier"""
 
 
+# Création de la fonction display pour afficher le contenu d'un fichier
+def display(path):
+    """
+    Fonction pour afficher le contenu d'un fichier\n
+    :param path: le path du fichier à afficher\n
+    :type path: str\n
+    :return: le contenu du fichier\n
+    :rtype: str
+    """
+    try:
+        with open(path, mode="r", encoding="utf-8") as file:
+            return file.read()
+    except FileNotFoundError as exc:
+        log("ERROR", "Fichier non trouvé : " + path)
+        raise FileNotFoundError("Fichier non trouvé") from exc
+
+    except PermissionError as exc:
+        log("ERROR", "Vous n'avez pas les droits d'accès au fichier : " + path)
+        raise PermissionError("Oups, Pas les droits") from exc
+
+
 # Création des commandes du groupe backup
 
 # Création de la commande add
@@ -65,6 +86,7 @@ def add(project, path, tag, prefix=None):
     try:
         instance = SSHClient(serversCredential).connect()
     except PermissionError as exc:
+        log("ERROR", "Création d'une connexion SSH : vous n'avez pas les droits")
         click.echo("Création d'une connexion SSH : vous n'avez pas les droits")
         logger.log("ERROR", "Erreur lors de l'instanciation d'une connexion SSH, il s'agit d'un problème de droits")
         return
@@ -78,10 +100,12 @@ def add(project, path, tag, prefix=None):
             tag = tags.generate_tag_name(instance.connection, project, tag)
             logger.log("INFO", "Un tag unique a été généré avec le préfixe : " + tag)
     except PermissionError as exc:
+        log("ERROR", "Génération du tag préfixé : vous n'avez pas les droits")
         click.echo("Génération du tag préfixé : vous n'avez pas les droits")
         logger.log("ERROR", "Erreur lors de la création d'un tag unique, il s'agit d'un problème de droits")
         return
     except Exception as e:
+        log("ERROR", "Génération du tag préfixé : error" + e.__str__() )
         click.echo("Génération du tag préfixé : error" + e.__str__())
         logger.log("ERROR", "Erreur lors de la création d'un tag unique")
         return
@@ -92,41 +116,45 @@ def add(project, path, tag, prefix=None):
         upload_file(instance.connection, path_to_local_backup, path_to_remote_backup)
         logger.log("INFO", "La backup a été uploadée sur le serveur distant")
     except FileNotFoundError as exc:
-        click.echo("Envoi du fichier sur le serveur : le fichier n'a pas été trouvé")
-        logger.log("ERROR", "Erreur lors de l'upload de la backup sur le serveur distant, le fichier n'a pas été trouvé")
-        return
+        click.echo(
+            "Envoi du fichier sur le serveur : le fichier n'a pas été trouvé")
+        log("ERROR", "Sending file to server : file not found")
+        return 
     except PermissionError as exc:
         click.echo("Envoi du fichier sur le serveur : vous n'avez pas les droits")
-        logger.log("ERROR", "Erreur lors de l'upload de la backup sur le serveur distant, il s'agit d'un problème de droits")
-        return
+        log("ERROR", "Sending file to server : you don't have the rights")
+        return 
     except Exception as e:
-        click.echo("Envoi du fichier sur le serveur : error = " + e.__str__())
-        logger.log("ERROR", "Erreur lors de l'upload de la backup sur le serveur distant")
-        return
+        print("Envoi du fichier sur le serveur : error = " + e.__str__())
+        log("ERROR", "Envoi du fichier sur le serveur : error = " + e.__str__())
+        return 
 
     try:
         os.remove(path_to_local_backup)
         logger.log("INFO", "La backup locale a été supprimée à '" + path_to_local_backup + "'")
     except FileNotFoundError as exc:
-        click.echo("Suppression de la buckup locale : le fichier n'a pas été trouvé")
-        logger.log("ERROR", "Erreur lors de la suppression de la backup locale à '" + path_to_local_backup + "', le fichier n'a pas été trouvé")
-        return
+        click.echo(
+            "Suppression de la backup locale : le fichier n'a pas été trouvé")
+        log("ERROR", "Delete local backup : file not found")
+        return 
     except PermissionError as exc:
         click.echo("Suppression de la buckup locale : vous n'avez pas les droits")
-        logger.log("ERROR", "Erreur lors de la suppression de la backup locale à '" + path_to_local_backup + "', il s'agit d'un problème de droits")
-        return
+        log("ERROR", "Delete local backup : you don't have the rights")
+        return 
     except Exception as e:
-        click.echo("Suppression de la buckup locale : error = " + e.__str__())
-        logger.log("ERROR", "Erreur lors de la suppression de la backup locale à '" + path_to_local_backup + "'")
-        return
+        print("Suppression de la buckup locale : error = " + e.__str__())
+        log("ERROR", "Suppression de la buckup locale : error = " + e.__str__())
+        return 
 
     try:
         tags.add_tags(instance.connection, project, tag, name_of_temp_backup)
     except PermissionError as exc:
         click.echo("Ajout du tag sur la backup : vous n'avez pas les droits")
+        log("ERROR", "Add tag on backup : you don't have the rights")
         return
     except Exception as e:
         click.echo("Ajout du tag sur la backup : error" + e.__str__())
+        log("ERROR", "Ajout du tag sur la backup : error" + e.__str__())
         return
 
 
@@ -152,13 +180,14 @@ def list(project_name):
 
     if len(listServers) == 0:
         click.echo("Any server found in the configuration file.")
+        log("ERROR", "Any server found in the configuration file.")
         return
 
     try:
         instance = SSHClient(listServers[0].credentials).connect()
     except Exception as e:
-        print("error = "+e.__str__())
-        log("error", "error = "+e.__str__())
+        print("error while trying to connect : "+e.__str__())
+        log("ERROR", "error while trying to connect : "+e.__str__())
 
     backups = []
 
@@ -169,8 +198,8 @@ def list(project_name):
             click.echo(f"Backup : {dic[key]} - Tag : {key}")
 
     except Exception as e:
-        print("error2 = "+e.__str__())
-        log("error", "error2 = "+e.__str__())
+        print("error while trying to list the backups "+e.__str__())
+        log("ERROR", "error while trying to list the backups "+e.__str__())
 
     if backups is None:
         click.echo(f'Project {project_name} not found')
@@ -193,8 +222,8 @@ def restore(project, nametag, path):
     try:
         instance = SSHClient(listServers[0].credentials).connect()
     except Exception as e:
-        print(e)
-        log("error", e.__str__())
+        print("error while trying to connect to the server : " + e)
+        log("ERROR", "error while trying to connect to the server : " + e.__str__())
 
     remote_path = find_path(instance.connection, nametag, project)
 
@@ -204,14 +233,15 @@ def restore(project, nametag, path):
     try:
         download_file(instance.connection, local_temp_path, remote_path)
     except Exception as e:
-        print(e)
-        log("error", e.__str__())
+        print("Error while trying to download the backup : " + e)
+        log("ERROR", "Error while trying to download the backup : " + e.__str__())
 
     try:
         restored_path= encrypt.restore(local_temp_path, path)
     except Exception as e:
-        print(e)
-        log("error", e.__str__())
+        print("Error while trying to restore the backup : " + e)
+        log("ERROR", "Error while trying to restore the backup " + e.__str__())
 
     click.echo(f"Restauration faite : \"{restored_path}\"")
+    log("INFO", f"Restauration faite : \"{restored_path}\"")
     os.remove(local_temp_path)

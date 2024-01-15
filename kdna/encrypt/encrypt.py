@@ -75,7 +75,7 @@ def restore(path: str, out: str) -> str:
     :return: path to output folder
     """
     print("restoring = ", path)
-    log("info", "restoring = "+ path)
+    log("INFO", "restoring = "+ path)
     encrypted = path.endswith(".enc")
     tar_name = path
     if encrypted:

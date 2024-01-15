@@ -7,6 +7,7 @@ This module contains the commands for encryption managing in kdna.
 """
 import click
 from kdna.encrypt.encrypt import generate_key
+from kdna.logger.logger import log
 
 
 @click.group()
@@ -28,15 +29,18 @@ def keygen(path):
             click.echo("Path must lead to a file not a directory")
             return
     click.echo(f"Key generated at {output_path}")
+    log("INFO", f"Key generated at {output_path}")
 
 
 @encrypt.command(name='activate')
 def activate():
     """Command to enable encryption"""
     click.echo("Encryption activated")
+    log("INFO", "Encryption activated")
 
 
 @encrypt.command(name='deactivate')
 def deactivate():
     """Command to disable encryption"""
     click.echo("Encryption deactivated")
+    log("INFO", "Encryption deactivated")

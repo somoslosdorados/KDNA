@@ -24,7 +24,14 @@ def parseConfig():
         "servers": cb_server_parser,
         "auto-backups": cb_autobackup_parser
     }
-    path_to_config = os.path.join(kdna_path, "kdna.conf")
+    try:
+        path_to_config = os.path.join(kdna_path, "kdna.conf")
+    except Exception as e:
+        print("kdna.conf n'existe pas : " + e.__str__())
+        log("ERROR", "kdna.conf does not exist" + e.__str__())
+        return 1
+
+
 
     with open(path_to_config, "r") as f:
         line = f.readline()
@@ -50,7 +57,7 @@ def parseConfig():
                     listAutoBackups.append(parsed)
         else:
             print(f"Unknown header: {header}")
-            log("error", f"Unknown header: {header}")
+            log("ERROR", f"Unknown header: {header}")
 
 
 def line_is_header(line: str) -> str:

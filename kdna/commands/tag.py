@@ -40,17 +40,20 @@ def add(project, new_tag, file_to_tag, server):
 
     if(connection_instance == None):
         click.echo("Le serveur n'a pas été trouvé")
+        log("ERROR", "Le serveur n'a pas été trouvé")
         raise click.Abort()
 
     try:
         tags.add_tags(connection_instance.connection, project, new_tag, file_to_tag)
     except FileNotFoundError:
         click.echo("Le fichier n'a pas été trouvé")
+        log("ERROR", "Le fichier à ajouter n'a pas été trouvé")
     except PermissionError:
-        click.echo("Vous n'avez pas les droits")
+        click.echo("Vous n'avez pas les droits pour réaliser cette action")
+        log("ERROR", "Vous n'avez pas les droits pour réaliser cette action")
     except Exception as e:
-        print("error = "+e.__str__())
-        log("error", "error = "+e.__str__())
+        print("Une erreur est survenue : "+e.__str__())
+        log("ERROR", "An error occurred"+e.__str__())
 
 
 # Création de la commande delete
@@ -73,6 +76,7 @@ def delete(project, old_tag, server):
 
     if(connection_instance == None):
         click.echo("Le serveur n'a pas été trouvé")
+        log("ERROR", "Le serveur n'a pas été trouvé")
         raise click.Abort()
 
     try:
@@ -80,11 +84,13 @@ def delete(project, old_tag, server):
         click.echo(f"Le tag {old_tag} a été supprimé")
     except FileNotFoundError:
         click.echo("Le fichier n'a pas été trouvé")
+        log("ERROR", "Le fichier à supprimer n'a pas été trouvé")
     except PermissionError:
-        click.echo("Vous n'avez pas les droits")
+        click.echo("Vous n'avez pas les droits pour réaliser cette action")
+        log("ERROR", "Vous n'avez pas les droits pour réaliser cette action")
     except Exception as e:
-        print("error = "+e.__str__())
-        log("error", "error = "+e.__str__())
+        print("Une erreur est survenue "+e.__str__())
+        log("ERROR", "An error occurred "+e.__str__())
 
 # Création de la commande update
 @tag.command()
@@ -109,13 +115,16 @@ def update(project, old_tag, new_tag,server):
     try:
         tags.update_tags(connection_instance.connection, project, old_tag, new_tag)
         click.echo(f"Le tag {old_tag} a été modifié en {new_tag}")
+        log("INFO", f"Tag {old_tag} has been modified to {new_tag}")
     except FileNotFoundError:
         click.echo("Le fichier n'a pas été trouvé")
+        log("ERROR", "File to update not found")
     except PermissionError:
         click.echo("Vous n'avez pas les droits")
+        log("ERROR", "You don't have the rights")
     except Exception as e:
         print("error = "+e.__str__())
-        log("error", "error = "+e.__str__())
+        log("ERROR", "error = "+e.__str__())
 
 
 # Création de la commande list
@@ -135,6 +144,7 @@ def list(project, server):
     
     if(connection_instance == None):
         click.echo("Le serveur n'a pas été trouvé")
+        log("ERROR", "Le serveur n'a pas été trouvé")
         raise click.Abort()
     
     try:
@@ -142,8 +152,10 @@ def list(project, server):
             click.echo(f"{tag} : {backup}")
     except FileNotFoundError as exc:
         click.echo("Le fichier n'a pas été trouvé")
+        log("ERROR", "Le fichier à supprimer n'a pas été trouvé")
     except PermissionError as exc:
         click.echo("Vous n'avez pas les droits")
+        log("ERROR", "Vous n'avez pas les droits pour réaliser cette action")
     except Exception as e:
-        print("error = "+e.__str__())
-        log("error", "error = "+e.__str__())
+        print("Une erreur est survenue"+e.__str__())
+        log("ERROR", "An error occurred "+e.__str__())

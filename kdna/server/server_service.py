@@ -69,7 +69,7 @@ class ServerService:
                     f'Erreur : L\'id du serveur "{id}" existe déjà dans la '
                     f"section [server]."
                 )
-                log("error", "Erreur : L\'id du serveur " + {id} + " existe déjà dans la section [server].")
+                log("ERROR", "Erreur : L\'id du serveur " + {id} + " existe déjà dans la section [server].")
                 return
 
             if id != "":
@@ -84,12 +84,12 @@ class ServerService:
                 if alias in existing_aliases:
                     print(f"Erreur : L'alias \"{alias}\" existe déjà dans la section ["
                           f"servers].")
-                    log("error", "Erreur : L'alias " + {alias} + " existe déjà dans la section [servers].")
+                    log("ERROR", "Erreur : L'alias " + {alias} + " existe déjà dans la section [servers].")
                     return
 
             if encrypt != True and encrypt != False:
                 print("Erreur : La valeur du paramètre encrypt doit être True ou False.")
-                log("error", "Erreur : La valeur du paramètre encrypt doit être True ou False.")
+                log("ERROR", "Erreur : La valeur du paramètre encrypt doit être True ou False.")
                 return
 
             # Construction de la nouvelle ligne
@@ -105,10 +105,10 @@ class ServerService:
                 confirmation_message += f'et l\'alias "{alias}"'
             confirmation_message += " a été ajouté dans la section [servers]."
             print(confirmation_message)
-            log("info", confirmation_message)
+            log("INFO", confirmation_message)
         else:
             print("Erreur : Section [server] non trouvé dans le fichier.")
-            log("error", "Erreur : Section [server] non trouvé dans le fichier.")
+            log("ERROR", "Erreur : Section [server] non trouvé dans le fichier.")
 
     def delete_server(self, id: str, by_alias=False):
         """Delete a server in the config file"""
@@ -117,7 +117,7 @@ class ServerService:
         element_type = "alias" if by_alias else "id"
         if index_servers is None:
             print("Erreur : Section [server] non trouvée dans le fichier.")
-            log("error", "Erreur : Section [server] non trouvée dans le fichier.")
+            log("ERROR", "Erreur : Section [server] non trouvée dans le fichier.")
             return
 
         line_to_delete = self.find_line_to_delete(lines, index_servers, id, by_alias)
@@ -136,14 +136,14 @@ class ServerService:
                     f"L'élément avec l'{element_type} {id} a été supprimé de la "
                     f"section [server]."
                 )
-                log("info", "L'élément avec l\'" + {element_type} + {id} + "a été supprimé de la section [server].")
+                log("INFO", "L'élément avec l\'" + {element_type} + {id} + "a été supprimé de la section [server].")
             # Sinon on affiche un message d'erreur
             else:
                 print(
                     f'Erreur : Aucun élément trouvé avec l\'{element_type} "{id}" dans '
                     f"la section [server]."
                 )
-                log("error", "Erreur : Aucun élément trouvé avec l\'" + {element_type} + {id} + "dans la section [server].")
+                log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + {element_type} + {id} + "dans la section [server].")
         # Sinon on affiche un message d'erreur
         else:
             if not by_alias and id == "None":
@@ -151,7 +151,7 @@ class ServerService:
                     f'Erreur : Aucun élément trouvé avec l\'{element_type} "{id}" dans '
                     f"la section [server]."
                 )
-                log("error", "Erreur : Aucun élément trouvé avec l\'" + {element_type} + {id} + "dans la section [server].")
+                log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + {element_type} + {id} + "dans la section [server].")
 
     def update_server(
         self,
@@ -203,7 +203,7 @@ class ServerService:
                     print(
                         "Erreur : Le nouvel alias existe déjà dans la liste des serveurs."
                     )
-                    log("error", "Erreur : Le nouvel alias existe déjà dans la liste des serveurs.")
+                    log("ERROR", "Erreur : Le nouvel alias existe déjà dans la liste des serveurs.")
                     return
 
                 # Construire la nouvelle ligne mise à jour
@@ -220,25 +220,25 @@ class ServerService:
                     f'Les informations du serveur avec l\'alias "{alias_to_update}" ont été '
                     f"mises à jour."
                 )
-                log("info", "Les informations du serveur avec l\'alias " + {alias_to_update} + " ont été mises à jour.")
+                log("INFO", "Les informations du serveur avec l\'alias " + {alias_to_update} + " ont été mises à jour.")
             # Sinon, afficher un message d'erreur
             else:
                 print(
                     f'Erreur : Aucun serveur trouvé avec l\'alias "{alias_to_update}" dans la '
                     f"section [server]."
                 )
-                log("error", "Erreur : Aucun serveur trouvé avec l\'alias " + {alias_to_update} + " dans la section [server].")
+                log("ERROR", "Erreur : Aucun serveur trouvé avec l\'alias " + {alias_to_update} + " dans la section [server].")
         # Sinon, afficher un message d'erreur
         else:
             print("Erreur : Section [server] non trouvée dans le fichier.")
-            log("error", "Erreur : Section [server] non trouvée dans le fichier.")
+            log("ERROR", "Erreur : Section [server] non trouvée dans le fichier.")
 
     def import_server(self):
         """Import server from ~/.ssh/config file"""
         hosts = self.list_ssh_config_hosts()
         if hosts is None:
             print("Erreur : Fichier de configuration SSH non trouvé.")
-            log("error", "Erreur : Fichier de configuration SSH non trouvé.")
+            log("ERROR", "Erreur : Fichier de configuration SSH non trouvé.")
             return None
         print("------------------------------")
         print("Available hosts:")
@@ -250,7 +250,7 @@ class ServerService:
         config_info = self.get_ssh_config_info(hosts[choice])
         if config_info is None:
             print("Erreur : Fichier de configuration SSH non trouvé.")
-            log("error", "Erreur : Fichier de configuration SSH non trouvé.")
+            log("ERROR", "Erreur : Fichier de configuration SSH non trouvé.")
             return None
         
         encrypt = input("Encrypt the backups (Y/n): ")
@@ -310,7 +310,7 @@ class ServerService:
             f"Erreur : Aucun élément trouvé avec "
             f"l'{'alias' if by_alias else 'id'} \"{id}\" dans la section [server]."
         )
-        log("error", "Erreur : Aucun élément trouvé avec l\'" + {'alias' if by_alias else 'id'} + {id} + " dans la section [server].")
+        log("ERROR", "Erreur : Aucun élément trouvé avec l\'" + {'alias' if by_alias else 'id'} + {id} + " dans la section [server].")
         return None
 
     @staticmethod
@@ -373,7 +373,7 @@ class ServerService:
                     print(
                         "Error: You dosent's have IdentityFile field in your ssh config file, and no default key (id_rsa)."
                     )
-                log ("error", "Erreur : Aucune champ 'identityfile' trouvée dans le fichier de configuration.")
+                log ("ERROR", "Erreur : Aucune champ 'identityfile' trouvée dans le fichier de configuration.")
                 return None
             if "port" in user_config:
                 cfg["port"] = user_config["port"]
