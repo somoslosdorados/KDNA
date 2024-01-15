@@ -22,7 +22,8 @@ def create_dic_server(data):
             "host": ligne[1].strip(),
             "path": ligne[2].strip(),
             "port": ligne[3].strip(),
-            "alias": ligne[4].strip(),
+            "encrypt": ligne[4].strip(),
+            "alias": ligne[5].strip(),
         }
         li.append(dic)
     return li
