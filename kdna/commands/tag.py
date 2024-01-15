@@ -57,7 +57,7 @@ def add(project, new_tag, file_to_tag, server):
 @click.option('-t', '--old_tag', required=True, help="entrez le tag à supprimer")
 @click.option('-s', '--server', required=True, help="entrez l'id du serveur")
 def delete(project, old_tag, server):
-    """Commande pour ajouter un tag."""
+    """Commande pour supprimer un tag."""
 
 #serversCredential = listServers[0].credentials
  #   instance = SSHClient(serversCredential).connect()
