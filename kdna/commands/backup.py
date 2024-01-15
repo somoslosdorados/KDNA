@@ -52,7 +52,8 @@ def display(path):
 @click.argument('project', nargs=1, required=True)
 @click.argument('path', nargs=1, required=True)
 @click.argument('tag', nargs=1, required=True)
-def add(project, path, tag):
+@click.option('--prefix', required=False, help="generate an unique tag", type=bool)
+def add(project, path, tag, prefix=None):
     """
     Commande pour sauvegarder un fichier ou un dossier.\n
     Arguments obligatoires :\n
@@ -62,9 +63,6 @@ def add(project, path, tag):
 
     author: Baptiste BRONSIN
     """
-
-    click.echo(f"Creating backup in {project} with {tag} tag")
-
     if len(listServers) == 0:
         click.echo("Any server found in the configuration file.")
         return
@@ -87,6 +85,18 @@ def add(project, path, tag):
     except Exception as e:
         print("Création d'une connexion SSH : error2 = " + e.__str__())
         return
+    
+    try:
+        if prefix is not None:
+            tag = tags.generate_tag_name(instance.connection, project, tag)
+    except PermissionError as exc:
+        click.echo("Génération du tag préfixé : vous n'avez pas les droits")
+        return
+    except Exception as e:
+        click.echo("Génération du tag préfixé : error" + e.__str__())
+        return
+
+    click.echo(f"Creating backup in {project} with {tag} tag")
 
     try:
         upload_file(instance.connection, path_to_local_backup, path_to_remote_backup)
