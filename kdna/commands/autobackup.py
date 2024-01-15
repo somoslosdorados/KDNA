@@ -7,15 +7,63 @@ stop : Commande pour stopper une auto-backup
 list : Commande pour lister les auto-backups
 """
 
+import os
 import click
 from kdna.logger.logger import log
 from kdna.server.autobackup_service import AutoBackupService  # import du C(R)UD de kdna.conf
 from kdna.parsing.parser import parseConfig  # import du parseur
 from tabulate import tabulate
+from crontab import CronTab  # Doit ajouter à poetry
 
 
 # Fonctions CRUD pour le crond
 # The crond (cron daemon) reads the cron tables to configure the schedule
+
+def create_cron_job(schedule, command):
+    current_user = os.getlogin()
+    cron = CronTab("")
+    job = cron.new(command=command)
+    job.setall(schedule)
+    cron.write()
+
+def read_cron_jobs():
+    cron = CronTab(user='your_username')
+    jobs = cron.find_comment('your_comment')  # Use a comment to identify your jobs
+    return [(job.comment, job.command, str(job.slices)) for job in jobs]
+
+def update_cron_job(old_command, new_command, new_schedule):
+    cron = CronTab(user='your_username')
+    jobs = cron.find_command(old_command)
+    
+    for job in jobs:
+        job.set_command(new_command)
+        job.setall(new_schedule)
+    
+    cron.write()
+
+def delete_cron_job(command):
+    cron = CronTab(user='your_username')
+    jobs = cron.find_command(command)
+    
+    for job in jobs:
+        cron.remove(job)
+    
+    cron.write()
+
+# Create a new cron job
+create_cron_job("0 2 * * *", "python /path/to/your/script.py")  # Run every day at 2:00 AM
+
+# Read all cron jobs
+jobs = read_cron_jobs()
+for job in jobs:
+    print(f"Command: {job[1]}, Schedule: {job[2]}")
+
+# Update an existing cron job
+update_cron_job("python /path/to/your/script.py", "python /path/to/your/updated_script.py", "30 1 * * *")  # Run every day at 1:30 AM
+
+# Delete a cron job
+delete_cron_job("python /path/to/your/updated_script.py")
+
 
 
 # Creation du groupe de commande autobackup
@@ -85,7 +133,7 @@ def translate_cron_schedule(cron_schedule):
 @autobackup.command()
 @click.option('-i', '--idcron', nargs=1, required=True, help="entrer l'id du cron")
 @click.option('-n', '--nameofcron', nargs=1, required=True, help="entrer le nom du cron")
-#@click.option('-t', '--tag', nargs=1, required=True, help="entrer le tag")
+@click.option('-t', '--tag', nargs=1, required=True, help="entrer le tag")
 @click.argument('cron_schedule', type=click.Choice(['daily', 'monthly', 'weekly', 'custom']), required=True)
 @click.argument('custom_cron', nargs=-1)
 @click.option('-d', '--date', nargs=1, required=True, help="entrer la date de la première backup [ xxxx-xx-xx ]")
@@ -117,6 +165,7 @@ def create(idcron, nameofcron, cron_schedule, custom_cron, date, server, path):
             click.echo("L'argument cron_schedule ne correspond pas à {daily, monthly, weekly, custom}")
     log("Info", "Calling kdna.conf CRUD...")
     AutoBackupService().create_auto_backup(idcron, custom_cron, nameofcron, date, server, path)  # Écrit dans kdna.conf
+    #ici écrire tag dans tag.conf (doriant, hugo)
     log("Info", "Calling parser...")
     parseConfig()  # Lance le parseur
 
