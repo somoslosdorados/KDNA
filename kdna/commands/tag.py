@@ -77,7 +77,6 @@ def delete(project, old_tag, server):
 
     if(connection_instance == None):
         click.echo("Le serveur n'a pas été trouvé")
-        logger.log("ERROR", "Le serveur n'a pas été trouvé")
         raise click.Abort()
 
     try:
