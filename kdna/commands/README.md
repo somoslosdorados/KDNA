@@ -1,12 +1,11 @@
-# Commandes
+# Commands
 
-## Aide
+## Help
 
-Obtenir les informations nécessaires à l'utilisation de chaque commande
-
+Get the information you need to use each command
 ```
-kdna <commande> --help
-kdna <commande> <sous-commande> --help
+kdna <command> --help
+kdna <command> <subcommand> --help
 ```
 
 ## Server
@@ -15,28 +14,27 @@ kdna <commande> <sous-commande> --help
 
 ### Description
 
-Gérer un serveur de backups
+Managing a backup server
 
 ```
-kdna server <commande> [options] [arguments]
+kdna server <command> [options] [arguments]
 ```
 
 ---
 
-### Ajout
+### Add
 
-#### Usage
+#### Use
 
-Ajout d'un serveur de backup
+Adding a backup server
+```
+kdna server add -i <id_server> -ad <libele_connexion> -a <alias_server> -r <repo_backup> -p <port_server>
+```
+
+#### Example
 
 ```
-kdna server add -i <id_serveur> -ad <libelle_connexion> -a <alias_serveur> -r <repo_backup> -p <port_serveur>
-```
-
-#### Exemple
-
-```
-kdna server add -i S1 -ad kdna@162.38.112.110 -a alias -r /mon/repertoire/backup/ -p 22
+kdna server add -i S1 -ad kdna@162.38.112.110 -a alias -r /my/repository/backup/ -p 22
 ```
 
 #### 
@@ -45,26 +43,25 @@ kdna server add -i S1 -ad kdna@162.38.112.110 -a alias -r /mon/repertoire/backup
 
 | Options |  Type  |        Description         | Required |
 |:--------|:------:|:--------------------------:|:--------:|
-| -i      |  int   |         id_server          |   Faux   |
+| -i      | String |         id_server          |   Vrai   |
 | -ad     | String |    libellé de connexion     |   Vrai   |
 | -a      | String |           alias            |   Vrai   |
 | -r      | String | répertoire pour les backup |   Vrai   |
 | -p      | String |            port            |   Vrai   |
-| -e      | Boolean |         encryptage         |   Faux   |
-
+| -e      | Boolean |         encrypt           |   False   |
 ---
 
-### Suppression d'un serveur de backup
+### Deleting a backup server
 
-#### Usage
+#### Use
 
-Retirer un serveur de backup
+Remove a backup server
 
 ```
-kdna server delete -a <alias_serveur> -i <id_serveur>
+kdna server delete -a <alias_server> -i <id_server>
 ```
 
-#### Exemple
+#### Example
 
 ```
 kdna server delete -i 1
@@ -74,44 +71,43 @@ kdna server delete -i 1
 
 | Options |  Type  | Description | Required |
 |:--------|:------:|:-----------:|:--------:|
-| -i      | String |  id_server  |   Faux   |
-| -a      | String |    alias    |   Faux   |
+| -i      | String |  id_server  |   False  |
+| -a      | String |    alias    |   False  |
 
-A noter : Une seule des deux options doit être impérativement choisie
+Please note: Only one of the two options must be chosen.
 
 ---
 
 ### Update
 
-#### Usage
+#### Use
 
-Mettre à jour un serveur
+Updating a server
+```
+kdna server update <alias_server> -c <new_credentials> -p <new_port_server> -ad <new_address> -a <new_alias>
+```
+
+#### Example
 
 ```
-kdna server update <alias_serveur> -c <new_credentials> -p <new_port_serveur> -ad <new_address> -a <new_alias>
-```
-
-#### Exemple
-
-```
-kdna server update alias_serveur -c new_credentials
+kdna server update alias_server -c new_credentials
 ```
 
 #### Options
 
 | Options |  Type  |   Description    | Required |
 |:--------|:------:|:----------------:|:--------:|
-|         | String |      alias       |   Vrai   |
-| -c      | String | new_credentials  |   Faux   |
-| -p      | String | new_port_serveur |   Faux   |
-| -ad     | String |   new_address    |   Faux   |
-| -a      | String |    new_alias     |   Faux   |
+|         | String |      alias       |   True   |
+| -c      | String | new_credentials  |   False  |
+| -p      | String | new_port_serveur |   False  |
+| -ad     | String |   new_address    |   False  |
+| -a      | String |    new_alias     |   False  |
 
 ---
 
 ### List
 
-#### Usage
+#### Use
 
 Lister les serveurs de backup
 
