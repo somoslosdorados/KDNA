@@ -67,7 +67,8 @@ def add(project, path, tag):
     
     click.echo(f"Creating backup in \"{project}\" with {tag} tag")
     uuid_backup = str(uuid.uuid4())
-    name_of_temp_backup = encrypt.package(path, uuid_backup, kdna_path, listServers[0].encrypt)
+    name_of_temp_backup = encrypt.package(
+        path, uuid_backup, kdna_path, listServers[0].encrypt)
     path_to_local_backup = os.path.join(kdna_path, name_of_temp_backup)
     path_to_remote_backup = os.path.join("kdna", project)
     serversCredential = listServers[0].credentials
@@ -82,9 +83,11 @@ def add(project, path, tag):
         return
 
     try:
-        upload_file(instance.connection, path_to_local_backup, path_to_remote_backup)
+        upload_file(instance.connection, path_to_local_backup,
+                    path_to_remote_backup)
     except FileNotFoundError as exc:
-        click.echo("Envoi du fichier sur le serveur : le fichier n'a pas été trouvé")
+        click.echo(
+            "Envoi du fichier sur le serveur : le fichier n'a pas été trouvé")
         return
     except PermissionError as exc:
         click.echo("Envoi du fichier sur le serveur : vous n'avez pas les droits")
@@ -94,7 +97,8 @@ def add(project, path, tag):
     try:
         os.remove(path_to_local_backup)
     except FileNotFoundError as exc:
-        click.echo("Suppression de la buckup locale : le fichier n'a pas été trouvé")
+        click.echo(
+            "Suppression de la buckup locale : le fichier n'a pas été trouvé")
         return
     except PermissionError as exc:
         click.echo("Suppression de la buckup locale : vous n'avez pas les droits")
@@ -111,6 +115,7 @@ def add(project, path, tag):
     except Exception as e:
         print("Ajout du tag : error = "+e.__str__())
 
+
 # Création de la commande delete
 @backup.command()
 @click.option('-t', 'pathtag', nargs=1, required=True, help="entrer le path du fichier et le tag [ path:tag ]")
@@ -120,6 +125,7 @@ def delete(pathtag):
 
 
 # Création de la commande list
+
 @backup.command()
 @click.argument('project_name', nargs=1, required=True)
 def list(project_name):
@@ -150,16 +156,16 @@ def list(project_name):
     if backups is None:
         click.echo(f'Project {project_name} not found')
     # else:
-        # click.echo('Backups : ' + str(backups))
-        # click.echo('Tags : ' + str(backups))
+        # click.echo('Backups : ' + str(backup
 
 
-# Création de la commande restore
 @backup.command()
+@click.option('-p', '--project', nargs=1, required=True,
+              help="entrer le nom du projet à restaurer")
 @click.option('-t', '--nametag', nargs=1, required=True,
               help="entrer le nom du fichier à restaurer et le tag [ name:tag ]")
 @click.argument('path', nargs=1, required=True)
-def restore(nametag, path):
+def restore(project, nametag, path):
     """Commande pour restaurer une backup.\n
         Argument obligatoire :\n
         \t- <path>: le chemin du fichier ou du dossier à restaurer\n"""
@@ -168,28 +174,23 @@ def restore(nametag, path):
         \t- <path>: le chemin du fichier ou du dossier à restaurer\n"""
     click.echo(f"Restauration du fichier : \"{nametag}\"")
 
-    if len(listServers) == 0:
-        click.echo("Any server found in the configuration file.")
-        return
-
     try:
         instance = SSHClient(listServers[0].credentials).connect()
     except Exception as e:
         print(e)
 
-    remote_path = find_path(instance.connection, nametag, "project")
+    remote_path = find_path(instance.connection, nametag, project)
 
     local_temp_path = os.path.join(
         kdna_path, "temp", remote_path.split("/")[-1])
 
     try:
-        download_file(
-            instance.connection, local_temp_path, remote_path)
+        download_file(instance.connection, local_temp_path, remote_path)
     except Exception as e:
         print(e)
 
     try:
-        restored_path = encrypt.restore(local_temp_path, path)
+        restored_path= encrypt.restore(local_temp_path, path)
     except Exception as e:
         print(e)
 
