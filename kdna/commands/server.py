@@ -28,21 +28,7 @@ def server():
 @click.option('-p', '--port', required=True, help="entrer le port Ex: 22")
 @click.option('-e', '--encrypt', default=True, required=False, help="Encrypt les sauvegardes sur le serveur (valeur par defaut : True) Ex: False")
 def add(id, alias, address, repo, port, encrypt):
-    """Commande pour ajouter un serveur.
-    :param id: -i l'id du serveur à sélectionner\n
-    :type id: int\n
-    :param alias: -a l'alias du serveur à sélectionner\n
-    :type alias: str\n
-    :param address: -ad libeler de connexion \n
-    :type address: str\n
-    :param repo: -r le repertoire dans lequel les sauvegardes seront envoyé\n
-    :type repo: str\n
-    :param port: -p le port du serveur à sélectionner\n
-    :type port: str\n
-    :return: un message de confirmation ou d'erreur\n
-    :rtype: str
-    :param encrypt: -e encrypt les sauvegardes sur le serveur\n
-    :type encrypt: bool\n"""
+    """Commande pour ajouter un serveur."""
             
     try:
         connection = SSHClient(address)
