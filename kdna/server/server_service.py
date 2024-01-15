@@ -176,7 +176,15 @@ class ServerService:
                     f"la section [server]."
                 )
 
-    def update_server(self, alias_to_update, new_path="", new_port="", new_address="", new_encrypt="",new_alias=""):
+    def update_server(
+        self,
+        alias_to_update,
+        new_path="",
+        new_port="",
+        new_address="",
+        new_encrypt="",
+        new_alias="",
+    ):
         """Update a server in the config file"""
         lines = Utils.read_file_lines(Utils.get_config_file_path())
 
@@ -261,11 +269,21 @@ class ServerService:
         if config_info is None:
             print("Erreur : Fichier de configuration SSH non trouvé.")
             return None
+        
+        encrypt = input("Encrypt the backups (Y/n): ")
+        if encrypt == "y":
+            encrypt = True
+        elif encrypt == "n":
+            encrypt = False
+        else:
+            encrypt = True
+            
         self.create_server(
             "R12",  # Temp value in wait of the increment insertion in create_server
             config_info["address"],
             config_info["credentials"],
             config_info["port"],
+            encrypt,
             config_info["alias"],
         )
         return None
