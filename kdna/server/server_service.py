@@ -80,6 +80,10 @@ class ServerService:
                 )
                 return
 
+            if id != "" :
+                id = int(id)
+            else :
+                id = self.get_max_id() + 1
             # On vérifie de l'unicité de l'alias
             if alias is not None:
                 existing_aliases = self.extract_existing_aliases(

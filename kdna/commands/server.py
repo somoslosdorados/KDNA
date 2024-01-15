@@ -21,16 +21,16 @@ def server():
 #! Création des commandes du groupe server
 # Création de la commande add
 @server.command()
-@click.option('-i', '--id', required=False, help="entrer l'id Ex: 1")
+@click.option('-i', '--id', default='', required=False, help="entrer l'id Ex: 1")
 @click.option('-ad', '--address', required=True, help="entrer le libelé de connexion Ex: user@host")
 @click.option('-a', '--alias', required=True, help="entrer l'alias Ex: serveur1")
 @click.option('-r', '--repo', required=True, help="entrer le répertoire de sauvegarde Ex: /home/user/backup")
 @click.option('-p', '--port', required=True, help="entrer le port Ex: 22")
 @click.option('-e', '--encrypt', default=True, required=False, help="Encrypt les sauvegardes sur le serveur (valeur par defaut : True) Ex: False")
-def add(alias, address, repo, port, encrypt, id=None):
+def add(id, alias, address, repo, port, encrypt):
     """Commande pour ajouter un serveur.
     :param id: -i l'id du serveur à sélectionner\n
-    :type id: str\n
+    :type id: int\n
     :param alias: -a l'alias du serveur à sélectionner\n
     :type alias: str\n
     :param address: -ad libeler de connexion \n
@@ -43,17 +43,13 @@ def add(alias, address, repo, port, encrypt, id=None):
     :rtype: str
     :param encrypt: -e encrypt les sauvegardes sur le serveur\n
     :type encrypt: bool\n"""
-    # if id is None:
-    #     # Obtenir la valeur maximale de l'id existant
-    #     max_id = ServerService.get_max_id()
-    #     id = max_id + 1
-        
+            
     try:
         connection = SSHClient(address)
         connection.sendCommand("ls > /dev/null")
 
         try:
-            connection.sendCommand(f"test ! -d {repo} && mkdir {repo}")
+            connection.sendCommand(f"test ! -d {repo} && mkdir -p {repo}")
         except Exception:
             click.echo("Le dossier existe déjà")
         ServerService().create_server(id, address, repo, port, encrypt, alias)
