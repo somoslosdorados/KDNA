@@ -1,68 +1,67 @@
-# Documentation de l'API tags.py
+# tags.py API Documentation
 
-Ce fichier README fournit des instructions sur la façon d'utiliser l'API tags.py pour gérer les tags dans votre application.
+This README file provides instructions on how to use the tags.py API to manage tags in your application.
 
 ## Installation
 
-Pour utiliser l'API tags.py, vous devez d'abord l'importer:
+To use the tags.py API, you first need to import it:
 > from kdna.tags import tags
 
-## Utilisation
+## Usage
 
-### Créer un tag
+### Create a tag
 
-Pour créer un tag, vous devez utiliser la fonction add_tags() de l'API tags.py. Cette fonction prend en paramètre :
-- une instance de connexion fabric (obtenable avec le module ssh.ssh_client)
-- le nom du projet
-- le nom du tag
-- le nom de la backup à tagger
+To create a tag, you need to use the add_tags() function of the tags.py API. This function takes the following parameters:
+- an instance of the fabric connection (obtained with the ssh.ssh_client module)
+- the project name
+- the tag name
+- the name of the backup to tag
 
 > tags.add_tags(ssh_client.connection, project_name, tag_name, backup_name)
 
-### Supprimer un tag
+### Delete a tag
 
-Pour supprimer un tag, vous devez utiliser la fonction delete_tags() de l'API tags.py. Cette fonction prend en paramètre :
-- une instance de connexion fabric (obtenable avec le module ssh.ssh_client)
-- le nom du projet
-- le nom du tag
+To delete a tag, you need to use the delete_tags() function of the tags.py API. This function takes the following parameters:
+- an instance of the fabric connection (obtained with the ssh.ssh_client module)
+- the project name
+- the tag name
 
 > tags.delete_tags(ssh_client.connection, project_name, tag_name)
 
-### Modifier un tag
+### Update a tag
 
-Pour modifier un tag, vous devez utiliser la fonction update_tags() de l'API tags.py. Cette fonction prend en paramètre :
-- une instance de connexion fabric (obtenable avec le module ssh.ssh_client)
-- le nom du projet
-- le nom du tag
-- le nouveau nom du tag
+To update a tag, you need to use the update_tags() function of the tags.py API. This function takes the following parameters:
+- an instance of the fabric connection (obtained with the ssh.ssh_client module)
+- the project name
+- the tag name
+- the new tag name
 
 > tags.update_tags(ssh_client.connection, project_name, tag_name, new_tag_name)
 
-### Recupérer les tags (dictionnaire python)
+### Get tags (Python dictionary)
 
-Pour récupérer les tags, vous devez utiliser la fonction get_tag_conf() de l'API tags.py. Cette fonction prend en paramètre :
-- une instance de connexion fabric (obtenable avec le module ssh.ssh_client)
-- le nom du projet
+To retrieve tags, you need to use the get_tag_conf() function of the tags.py API. This function takes the following parameters:
+- an instance of the fabric connection (obtained with the ssh.ssh_client module)
+- the project name
 
 > tags.get_tag_conf(ssh_client.connection, project_name)
->> exemple de retour : {'tag1': 'backup1', 'tag2': 'backup2'}
+>> example return: {'tag1': 'backup1', 'tag2': 'backup2'}
 
-### Générer un nom de tag unique (utile pour le cron)
+### Generate a unique tag name (useful for cron)
 
-Pour générer un nom de tag unique, vous devez utiliser la fonction generate_tag_name() de l'API tags.py. Cette fonction prend en paramètre :
-- Une instance de connexion fabric (obtenable avec le module ssh.ssh_client)
-- le nom du projet
-- un préfixe 
+To generate a unique tag name, you need to use the generate_tag_name() function of the tags.py API. This function takes the following parameters:
+- an instance of the fabric connection (obtained with the ssh.ssh_client module)
+- the project name
+- a prefix
 
 > tags.generate_tag_name(ssh_client.connection, project_name, prefix)
 
-### Savoir si un tag existe
+### Check if a tag exists
 
-Pour savoir si un tag existe, vous devez utiliser la fonction tag_exists() de l'API tags.py. Cette fonction prend en paramètre :
-- Une instance de connexion fabric (obtenable avec le module ssh.ssh_client)
-- le nom du projet
-- le nom du tag
+To check if a tag exists, you need to use the tag_exists() function of the tags.py API. This function takes the following parameters:
+- an instance of the fabric connection (obtained with the ssh.ssh_client module)
+- the project name
+- the tag name
 
 > tags.tag_exists(ssh_client.connection, project_name, tag_name)
->> retourne True si le tag existe, False sinon
-
+>> returns True if the tag exists, False otherwise
