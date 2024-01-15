@@ -53,13 +53,13 @@ def display(path):
 @click.argument('path', nargs=1, required=True)
 @click.argument('tag', nargs=1, required=True)
 def add(project, path, tag):
-    """Commande pour sauvegarder un fichier\n
-    :param name: le nom du fichier à sauvegarder\n
-    :type name: str\n
-    :param path: le path du fichier à sauvegarder\n
-    :type path: str\n
-    :return: un message de confirmation ou d'erreur\n
-    :rtype: str"""
+    """
+    Commande pour sauvegarder un fichier ou un dossier.\n
+    Arguments obligatoires :\n
+    \t- <project>: le nom du projet à sauvegarder\n
+    \t- <path>: le chemin du dossier ou fichier à sauvegarder\n
+    \t- <tag>: le tag de la sauvegarde
+    """
     click.echo(f"Creating backup \"{project}\":\n{tag}")
     uuid_backup = str(uuid.uuid4())
     name_of_temp_backup = encrypt.package(path, uuid_backup, kdna_path, True)
@@ -99,9 +99,9 @@ def delete(pathtag):
 @backup.command()
 @click.argument('project_name', nargs=1, required=True)
 def list(project_name):
-    """Commande pour lister les fichiers sauvegardés
-    :return: Liste des fichiers sauvegardés : class: `str`\n
-    :rtype: list"""
+    """Commande pour lister les backups d'un projet\n
+    Argument obligatoire :\n
+    \t- <project_name>: le nom du projet pour lequel lister les backups"""
     try:
         instance = SSHClient(listServers[0].credentials).connect()
     except Exception as e:
@@ -130,13 +130,9 @@ def list(project_name):
               help="entrer le nom du fichier à restaurer et le tag [ name:tag ]")
 @click.argument('path', nargs=1, required=True)
 def restore(nametag, path):
-    """Commande pour restaurer un fichier\n
-    :param nametag: -t [ name:tag ] le nom du fichier à restaurer
-    :type nametag: str\n
-    :param path: le path du fichier à restaurer\n
-    :type path: str\n
-    :return: un message de confirmation ou d'erreur\n
-    :rtype: str"""
+    """Commande pour restaurer une backup.\n
+        Argument obligatoire :\n
+        \t- <path>: le chemin du fichier ou du dossier à restaurer\n"""
     click.echo(f"Restauration du fichier : \"{nametag}\"")
 
     try:
