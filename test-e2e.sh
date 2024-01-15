@@ -21,7 +21,9 @@ test_key_gen() {
 }
 
 test_create_project(){
-  build_command "python kdna/__main__.py server add -i S1 -ad test@e2e-server -a jul -r test -p 2"
+  build_command "python kdna/main.py server add -i S1 -ad test@e2e-server -a jul -r test -p 2"
+  build_command "ls"
+  docker run --network kdna-e2e -it kdna/e2e-client:latest ssh test@e2e-server "ls"
   if $command; then
     echo "Tests create project passed!"
   else
@@ -44,7 +46,8 @@ run_tests() {
   test_create_project
 }
 
-if [ $# == 2 ]; then
+echo "$#"
+if [ $# == 1 ]; then
   if [ "$1" == "-i" ]; then
     run_tests
   fi
