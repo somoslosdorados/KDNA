@@ -1,49 +1,53 @@
 import os
-from kdna.parsing.parser import line_is_header, parseConfig
+from kdna.parsing.parser import line_is_header, parseConfig, listServers, listAutoBackups, kdna_path
 import io
-import pytest
-import shutil
 
-def test_parseConfig():
+
+def test_parse_config(mocker, capsys):
     # Test case 1: Test with valid configuration file
     # Create a temporary configuration file with valid content
-    with open("temp_config.conf", "w") as f:
-        f.write("servers\n")
-        f.write("server1\n")
-        f.write("server2\n")
-        f.write("auto-backups\n")
-        f.write("backup1\n")
-        f.write("backup2\n")
+    with open("kdna.conf", "w") as f:
+        f.write("[servers]\n")
+        f.write("server1, credential, path, port, encrypt, alias\n")
+        f.write("server2, credential, path, port, encrypt, alias\n")
+        f.write("[auto-backups]\n")
+        f.write("backup1, credential, path, port, encrypt, alias\n")
+        f.write("backup2, credential, path, port, encrypt, alias\n")
 
     # Call the parseConfig function
-    listServers = []
-    listAutoBackups = []
+    mocker.patch("kdna.parsing.parser.kdna_path", "")
     parseConfig()
 
+    listNameServers = []
+    listAutoBackupsName = []
+    for server in listServers:
+        listNameServers.append(server.id_server)
+
+    for autobackup in listAutoBackups:
+        listAutoBackupsName.append(autobackup.id_backup)
+
     # Assert that the parsed data is correct
-    assert listServers == ["server1", "server2"]
-    assert listAutoBackups == ["backup1", "backup2"]
+    assert listNameServers == ["server1", "server2"]
+    assert listAutoBackupsName == ["backup1", "backup2"]
 
     # Test case 2: Test with invalid header
     # Create a temporary configuration file with an unknown header
-    with open("temp_config.conf", "w") as f:
-        f.write("unknown-header\n")
+    with open("kdna.conf", "w") as f:
+        f.write("[unknown-header]\n")
         f.write("line1\n")
         f.write("line2\n")
 
     # Call the parseConfig function
     # Create an instance of StringIO to capture the output
-    captured_output = io.StringIO()
 
     parseConfig()
+    captured_output = capsys.readouterr()
 
     # Assert that an error message is printed
-    assert "Unknown header: unknown-header" in captured_output.getvalue()
+    assert "Unknown header: unknown-header" in captured_output.out
 
     # Clean up the temporary configuration file
-    os.remove("temp_config.conf")
-
-
+    os.remove("kdna.conf")
 
 
 def test_line_is_header():
