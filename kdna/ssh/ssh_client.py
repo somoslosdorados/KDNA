@@ -2,6 +2,7 @@ from fabric import Connection
 from kdna.logger.logger import log
 
 
+
 class SSHClient:
 
   def __init__(self, credentials, key_path=None):
@@ -62,5 +63,6 @@ class SSHClient:
         except Exception as e:
             print(f"Error sending command {command} to {self.host}: {e}")
             log("ERROR", f"Error sending command {command} to {self.host}: {e}")
+            
     def run(self, command: str):
       return self.connection.run(command, warn=True)

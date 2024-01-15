@@ -6,6 +6,7 @@ list: Commande pour lister les tags
 
 import click
 from kdna.logger.logger import log
+from kdna.logger.logger import log
 from kdna.server.server_service import ServerService
 from kdna.parsing.parser import listServers
 from tabulate import tabulate

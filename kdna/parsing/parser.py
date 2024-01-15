@@ -1,4 +1,5 @@
 from kdna.logger.logger import log
+from kdna.logger.logger import log
 from kdna.parsing.server import parseServer
 from kdna.parsing.autobackup import parse
 import os

@@ -1,5 +1,7 @@
 from fabric import Connection
 from kdna.logger.logger import log  # type: ignore
+from fabric import Connection
+from kdna.logger.logger import log  # type: ignore
 from kdna.server.server import directory_exists
 
 

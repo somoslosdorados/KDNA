@@ -1,6 +1,7 @@
 
 from fabric import Connection
 from kdna.logger.logger import log
+from kdna.logger.logger import log
 
 
 
