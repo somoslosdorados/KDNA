@@ -65,7 +65,6 @@ def add(project, path, tag):
         click.echo("Any server found in the configuration file.")
         return
     
-    click.echo(f"Creating backup in \"{project}\" with {tag} tag")
     uuid_backup = str(uuid.uuid4())
     name_of_temp_backup = encrypt.package(path, uuid_backup, kdna_path, listServers[0].encrypt)
     path_to_local_backup = os.path.join(kdna_path, name_of_temp_backup)
