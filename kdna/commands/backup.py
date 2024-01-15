@@ -105,17 +105,18 @@ def add(project, path, tag):
         tags.add_tags(instance.connection, project,
                      tag, name_of_temp_backup)
     except FileNotFoundError as exc:
-        click.echo("Suppression de la buckup locale : le fichier n'a pas été trouvé")
+        click.echo("Suppression de la backup locale : Le fichier n'a pas été trouvé")
         return
     except PermissionError as exc:
-        click.echo("Suppression de la buckup locale : vous n'avez pas les droits")
+        click.echo("Suppression de la backup locale : Vous n'avez pas les droits")
         return
     except Exception as e:
-        print("Suppression de la buckup locale : error = " + e.__str__())
+        click.echo("Suppression de la backup locale : error = "+e.__str__())
         return
 
     try:
         tags.add_tags(instance.connection, project, tag, name_of_temp_backup)
+
     except PermissionError as exc:
         click.echo("Ajout du tag sur la backup : vous n'avez pas les droits")
         return
