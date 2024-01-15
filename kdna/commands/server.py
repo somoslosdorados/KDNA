@@ -33,7 +33,7 @@ def add(id, alias, address, repo, port):
      :type alias: str\n
      :param address: -ad libeler de connexion \n
      :type address: str\n
-     :param repo: -c le repertoire dans lequel les sauvegardes seront envoyé\n
+     :param repo: -r le repertoire dans lequel les sauvegardes seront envoyé\n
      :type repo: str\n
      :param port: -p le port du serveur à sélectionner\n
      :type port: str\n

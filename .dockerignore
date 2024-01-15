@@ -1,4 +1,6 @@
 *
+!.ssh
+!.ssh/*
 !.git
 !pyproject.toml
 !README.md
