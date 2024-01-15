@@ -24,6 +24,7 @@ def server():
 # Création de la commande init
 @server.command()
 def init():
+    """Commande pour initialiser le fichier de configuration"""
     Utils.initialize_config_file()
 
 # Création de la commande add
