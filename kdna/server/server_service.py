@@ -23,10 +23,10 @@ class ServerService:
     def __int__(self):
         pass
 
-    def get_max_id():
+    def get_max_id(self):
         """Get the maximum ID among the servers"""
-        lines = ServerService.find_all()
-        max_id = 0;
+        lines = self.find_all()
+        max_id = 0
         for line in lines:
             if line[0] > max_id:
                 max_id = line[0]
@@ -90,12 +90,12 @@ class ServerService:
                           f"servers].")
                     return
 
-            if encrypt != "True" and encrypt != "False":
+            if encrypt != True and encrypt != False:
                 print("Erreur : La valeur du paramètre encrypt doit être True ou False.")
                 return
             
             # Construction de la nouvelle ligne
-            new_line = f"{id}, {address}, {credentials}, {port}, {encrypt},{alias}\n"
+            new_line = f"{id}, {address}, {credentials}, {port}, {encrypt}, {alias}\n"
 
             # Ajout de la ligne seulement si l'id_server et l'alias sont uniques
             lines.insert(index_servers + 1, new_line)
@@ -148,7 +148,7 @@ class ServerService:
                     f"la section [server]."
                 )
 
-    def update_server(self, alias_to_update, new_credentials="", new_port="", new_address="", new_encrypt="",new_alias=""):
+    def update_server(self, alias_to_update, new_path="", new_port="", new_address="", new_encrypt="",new_alias=""):
         lines = Utils.read_file_lines(Utils.get_config_file_path())
 
         index_servers = Utils.find_servers_index(lines)
@@ -191,7 +191,7 @@ class ServerService:
                     return
 
                 # Construire la nouvelle ligne mise à jour
-                updated_line = f"{existing_id}, {new_address}, {new_credentials}, {new_port}, {new_encrypt}, {new_alias}\n"
+                updated_line = f"{existing_id}, {new_address}, {new_path}, {new_port}, {new_encrypt}, {new_alias}\n"
 
                 # Mettre à jour la ligne
                 lines[line_to_update] = updated_line
@@ -253,7 +253,7 @@ class ServerService:
     def extract_existing_aliases(lines, index_servers, index_auto_backups):
         """Extract the aliases in the server section"""
         return [
-            line.split(",")[4].strip() if len(line.split(",")) >= 5 else None
+            line.split(",")[5].strip() if len(line.split(",")) >= 6 else None
             for line in lines[index_servers + 1 : index_auto_backups]
             if line.strip()
         ]
@@ -267,10 +267,10 @@ class ServerService:
         server_lines = lines[index_servers + 1 : index_auto_backups]
 
         for i, line in enumerate(server_lines):
-            if len(line.split(",")) >= 5 and line.strip():
+            if len(line.split(",")) >= 6 and line.strip():
                 line_id = line.split(",")[0].strip()
                 line_alias = (
-                    line.split(",")[4].strip() if len(line.split(",")) >= 5 else None
+                    line.split(",")[5].strip() if len(line.split(",")) >= 6 else None
                 )
 
                 if by_alias and line_alias == id or not by_alias and line_id == str(id):
@@ -290,10 +290,10 @@ class ServerService:
         server_lines = lines[index_servers + 1 : index_auto_backups]
 
         for i, line in enumerate(server_lines):
-            if len(line.split(",")) >= 5 and line.strip():
+            if len(line.split(",")) >= 6 and line.strip():
                 line.split(",")[0].strip()
                 line_alias = (
-                    line.split(",")[4].strip() if len(line.split(",")) >= 5 else None
+                    line.split(",")[5].strip() if len(line.split(",")) >= 6 else None
                 )
 
                 # Si l'alias correspond à celui à mettre à jour
