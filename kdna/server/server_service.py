@@ -181,7 +181,7 @@ class ServerService:
                     f"L'élément avec l'{element_type} {id} a été supprimé de la "
                     f"section [servers]."
                 )
-                log("INFO", "L'élément avec l\'" + {element_type} + {id} + "a été "
+                log("INFO", "L'élément avec l\'" + element_type + id + "a été "
                                                                "supprimé de la section [servers].")
             # Sinon on affiche un message d'erreur
             else:
