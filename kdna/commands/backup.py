@@ -88,7 +88,7 @@ def add(project, path, tag, prefix=None):
         return
     
     try:
-        if prefix is not None or prefix is True:
+        if prefix is not None:
             tag = tags.generate_tag_name(instance.connection, project, tag)
     except PermissionError as exc:
         click.echo("Génération du tag préfixé : vous n'avez pas les droits")
