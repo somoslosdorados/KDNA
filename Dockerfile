@@ -27,5 +27,5 @@ USER test
 WORKDIR /home/test
 # copy the source code to the container
 COPY --chown=test:test . .
-RUN poetry install
+RUN poetry install --only main
 
