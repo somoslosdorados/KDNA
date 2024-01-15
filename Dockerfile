@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y \
     python3-wheel \
     wget \
     python3-poetry \
+    iputils-ping \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -ms /bin/bash test
