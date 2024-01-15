@@ -45,7 +45,7 @@ kdna server add -i S1 -ad kdna@162.38.112.110 -a alias -r /mon/repertoire/backup
 
 | Options |  Type  |        Description         | Required |
 |:--------|:------:|:--------------------------:|:--------:|
-| -i      | String |         id_server          |   Vrai   |
+| -i      |  int   |         id_server          |   Faux   |
 | -ad     | String |    libellé de connexion     |   Vrai   |
 | -a      | String |           alias            |   Vrai   |
 | -r      | String | répertoire pour les backup |   Vrai   |
