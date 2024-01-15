@@ -4,6 +4,9 @@ import os
 from kdna.logger import logger
 from kdna.parsing import parser
 
+import os
+
+
 class Utils:
     """Fonctions utilitaires pour les fichiers de configuration"""
 
