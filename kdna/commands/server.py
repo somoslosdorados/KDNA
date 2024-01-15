@@ -95,6 +95,7 @@ def list():
     """Commande pour lister les serveurs"""
     serverService = ServerService()
     servers = serverService.find_all()
+    print(servers)
     table = tabulate(
         [[data for data in server.values()] for server in servers],
         ['id', 'host', 'path', 'port', 'alias'],
