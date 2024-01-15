@@ -14,6 +14,7 @@ def array_to_dic(array):
   }
 
 def create_dic_server(data):
+    """Create a dictionnary with the data of the server"""
     li = []
     for ligne in data:
         dic = {
@@ -28,6 +29,8 @@ def create_dic_server(data):
 
 
 class ServerService:
+    """This class contains the methods to manage the servers."""
+
     def __int__(self):
         pass
 
@@ -41,6 +44,7 @@ class ServerService:
         return max_id
 
     def find_all(self):
+        """Find all the servers in the config file"""
         lines = Utils.read_file_lines(Utils.get_config_file_path())
         i = Utils.find_servers_index(lines) + 1
         index_autobackup = Utils.find_auto_backups_index(lines)
@@ -50,6 +54,10 @@ class ServerService:
         return li
 
     def find_by_alias(self, alias):
+        """Find a server by his alias"""
+        lines = Utils.read_file_lines(Utils.get_config_file_path())
+        index_servers = Utils.find_servers_index(lines)
+        index_auto_backups = Utils.find_auto_backups_index(lines)
       lines = Utils.read_file_lines(Utils.get_config_file_path())
       index_servers = Utils.find_servers_index(lines)
       index_auto_backups = Utils.find_auto_backups_index(lines)
@@ -91,9 +99,9 @@ class ServerService:
                 )
                 return
 
-            if id != "" :
+            if id != "":
                 id = int(id)
-            else :
+            else:
                 id = self.get_max_id() + 1
             # On vérifie de l'unicité de l'alias
             if alias is not None:
@@ -101,12 +109,16 @@ class ServerService:
                     lines, index_servers, index_auto_backups
                 )
                 if alias in existing_aliases:
-                    print(f"Erreur : L'alias \"{alias}\" existe déjà dans la section ["
-                          f"servers].")
+                    print(
+                        f'Erreur : L\'alias "{alias}" existe déjà dans la section ['
+                        f"servers]."
+                    )
                     return
 
             if encrypt != True and encrypt != False:
-                print("Erreur : La valeur du paramètre encrypt doit être True ou False.")
+                print(
+                    "Erreur : La valeur du paramètre encrypt doit être True ou False."
+                )
                 return
 
             # Construction de la nouvelle ligne
@@ -126,6 +138,7 @@ class ServerService:
             print("Erreur : Section [server] non trouvé dans le fichier.")
 
     def delete_server(self, id: str, by_alias=False):
+        """Delete a server in the config file"""
         lines = Utils.read_file_lines(Utils.get_config_file_path())
         index_servers = Utils.find_servers_index(lines)
         element_type = "alias" if by_alias else "id"
@@ -164,6 +177,7 @@ class ServerService:
                 )
 
     def update_server(self, alias_to_update, new_path="", new_port="", new_address="", new_encrypt="",new_alias=""):
+        """Update a server in the config file"""
         lines = Utils.read_file_lines(Utils.get_config_file_path())
 
         index_servers = Utils.find_servers_index(lines)
@@ -183,8 +197,9 @@ class ServerService:
                 existing_path = existing_line[2].strip()
                 existing_port = existing_line[3].strip()
                 existing_encrypt = existing_line[4].strip()
-                existing_alias = existing_line[5].strip() if len(
-                    existing_line) >= 5 else None
+                existing_alias = (
+                    existing_line[5].strip() if len(existing_line) >= 5 else None
+                )
 
                 # Mettre à jour les informations si de nouvelles valeurs sont fournies
                 new_address = new_address if new_address != "" else existing_address
@@ -321,7 +336,7 @@ class ServerService:
         """
         List all hosts in the SSH config file.
         """
-        if os.path.exists.expanduser("~/.ssh/config"):
+        if os.path.exists(os.path.expanduser("~/.ssh/config")):
             config_file = os.path.expanduser("~/.ssh/config")
             if not os.path.exists(config_file):
                 return []
@@ -329,13 +344,12 @@ class ServerService:
                 lines = file.readlines()
             hosts = [line.split()[1] for line in lines if line.startswith("Host ")]
             return hosts
-        else:
-            return None
+        return None
 
     @staticmethod
     def get_ssh_config_info(host):
         """Get the hostname and username from the SSH config file."""
-        if os.path.exists.expanduser("~/.ssh/config"):
+        if os.path.exists(os.path.expanduser("~/.ssh/config")):
             config = paramiko.SSHConfig()
             user_config_file = os.path.expanduser("~/.ssh/config")
             if os.path.exists(user_config_file):
@@ -348,12 +362,17 @@ class ServerService:
             if "identityfile" in user_config:
                 cfg["credentials"] = user_config["identityfile"][0]
             else:
-                print(
-                    "Erreur : Aucune champ 'identityfile' trouvée dans le fichier de configuration."
+                if os.path.exists(os.path.expanduser("~/.ssh/id_rsa")):
+                    cfg["credentials"] = os.path.expanduser("~/.ssh/id_rsa")
+                    print(
+                        "You dosent's have IdentityFile field in your ssh config file, we use the default key (id_rsa)."
                     )
-                return None
+                else:
+                    print(
+                        "Error: You dosent's have IdentityFile field in your ssh config file, and no default key (id_rsa)."
+                    )
+                    return None
             if "port" in user_config:
                 cfg["port"] = user_config["port"]
             return cfg
-        else:
-            return None
+        return None
