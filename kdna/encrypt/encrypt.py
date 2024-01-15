@@ -9,6 +9,8 @@ from cryptography.fernet import Fernet
 
 from kdna.logger.logger import log
 
+from kdna.logger.logger import log
+
 
 kdna_default_path = os.path.join(os.path.expanduser('~'), '.kdna/key.key')
 kdna_path_to_path = os.path.join(os.path.expanduser('~'), '.kdna/path')

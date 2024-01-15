@@ -1,5 +1,6 @@
 from kdna.conf_utils.utils import Utils
 from kdna.logger.logger import log
+from kdna.logger.logger import log
 
 def create_dic_autobackup(data):
     li = []

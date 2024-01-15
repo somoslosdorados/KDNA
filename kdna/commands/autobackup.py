@@ -10,6 +10,7 @@ list : Commande pour lister les auto-backups
 import click
 from tabulate import tabulate
 from kdna.logger.logger import log
+from kdna.logger.logger import log
 
 from kdna.server.autobackup_service import AutoBackupService
 
