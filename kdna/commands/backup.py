@@ -11,6 +11,7 @@ import click
 import uuid
 import os
 import kdna.tags.tags as tags
+from kdna.logger import logger
 from kdna.parsing.parser import listServers
 from kdna.encrypt import encrypt
 from kdna.parsing.parser import kdna_path
@@ -24,25 +25,6 @@ from kdna.read_backups.agent import list_backups
 @click.group()
 def backup():
     """Commande pour sauvegarder un fichier ou un dossier"""
-
-
-# Création de la fonction display pour afficher le contenu d'un fichier
-def display(path):
-    """
-    Fonction pour afficher le contenu d'un fichier\n
-    :param path: le path du fichier à afficher\n
-    :type path: str\n
-    :return: le contenu du fichier\n
-    :rtype: str
-    """
-    try:
-        with open(path, mode="r", encoding="utf-8") as file:
-            return file.read()
-    except FileNotFoundError as exc:
-        raise FileNotFoundError("Fichier non trouvé") from exc
-
-    except PermissionError as exc:
-        raise PermissionError("Oups, Pas les droits") from exc
 
 
 # Création des commandes du groupe backup
@@ -63,19 +45,21 @@ def add(project, path, tag):
     author: Baptiste BRONSIN
     """
 
-    click.echo(f"Creating backup in {project} with {tag} tag")
+    click.echo(f"Création de la backup dans {project} avec le tag {tag}")
+    logger.log("INFO", f"Création de la backup dans {project} avec le tag {tag}")
 
     if len(listServers) == 0:
-        click.echo("Any server found in the configuration file.")
+        click.echo("Pas de serveur trouvé dans le fichier de configuration.")
+        logger.log("ERROR", "Pas de serveur trouvé dans le fichier de configuration.")
         return
 
     if not os.path.exists(path):
-        click.echo("Directory '" + path + "' is missing.")
+        click.echo("Le dossier '" + path + "' n'existe pas.")
+        logger.log("ERROR", "Le dossier '" + path + "' n'existe pas.")
         return
 
     uuid_backup = str(uuid.uuid4())
-    name_of_temp_backup = encrypt.package(
-        path, uuid_backup, kdna_path, listServers[0].encrypt)
+    name_of_temp_backup = encrypt.package(path, uuid_backup, kdna_path, listServers[0].encrypt)
     path_to_local_backup = os.path.join(kdna_path, name_of_temp_backup)
     path_to_remote_backup = os.path.join("kdna", project)
     serversCredential = listServers[0].credentials
@@ -84,47 +68,53 @@ def add(project, path, tag):
         instance = SSHClient(serversCredential).connect()
     except PermissionError as exc:
         click.echo("Création d'une connexion SSH : vous n'avez pas les droits")
+        logger.log("ERROR", "Création d'une connexion SSH : vous n'avez pas les droits")
         return
     except Exception as e:
-        print("Création d'une connexion SSH : error2 = " + e.__str__())
+        click.echo("Création d'une connexion SSH : error2 = " + e.__str__())
+        logger.log("ERROR", "Création d'une connexion SSH : error2 = " + e.__str__())
         return
 
     try:
-        upload_file(instance.connection, path_to_local_backup,
-                    path_to_remote_backup)
+        upload_file(instance.connection, path_to_local_backup, path_to_remote_backup)
     except FileNotFoundError as exc:
-        click.echo(
-            "Envoi du fichier sur le serveur : le fichier n'a pas été trouvé")
+        click.echo("Envoi du fichier sur le serveur : le fichier n'a pas été trouvé")
+        logger.log("ERROR", "Envoi du fichier sur le serveur : le fichier n'a pas été trouvé")
         return
     except PermissionError as exc:
         click.echo("Envoi du fichier sur le serveur : vous n'avez pas les droits")
+        logger.log("ERROR", "Envoi du fichier sur le serveur : vous n'avez pas les droits")
         return
     except Exception as e:
-        print("Envoi du fichier sur le serveur : error = " + e.__str__())
+        click.echo("Envoi du fichier sur le serveur : error = " + e.__str__())
+        logger.log("ERROR", "Envoi du fichier sur le serveur : error = " + e.__str__())
         return
 
     try:
         os.remove(path_to_local_backup)
     except FileNotFoundError as exc:
-        click.echo(
-            "Suppression de la buckup locale : le fichier n'a pas été trouvé")
+        click.echo("Suppression de la backup locale : le fichier n'a pas été trouvé")
+        logger.log("ERROR", "Suppression de la backup locale : le fichier n'a pas été trouvé")
         return
     except PermissionError as exc:
-        click.echo("Suppression de la buckup locale : vous n'avez pas les droits")
+        click.echo("Suppression de la backup locale : vous n'avez pas les droits")
+        logger.log("ERROR", "Suppression de la backup locale : vous n'avez pas les droits")
         return
     except Exception as e:
-        print("Suppression de la buckup locale : error = " + e.__str__())
+        click.echo("Suppression de la backup locale : error = " + e.__str__())
+        logger.log("ERROR", "Suppression de la backup locale : error = " + e.__str__())
         return
 
     try:
         tags.add_tags(instance.connection, project, tag, name_of_temp_backup)
     except PermissionError as exc:
         click.echo("Ajout du tag sur la backup : vous n'avez pas les droits")
+        logger.log("ERROR", "Ajout du tag sur la backup : vous n'avez pas les droits")
         return
     except Exception as e:
         click.echo("Ajout du tag sur la backup : error" + e.__str__())
+        logger.log("ERROR", "Ajout du tag sur la backup : error" + e.__str__())
         return
-
 
 # Création de la commande delete
 @backup.command()
@@ -135,7 +125,6 @@ def delete(pathtag):
 
 
 # Création de la commande list
-
 @backup.command()
 @click.argument('project_name', nargs=1, required=True)
 def list(project_name):
@@ -144,13 +133,15 @@ def list(project_name):
     \t- <project_name>: le nom du projet pour lequel lister les backups"""
 
     if len(listServers) == 0:
-        click.echo("Any server found in the configuration file.")
+        click.echo("Pas de serveur trouvé dans le fichier de configuration.")
+        logger.log("ERROR", "Pas de serveur trouvé dans le fichier de configuration.")
         return
 
     try:
         instance = SSHClient(listServers[0].credentials).connect()
     except Exception as e:
-        print("error = "+e.__str__())
+        click.echo("Erreur lors de la récupération des backups = "+e.__str__())
+        logger.log("ERROR", "Erreur lors de la récupération des backups = "+e.__str__())
 
     backups = []
 
@@ -164,11 +155,14 @@ def list(project_name):
         print("error2 = "+e.__str__())
 
     if backups is None:
-        click.echo(f'Project {project_name} not found')
+        click.echo(f'Projet {project_name} non trouvé')
+        logger.log("ERROR", f'Projet {project_name} non trouvé')
     # else:
-        # click.echo('Backups : ' + str(backup
+        # click.echo('Backups : ' + str(backups))
+        # click.echo('Tags : ' + str(backups))
 
 
+# Création de la commande restore
 @backup.command()
 @click.option('-p', '--project', nargs=1, required=True,
               help="entrer le nom du projet à restaurer")
@@ -181,10 +175,16 @@ def restore(project, nametag, path):
         \t- <path>: le chemin du fichier ou du dossier à restaurer\n"""
     click.echo(f"Restauration du fichier : \"{nametag}\"")
 
+    if len(listServers) == 0:
+        click.echo("Pas de serveur trouvé dans le fichier de configuration.")
+        logger.log("ERROR", "Pas de serveur trouvé dans le fichier de configuration.")
+        return
+
     try:
         instance = SSHClient(listServers[0].credentials).connect()
     except Exception as e:
-        print(e)
+        click.echo("Erreur lors de la connexion au serveur : "+e.__str__())
+        logger.log("ERROR", "Erreur lors de la connexion au serveur : "+e.__str__())
 
     remote_path = find_path(instance.connection, nametag, project)
 
@@ -194,12 +194,15 @@ def restore(project, nametag, path):
     try:
         download_file(instance.connection, local_temp_path, remote_path)
     except Exception as e:
-        print(e)
+        click.echo("Erreur lors du téléchargement du fichier : "+e.__str__() + " " + remote_path)
+        logger.log("ERROR", "Erreur lors du téléchargement du fichier : "+e.__str__() + " " + remote_path)
 
     try:
-        restored_path= encrypt.restore(local_temp_path, path)
+        restored_path = encrypt.restore(local_temp_path, path)
     except Exception as e:
-        print(e)
+        click.echo("Erreur lors de la restauration du fichier : "+e.__str__())
+        logger.log("ERROR", "Erreur lors de la restauration du fichier : "+e.__str__())
 
     click.echo(f"Restauration faite : \"{restored_path}\"")
+    logger.log("INFO", f"Restauration faite : \"{restored_path}\"")
     os.remove(local_temp_path)

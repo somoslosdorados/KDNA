@@ -1,3 +1,4 @@
+from kdna.logger import logger
 from kdna.parsing.server import parseServer
 from kdna.parsing.autobackup import parse
 import os
@@ -48,7 +49,7 @@ def parseConfig():
                 elif header == "auto-backups":
                     listAutoBackups.append(parsed)
         else:
-            print(f"Unknown header: {header}")
+            logger.log("ERROR", f"Unknown header: {header}")
     # for autobackup in listAutoBackups:
     #     print(autobackup)
 

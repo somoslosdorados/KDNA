@@ -28,7 +28,6 @@ def get_type_cron(cron):
 
 
 def is_valid_cron(cron):
-    print(get_type_cron(cron))  # test pour voir à quoi ressemble la variable cron
     if get_type_cron(cron) == ':':
         cron_parts = cron.split(':')
         if len(cron_parts) != 5:
@@ -61,12 +60,12 @@ def get_custom_cron(sched_part_type: str, cond_inf: int, cond_sup: int):
         schedule_part = input(
             f">Entrez une valeur numérique comprise entre {cond_inf} et {cond_sup} (inclus) pour '{sched_part_type}', ou entrez 'help' pour afficher les correspondances : ")
         if schedule_part.lower() == "help":
-            print(
+            click.echo(
                 "Minute (0 - 59)\nHeure (0 - 23)\nJour du mois (1 - 31)\nMois (1 - 12)\nJour de la semaine (0 - 6) (dimanche est 0)\nNe rien entrer pour ne pas préciser.")
         elif schedule_part == '' or cond_inf <= int(schedule_part) <= cond_sup:
             incorrect = False
         else:
-            print("Entrée invalide, réessayez S.V.P")
+            click.echo("Entrée invalide, réessayez S.V.P")
 
     return schedule_part + ':'
 
@@ -106,12 +105,12 @@ def schedule(idcron, nameofcron, tag, cron_schedule, custom_cron, date, server, 
         if not custom_cron:  # custom_cron n'est pas donné en argument
             click.echo("L'argument custom_cron doit être suivi d'un schedule de cron personnalisé.")
             custom_cron = concatenate_custom_cron()  # le custom_cron est donc demandé en input interactif
-            print("Custom cron schedule is :", custom_cron)
+            click.echo("Le custom cron schedule est :", custom_cron)
         else:
-            print("Custom cron schedule is :", custom_cron[0])
-            print(is_valid_cron(str(custom_cron)))
+            click.echo("Le custom cron schedule est :", custom_cron[0])
+            click.echo(is_valid_cron(str(custom_cron)))
     else:
-        print("Cron schedule is :", cron_schedule, "(not custom)")
+        click.echo("Le cron schedule est :", cron_schedule, "(non custom)")
 
 
 # Création de la commande delete

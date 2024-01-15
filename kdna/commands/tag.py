@@ -5,6 +5,8 @@ list: Commande pour lister les tags
 """
 
 import click
+
+from kdna.logger import logger
 from kdna.server.server_service import ServerService
 from kdna.parsing.parser import listServers
 from tabulate import tabulate
@@ -39,16 +41,20 @@ def add(project, new_tag, file_to_tag, server):
 
     if(connection_instance == None):
         click.echo("Le serveur n'a pas été trouvé")
+        logger.log("ERROR", "Le serveur n'a pas été trouvé")
         raise click.Abort()
 
     try:
         tags.add_tags(connection_instance.connection, project, new_tag, file_to_tag)
     except FileNotFoundError:
         click.echo("Le fichier n'a pas été trouvé")
+        logger.log("ERROR", "Le fichier n'a pas été trouvé")
     except PermissionError:
         click.echo("Vous n'avez pas les droits")
+        logger.log("ERROR", "Vous n'avez pas les droits")
     except Exception as e:
-        print("error = "+e.__str__())
+        click.echo("Une erreur est survenue = "+e.__str__())
+        logger.log("ERROR", "Une erreur est survenue = "+e.__str__()
 
 
 # Création de la commande delete
@@ -71,17 +77,22 @@ def delete(project, old_tag, server):
 
     if(connection_instance == None):
         click.echo("Le serveur n'a pas été trouvé")
+        logger.log("ERROR", "Le serveur n'a pas été trouvé")
         raise click.Abort()
 
     try:
         tags.delete_tags(connection_instance.connection, project, old_tag)
         click.echo(f"Le tag {old_tag} a été supprimé")
+        logger.log("INFO", f"Le tag {old_tag} a été supprimé")
     except FileNotFoundError:
         click.echo("Le fichier n'a pas été trouvé")
+        logger.log("ERROR", "Le fichier n'a pas été trouvé")
     except PermissionError:
         click.echo("Vous n'avez pas les droits")
+        logger.log("ERROR", "Vous n'avez pas les droits")
     except Exception as e:
-        print("error = "+e.__str__())
+        click.echo("Une erreur est survenue : "+e.__str__())
+        logger.log("ERROR", "Une erreur est survenue : "+e.__str__())
 
 # Création de la commande update
 @tag.command()
@@ -106,12 +117,16 @@ def update(project, old_tag, new_tag,server):
     try:
         tags.update_tags(connection_instance.connection, project, old_tag, new_tag)
         click.echo(f"Le tag {old_tag} a été modifié en {new_tag}")
+        logger.log("INFO", f"Le tag {old_tag} a été modifié en {new_tag}")
     except FileNotFoundError:
         click.echo("Le fichier n'a pas été trouvé")
+        logger.log("ERROR", "Le fichier n'a pas été trouvé")
     except PermissionError:
         click.echo("Vous n'avez pas les droits")
+        logger.log("ERROR", "Vous n'avez pas les droits")
     except Exception as e:
-        print("error = "+e.__str__())
+        click.echo("Une erreur est survenue : "+e.__str__())
+        logger.log("ERROR", "Une erreur est survenue : "+e.__str__()
 
 
 # Création de la commande list
@@ -138,7 +153,10 @@ def list(project, server):
             click.echo(f"{tag} : {backup}")
     except FileNotFoundError as exc:
         click.echo("Le fichier n'a pas été trouvé")
+        logger.log("ERROR", "Le fichier n'a pas été trouvé")
     except PermissionError as exc:
         click.echo("Vous n'avez pas les droits")
+        logger.log("ERROR", "Vous n'avez pas les droits")
     except Exception as e:
-        print("error = "+e.__str__())
+        click.echo("Une erreur est survenue : "+e.__str__())
+        logger.log("ERROR", "Une erreur est survenue : "+e.__str__()

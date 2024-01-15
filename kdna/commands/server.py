@@ -7,6 +7,9 @@ list : Commande pour lister les serveurs
 """
 
 import click
+
+from kdna.conf_utils.utils import Utils
+from kdna.logger import logger
 from kdna.server.server_service import ServerService
 from tabulate import tabulate
 from kdna.ssh.ssh_client import SSHClient
@@ -17,8 +20,14 @@ from kdna.conf_utils.utils import Utils
 def server():
     """Commande pour gérer les serveurs"""
 
-
 #! Création des commandes du groupe server
+
+# Création de la commande init
+@server.command()
+def init():
+    Utils.initialize_config_file()
+
+
 # Création de la commande add
 @server.command()
 @click.option('-i', '--id', default='', required=False, help="entrer l'id Ex: 1")
@@ -40,8 +49,7 @@ def add(id, alias, address, repo, port, encrypt):
             click.echo("Le dossier existe déjà")
         ServerService().create_server(id, address, repo, port, encrypt, alias)
     except Exception as e:
-        print(e)
-        print("An error occurred while connecting to this address.")
+        logger.log("ERROR", "An error occurred while connecting to this address." + e)
         return None
 
 
