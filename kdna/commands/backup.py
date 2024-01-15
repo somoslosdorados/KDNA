@@ -34,7 +34,8 @@ def backup():
 @click.argument('project', nargs=1, required=True)
 @click.argument('path', nargs=1, required=True)
 @click.argument('tag', nargs=1, required=True)
-def add(project, path, tag):
+@click.option('--prefix', required=False, help="generate an unique tag", type=bool)
+def add(project, path, tag, prefix=None):
     """
     Commande pour sauvegarder un fichier ou un dossier.\n
     Arguments obligatoires :\n
@@ -47,7 +48,6 @@ def add(project, path, tag):
 
     click.echo(f"Création de la backup dans {project} avec le tag {tag}")
     logger.log("INFO", f"Création de la backup dans {project} avec le tag {tag}")
-
     if len(listServers) == 0:
         click.echo("Pas de serveur trouvé dans le fichier de configuration.")
         logger.log("ERROR", "Pas de serveur trouvé dans le fichier de configuration.")
@@ -59,7 +59,8 @@ def add(project, path, tag):
         return
 
     uuid_backup = str(uuid.uuid4())
-    name_of_temp_backup = encrypt.package(path, uuid_backup, kdna_path, listServers[0].encrypt)
+    name_of_temp_backup = encrypt.package(
+        path, uuid_backup, kdna_path, listServers[0].encrypt)
     path_to_local_backup = os.path.join(kdna_path, name_of_temp_backup)
     path_to_remote_backup = os.path.join("kdna", project)
     serversCredential = listServers[0].credentials
@@ -74,9 +75,22 @@ def add(project, path, tag):
         click.echo("Création d'une connexion SSH : error2 = " + e.__str__())
         logger.log("ERROR", "Création d'une connexion SSH : error2 = " + e.__str__())
         return
+    
+    try:
+        if prefix is not None or prefix is True:
+            tag = tags.generate_tag_name(instance.connection, project, tag)
+    except PermissionError as exc:
+        click.echo("Génération du tag préfixé : vous n'avez pas les droits")
+        return
+    except Exception as e:
+        click.echo("Génération du tag préfixé : error" + e.__str__())
+        return
+
+    click.echo(f"Creating backup in {project} with {tag} tag")
 
     try:
-        upload_file(instance.connection, path_to_local_backup, path_to_remote_backup)
+        upload_file(instance.connection, path_to_local_backup,
+                    path_to_remote_backup)
     except FileNotFoundError as exc:
         click.echo("Envoi du fichier sur le serveur : le fichier n'a pas été trouvé")
         logger.log("ERROR", "Envoi du fichier sur le serveur : le fichier n'a pas été trouvé")
@@ -116,6 +130,7 @@ def add(project, path, tag):
         logger.log("ERROR", "Ajout du tag sur la backup : error" + e.__str__())
         return
 
+
 # Création de la commande delete
 @backup.command()
 @click.option('-t', 'pathtag', nargs=1, required=True, help="entrer le path du fichier et le tag [ path:tag ]")
@@ -125,6 +140,7 @@ def delete(pathtag):
 
 
 # Création de la commande list
+
 @backup.command()
 @click.argument('project_name', nargs=1, required=True)
 def list(project_name):
@@ -158,11 +174,9 @@ def list(project_name):
         click.echo(f'Projet {project_name} non trouvé')
         logger.log("ERROR", f'Projet {project_name} non trouvé')
     # else:
-        # click.echo('Backups : ' + str(backups))
-        # click.echo('Tags : ' + str(backups))
+        # click.echo('Backups : ' + str(backup
 
 
-# Création de la commande restore
 @backup.command()
 @click.option('-p', '--project', nargs=1, required=True,
               help="entrer le nom du projet à restaurer")
@@ -179,7 +193,6 @@ def restore(project, nametag, path):
         click.echo("Pas de serveur trouvé dans le fichier de configuration.")
         logger.log("ERROR", "Pas de serveur trouvé dans le fichier de configuration.")
         return
-
     try:
         instance = SSHClient(listServers[0].credentials).connect()
     except Exception as e:
@@ -198,7 +211,7 @@ def restore(project, nametag, path):
         logger.log("ERROR", "Erreur lors du téléchargement du fichier : "+e.__str__() + " " + remote_path)
 
     try:
-        restored_path = encrypt.restore(local_temp_path, path)
+        restored_path= encrypt.restore(local_temp_path, path)
     except Exception as e:
         click.echo("Erreur lors de la restauration du fichier : "+e.__str__())
         logger.log("ERROR", "Erreur lors de la restauration du fichier : "+e.__str__())

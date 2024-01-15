@@ -49,6 +49,7 @@ def add(id, alias, address, repo, port, encrypt):
             click.echo("Le dossier existe déjà")
         ServerService().create_server(id, address, repo, port, encrypt, alias)
     except Exception as e:
+        click.echo("Une erreur est survenue lors de la connexion au serveur.")
         logger.log("ERROR", "An error occurred while connecting to this address." + e)
         return None
 
@@ -90,8 +91,8 @@ def update(alias, new_repo, port, new_address, encrypt, new_alias):
         serverService.update_server(alias, new_repo, port, new_address, encrypt, new_alias)
     else:
         click.echo("Les arguments à mettre à jour doivent être renseignés.")
+        
 # Création de la commande list
-
 
 @server.command()
 def list():
