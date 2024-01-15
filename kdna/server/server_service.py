@@ -279,7 +279,7 @@ class ServerService:
             encrypt = True
             
         self.create_server(
-            "R12",  # Temp value in wait of the increment insertion in create_server
+            "",
             config_info["address"],
             config_info["credentials"],
             config_info["port"],
