@@ -17,20 +17,15 @@ class Utils:
         kdna_directory = os.path.join(os.path.expanduser("~"), ".kdna")
         config_file_path = Utils.get_config_file_path()
         config_content = "[servers]\n[auto-backups]\n"
-        # TODO: mettre les print dans les logs
         # Vérifier si le dossier kdna existe, sinon le créer
         if not os.path.exists(kdna_directory):
             os.makedirs(kdna_directory)
             logger.log("INFO", "Dossier créé: " + kdna_directory)
-            # print("Dossier créé:", kdna_directory)
-
         # Vérifier si le fichier kdna.conf existe, sinon le créer
         if not os.path.exists(config_file_path):
             with open(config_file_path, "w") as config_file:
                 config_file.write(config_content)
             logger.log("INFO", "Fichier créé: " + config_file_path)
-            # print("Fichier créé:", config_file_path)
-
         parser.parseConfig()
 
     @staticmethod
@@ -48,14 +43,6 @@ class Utils:
         kdna_directory = os.path.join(home_directory, ".kdna")
         config_file_path = os.path.join(kdna_directory, Utils.config_file)
         return config_file_path
-
-    @staticmethod
-    def read_all():
-        """Read all the configurations"""
-        # Fonction pour afficher le fichier de configuration
-        lines = Utils.read_file_lines(Utils.config_file)
-        for line in lines:
-            print(line.strip())
 
     @staticmethod
     def read_file_lines(filename):

@@ -1,4 +1,5 @@
-from fabric import Connection  # type: ignore
+from fabric import Connection
+from kdna.logger.logger import log  # type: ignore
 from kdna.tags.tags import get_file_name_by_tag
 from kdna.ssh.ssh_client import SSHClient
 
@@ -107,4 +108,5 @@ def find_all_file(connection: Connection, tag: str,verbose=False) -> list:
 
     if (verbose):
         print(message)
+        log("info", message)
     return paths_list

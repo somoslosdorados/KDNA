@@ -9,6 +9,7 @@ list : Commande pour lister les auto-backups
 
 import click
 from tabulate import tabulate
+from kdna.logger.logger import log
 
 from kdna.server.autobackup_service import AutoBackupService
 
@@ -28,7 +29,6 @@ def get_type_cron(cron):
 
 
 def is_valid_cron(cron):
-    print(get_type_cron(cron))  # test pour voir à quoi ressemble la variable cron
     if get_type_cron(cron) == ':':
         cron_parts = cron.split(':')
         if len(cron_parts) != 5:
@@ -107,11 +107,14 @@ def schedule(idcron, nameofcron, tag, cron_schedule, custom_cron, date, server, 
             click.echo("L'argument custom_cron doit être suivi d'un schedule de cron personnalisé.")
             custom_cron = concatenate_custom_cron()  # le custom_cron est donc demandé en input interactif
             print("Custom cron schedule is :", custom_cron)
+            log("info", "Custom cron schedule is :" + custom_cron)
         else:
             print("Custom cron schedule is :", custom_cron[0])
             print(is_valid_cron(str(custom_cron)))
+            log("info", "Custom cron schedule is :" + custom_cron[0])
     else:
         print("Cron schedule is :", cron_schedule, "(not custom)")
+        log ("info", "Cron schedule is :" + cron_schedule + "(not custom)")
 
 
 # Création de la commande delete

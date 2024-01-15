@@ -60,15 +60,10 @@ def test_read_file_lines():
         '[auto-backups]'
     ]
     lines2 = Utils.read_file_lines(config_file)
-    print(lines2)
     assert lines == lines2
 
 @pytest.mark.skip(reason="Not implemented yet")
 def test_write_file_lines():
-    pass
-    
-@pytest.mark.skip(reason="Not implemented yet")
-def test_read_all():
     pass
 
 @pytest.mark.skip(reason="Not implemented yet")

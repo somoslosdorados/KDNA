@@ -83,19 +83,6 @@ Note that you are not obliged to modify all the fields in your line concerning t
 
 In addition, the server id cannot be modified; it may be generated automatically later.
 
-4. #### Read
-
-| Signature : |  alias_server  | 
-| :---------- | -------------: |
-| Type :      |   String       |
-| Rule :     |   Mandatory    |
-
-
-If you want to display a server by its alias, you can use the following command:
-```
-serverService.find_by_alias("SS4")
-```
-
 ### Auto-Backup
 
 First of all, instantiate the server service like this in `__main__.py` :
@@ -141,20 +128,6 @@ autoBackupService.update_auto_backup("9", new_frequency="daily", new_timestamp="
 Please note that you are not obliged to change all the fields in your line concerning the auto-backup you wish to modify. For example, you can only change the name by specifying `new_name` in addition to the obligatory `id` in the signature of your update.
 
 In addition, the id linked to the server cannot be modified, as the back-up is linked to it.
-
-4. #### Read
-
-| Signature : |  id_backup  | 
-| :---------- | ----------: |
-| Type :      |   String    |
-| Rule :     | Mandatory |
-
-
-If you want to display an auto-backup by its id, you can use the following command:
-
-``
-autoBackupService.find_by_id("9")
-```
 
 ### Read the entire Auto-Backup & Server section
 

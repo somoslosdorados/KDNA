@@ -19,7 +19,6 @@ def encrypt():
 def keygen(path):
     """Command to generate encryption key
     :param path: option to specify the path of the key"""
-    print(path)
     if path == "":
         output_path = generate_key()
     else:
