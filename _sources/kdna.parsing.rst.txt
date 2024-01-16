@@ -1,0 +1,37 @@
+kdna.parsing package
+====================
+
+Submodules
+----------
+
+kdna.parsing.autobackup module
+------------------------------
+
+.. automodule:: kdna.parsing.autobackup
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+kdna.parsing.parser module
+--------------------------
+
+.. automodule:: kdna.parsing.parser
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+kdna.parsing.server module
+--------------------------
+
+.. automodule:: kdna.parsing.server
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: kdna.parsing
+   :members:
+   :undoc-members:
+   :show-inheritance:

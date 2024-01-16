@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>kdna.server.server_service &mdash; kdna 1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=29a6c3e3"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            kdna
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">kdna</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">kdna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">kdna.server.server_service</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for kdna.server.server_service</h1><div class="highlight"><pre>
+<span></span><span class="c1"># mypy: ignore-errors</span>
+<span class="sd">&quot;&quot;&quot;This module contains the ServerService class.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">paramiko</span>
+<span class="kn">from</span> <span class="nn">kdna.conf_utils.utils</span> <span class="kn">import</span> <span class="n">Utils</span>
+<span class="kn">from</span> <span class="nn">kdna.logger.logger</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">kdna.server.server</span> <span class="kn">import</span> <span class="n">Server</span>
+<span class="kn">from</span> <span class="nn">kdna.ssh.ssh_client</span> <span class="kn">import</span> <span class="n">SSHClient</span>
+
+
+<div class="viewcode-block" id="array_to_dic">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server_service.array_to_dic">[docs]</a>
+<span class="k">def</span> <span class="nf">array_to_dic</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+        <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="n">array</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+        <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">array</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+        <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="n">array</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+        <span class="s2">&quot;alias&quot;</span><span class="p">:</span> <span class="n">array</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="create_dic_server">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server_service.create_dic_server">[docs]</a>
+<span class="k">def</span> <span class="nf">create_dic_server</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a dictionnary with the data of the server&quot;&quot;&quot;</span>
+    <span class="n">li</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ligne</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">dic</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">ligne</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+            <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="n">ligne</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+            <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">ligne</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+            <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="n">ligne</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+            <span class="s2">&quot;encrypt&quot;</span><span class="p">:</span> <span class="n">ligne</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+            <span class="s2">&quot;alias&quot;</span><span class="p">:</span> <span class="n">ligne</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+        <span class="p">}</span>
+        <span class="n">li</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">li</span></div>
+
+
+
+<div class="viewcode-block" id="ServerService">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server_service.ServerService">[docs]</a>
+<span class="k">class</span> <span class="nc">ServerService</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class contains the methods to manage the servers.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="ServerService.get_max_id">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server_service.ServerService.get_max_id">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_max_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the maximum ID among the servers&quot;&quot;&quot;</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_all</span><span class="p">()</span>
+        <span class="n">max_id</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">server</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">server</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">max_id</span><span class="p">:</span>
+                <span class="n">max_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">server</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">max_id</span></div>
+
+
+<div class="viewcode-block" id="ServerService.find_all">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server_service.ServerService.find_all">[docs]</a>
+    <span class="k">def</span> <span class="nf">find_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find all the servers in the config file&quot;&quot;&quot;</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">read_file_lines</span><span class="p">(</span><span class="n">Utils</span><span class="o">.</span><span class="n">get_config_file_path</span><span class="p">())</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">find_servers_index</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">index_autobackup</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">find_auto_backups_index</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">index_autobackup</span><span class="p">]]</span>
+        <span class="n">li</span> <span class="o">=</span> <span class="n">create_dic_server</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">li</span></div>
+
+
+<div class="viewcode-block" id="ServerService.find_by_alias">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server_service.ServerService.find_by_alias">[docs]</a>
+    <span class="k">def</span> <span class="nf">find_by_alias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alias</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find a server by his alias&quot;&quot;&quot;</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">read_file_lines</span><span class="p">(</span><span class="n">Utils</span><span class="o">.</span><span class="n">get_config_file_path</span><span class="p">())</span>
+        <span class="n">index_servers</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">find_servers_index</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="n">index_auto_backups</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">find_auto_backups_index</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">read_file_lines</span><span class="p">(</span><span class="n">Utils</span><span class="o">.</span><span class="n">get_config_file_path</span><span class="p">())</span>
+        <span class="n">index_servers</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">find_servers_index</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="n">index_auto_backups</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">find_auto_backups_index</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+        <span class="n">existing_aliases</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_existing_aliases</span><span class="p">(</span>
+            <span class="n">lines</span><span class="p">,</span> <span class="n">index_servers</span><span class="p">,</span> <span class="n">index_auto_backups</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">alias</span> <span class="ow">in</span> <span class="n">existing_aliases</span><span class="p">:</span>
+            <span class="n">line_to_print</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_line_to_delete</span><span class="p">(</span>
+                <span class="n">lines</span><span class="p">,</span> <span class="n">index_servers</span><span class="p">,</span> <span class="n">alias</span><span class="p">,</span> <span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+            <span class="c1"># print(lines[line_to_print].strip())</span>
+            <span class="n">data_server</span> <span class="o">=</span> <span class="n">array_to_dic</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">line_to_print</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">))</span>
+            <span class="n">server</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="n">data_server</span><span class="p">[</span><span class="s2">&quot;host&quot;</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">server</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Erreur : Aucun serveur trouvé avec l</span><span class="se">\&#39;</span><span class="s1">alias &quot;</span><span class="si">{</span><span class="n">alias</span><span class="si">}</span><span class="s1">&quot; dans la &#39;</span>
+                <span class="sa">f</span><span class="s2">&quot;section [servers].&quot;</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ServerService.create_server">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server_service.ServerService.create_server">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_server</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">encrypt</span><span class="p">,</span> <span class="n">alias</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Commande pour ajouter un serveur.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">connection</span> <span class="o">=</span> <span class="n">SSHClient</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+            <span class="n">connection</span><span class="o">.</span><span class="n">sendCommand</span><span class="p">(</span><span class="s2">&quot;ls &gt; /dev/null&quot;</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">connection</span><span class="o">.</span><span class="n">sendCommand</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;test ! -d </span><span class="si">{</span><span class="n">dst</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">log</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;Le dossier existe déjà&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Le dossier existe déjà&quot;</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;An error occurred while connecting to this address.&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;An error occurred while connecting to this address.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># On ouvre le fichier en mode lecture</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">read_file_lines</span><span class="p">(</span><span class="n">Utils</span><span class="o">.</span><span class="n">get_config_file_path</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error : configuration file not found.&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;Error : configuration file not found.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># On cherche la ligne contenant [servers]</span>
+        <span class="n">index_servers</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">find_servers_index</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="n">index_auto_backups</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">find_auto_backups_index</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">index_servers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">existing_servers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_existing_servers</span><span class="p">(</span>
+                <span class="n">lines</span><span class="p">,</span> <span class="n">index_servers</span><span class="p">,</span> <span class="n">index_auto_backups</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span> <span class="ow">in</span> <span class="n">existing_servers</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Erreur : L</span><span class="se">\&#39;</span><span class="s1">id du serveur &quot;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s1">&quot; existe déjà dans la &#39;</span>
+                    <span class="sa">f</span><span class="s2">&quot;section [servers].&quot;</span>
+                <span class="p">)</span>
+                <span class="n">log</span><span class="p">(</span>
+                    <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Erreur : L&#39;id du serveur &quot;</span> <span class="o">+</span> <span class="nb">id</span> <span class="o">+</span> <span class="s2">&quot; existe déjà dans la&quot;</span>
+                    <span class="s2">&quot; section [servers].&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="k">if</span> <span class="nb">id</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="nb">id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_max_id</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
+
+            <span class="c1"># On vérifie de l&#39;unicité de l&#39;alias</span>
+            <span class="k">if</span> <span class="n">alias</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">existing_aliases</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_existing_aliases</span><span class="p">(</span>
+                    <span class="n">lines</span><span class="p">,</span> <span class="n">index_servers</span><span class="p">,</span> <span class="n">index_auto_backups</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">alias</span> <span class="ow">in</span> <span class="n">existing_aliases</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Erreur : L&#39;alias &quot;</span> <span class="o">+</span> <span class="n">alias</span> <span class="o">+</span> <span class="s2">&quot; existe déjà dans la section [&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;servers].&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">log</span><span class="p">(</span>
+                        <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;Erreur : L&#39;alias &quot;</span> <span class="o">+</span> <span class="n">alias</span> <span class="o">+</span> <span class="s2">&quot; existe déjà dans la &quot;</span>
+                        <span class="s2">&quot;section [servers].&quot;</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="k">return</span>
+
+            <span class="k">if</span> <span class="n">encrypt</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s2">&quot;Erreur : La valeur du paramètre encrypt doit être True ou False.&quot;</span>
+                <span class="p">)</span>
+                <span class="n">log</span><span class="p">(</span>
+                    <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Erreur : La valeur du paramètre encrypt doit être &quot;</span>
+                    <span class="s2">&quot;True ou False.&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">connection</span><span class="o">.</span><span class="n">sendCommand</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mkdir -p </span><span class="si">{</span><span class="n">dst</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error: error while creating host directory.&quot;</span><span class="p">)</span>
+                <span class="n">log</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;Error: error while creating host directory.&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Construction de la nouvelle ligne</span>
+            <span class="n">new_line</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">dst</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">encrypt</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">alias</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+            <span class="c1"># Ajout de la ligne seulement si l&#39;id_server et l&#39;alias sont uniques</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index_servers</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">new_line</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">Utils</span><span class="o">.</span><span class="n">get_config_file_path</span><span class="p">(),</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+            <span class="n">confirmation_message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Le server avec l&#39;id </span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="k">if</span> <span class="n">alias</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">confirmation_message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;et l</span><span class="se">\&#39;</span><span class="s1">alias &quot;</span><span class="si">{</span><span class="n">alias</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+            <span class="n">confirmation_message</span> <span class="o">+=</span> <span class="s2">&quot; a été ajouté dans la section [servers].&quot;</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">confirmation_message</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="n">confirmation_message</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erreur : Section [servers] non trouvé dans le fichier.&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;Erreur : Section [servers] non trouvé dans le fichier.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ServerService.delete_server">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server_service.ServerService.delete_server">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_server</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">by_alias</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete a server in the config file&quot;&quot;&quot;</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">read_file_lines</span><span class="p">(</span><span class="n">Utils</span><span class="o">.</span><span class="n">get_config_file_path</span><span class="p">())</span>
+        <span class="n">index_servers</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">find_servers_index</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="n">element_type</span> <span class="o">=</span> <span class="s2">&quot;alias&quot;</span> <span class="k">if</span> <span class="n">by_alias</span> <span class="k">else</span> <span class="s2">&quot;id&quot;</span>
+        <span class="k">if</span> <span class="n">index_servers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erreur : Section [servers] non trouvée dans le fichier.&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;Erreur : Section [servers] non trouvée dans le fichier.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">line_to_delete</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_line_to_delete</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">index_servers</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">by_alias</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">line_to_delete</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">deleted_line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">line_to_delete</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">line_elements</span> <span class="o">=</span> <span class="n">deleted_line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+
+            <span class="c1"># On vérifie que la ligne contient au moins 4 éléments et qu&#39;elle n&#39;est pas vide</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line_elements</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">4</span> <span class="ow">and</span> <span class="n">deleted_line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                <span class="c1"># On supprime la ligne</span>
+                <span class="n">Utils</span><span class="o">.</span><span class="n">delete_line</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">line_to_delete</span><span class="p">)</span>
+                <span class="n">Utils</span><span class="o">.</span><span class="n">write_file_lines</span><span class="p">(</span><span class="n">Utils</span><span class="o">.</span><span class="n">get_config_file_path</span><span class="p">(),</span> <span class="n">lines</span><span class="p">)</span>
+                <span class="c1"># On affiche un message de confirmation</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;L&#39;élément avec l&#39;</span><span class="si">{</span><span class="n">element_type</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2"> a été supprimé de la &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;section [servers].&quot;</span>
+                <span class="p">)</span>
+                <span class="n">log</span><span class="p">(</span>
+                    <span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;L&#39;élément avec l&#39;&quot;</span> <span class="o">+</span> <span class="n">element_type</span> <span class="o">+</span> <span class="nb">id</span> <span class="o">+</span> <span class="s2">&quot;a été &quot;</span>
+                    <span class="s2">&quot;supprimé de la section [servers].&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="c1"># Sinon on affiche un message d&#39;erreur</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Erreur : Aucun élément trouvé avec l</span><span class="se">\&#39;</span><span class="si">{</span><span class="n">element_type</span><span class="si">}</span><span class="s1"> &quot;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s1">&quot; dans &#39;</span>
+                    <span class="sa">f</span><span class="s2">&quot;la section [servers].&quot;</span>
+                <span class="p">)</span>
+                <span class="n">log</span><span class="p">(</span>
+                    <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Erreur : Aucun élément trouvé avec l&#39;&quot;</span>
+                    <span class="o">+</span> <span class="n">element_type</span>
+                    <span class="o">+</span> <span class="nb">id</span>
+                    <span class="o">+</span> <span class="s2">&quot;dans la section [servers].&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="c1"># Sinon on affiche un message d&#39;erreur</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">by_alias</span> <span class="ow">and</span> <span class="nb">id</span> <span class="o">==</span> <span class="s2">&quot;None&quot;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Erreur : Aucun élément trouvé avec l</span><span class="se">\&#39;</span><span class="si">{</span><span class="n">element_type</span><span class="si">}</span><span class="s1"> &quot;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s1">&quot; dans &#39;</span>
+                    <span class="sa">f</span><span class="s2">&quot;la section [servers].&quot;</span>
+                <span class="p">)</span>
+                <span class="n">log</span><span class="p">(</span>
+                    <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Erreur : Aucun élément trouvé avec l&#39;&quot;</span>
+                    <span class="o">+</span> <span class="n">element_type</span>
+                    <span class="o">+</span> <span class="nb">id</span>
+                    <span class="o">+</span> <span class="s2">&quot;dans la section [servers].&quot;</span><span class="p">,</span>
+                <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ServerService.update_server">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server_service.ServerService.update_server">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_server</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">alias_to_update</span><span class="p">,</span>
+        <span class="n">new_path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">new_port</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">new_address</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">new_encrypt</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">new_alias</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update a server in the config file&quot;&quot;&quot;</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">read_file_lines</span><span class="p">(</span><span class="n">Utils</span><span class="o">.</span><span class="n">get_config_file_path</span><span class="p">())</span>
+
+        <span class="n">index_servers</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">find_servers_index</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">index_servers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># On cherche la ligne à mettre à jour</span>
+            <span class="n">line_to_update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_line_to_update</span><span class="p">(</span>
+                <span class="n">lines</span><span class="p">,</span> <span class="n">index_servers</span><span class="p">,</span> <span class="n">alias_to_update</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Si la ligne à mettre à jour a été trouvée, on la met à jour</span>
+            <span class="k">if</span> <span class="n">line_to_update</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Récupérer les informations existantes</span>
+                <span class="n">existing_line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">line_to_update</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+                <span class="n">existing_id</span> <span class="o">=</span> <span class="n">existing_line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">existing_address</span> <span class="o">=</span> <span class="n">existing_line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">existing_path</span> <span class="o">=</span> <span class="n">existing_line</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">existing_port</span> <span class="o">=</span> <span class="n">existing_line</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">existing_encrypt</span> <span class="o">=</span> <span class="n">existing_line</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">existing_alias</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">existing_line</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">existing_line</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">5</span> <span class="k">else</span> <span class="kc">None</span>
+                <span class="p">)</span>
+
+                <span class="c1"># Mettre à jour les informations si de nouvelles valeurs sont fournies</span>
+                <span class="n">new_address</span> <span class="o">=</span> <span class="n">new_address</span> <span class="k">if</span> <span class="n">new_address</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="n">existing_address</span>
+                <span class="n">new_path</span> <span class="o">=</span> <span class="n">new_path</span> <span class="k">if</span> <span class="n">new_path</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="n">existing_path</span>
+                <span class="n">new_port</span> <span class="o">=</span> <span class="n">new_port</span> <span class="k">if</span> <span class="n">new_port</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="n">existing_port</span>
+                <span class="n">new_alias</span> <span class="o">=</span> <span class="n">new_alias</span> <span class="k">if</span> <span class="n">new_alias</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="n">existing_alias</span>
+                <span class="n">new_encrypt</span> <span class="o">=</span> <span class="n">new_encrypt</span> <span class="k">if</span> <span class="n">new_encrypt</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="n">existing_encrypt</span>
+
+                <span class="c1"># Vérifier si le nouvel alias  existe déjà</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">new_alias</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                    <span class="ow">and</span> <span class="n">new_alias</span> <span class="o">!=</span> <span class="n">existing_alias</span>
+                    <span class="ow">and</span> <span class="n">new_alias</span>
+                    <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_existing_aliases</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">index_servers</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">))</span>
+                <span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="s2">&quot;Erreur : Le nouvel alias existe déjà dans la liste des serveurs.&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">log</span><span class="p">(</span>
+                        <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;Erreur : Le nouvel alias existe déjà dans la liste&quot;</span>
+                        <span class="s2">&quot; des serveurs.&quot;</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="k">return</span>
+
+                <span class="c1"># Construire la nouvelle ligne mise à jour</span>
+                <span class="n">updated_line</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">existing_id</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">new_address</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">new_path</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">new_port</span><span class="si">}</span><span class="s2">, &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">new_encrypt</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">new_alias</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+                <span class="c1"># Mettre à jour la ligne</span>
+                <span class="n">lines</span><span class="p">[</span><span class="n">line_to_update</span><span class="p">]</span> <span class="o">=</span> <span class="n">updated_line</span>
+
+                <span class="c1"># Écrire les lignes mises à jour dans le fichier</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">Utils</span><span class="o">.</span><span class="n">get_config_file_path</span><span class="p">(),</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Les informations du serveur avec l</span><span class="se">\&#39;</span><span class="s1">alias &quot;</span><span class="si">{</span><span class="n">alias_to_update</span><span class="si">}</span><span class="s1">&quot; ont été &#39;</span>
+                    <span class="sa">f</span><span class="s2">&quot;mises à jour.&quot;</span>
+                <span class="p">)</span>
+                <span class="n">log</span><span class="p">(</span>
+                    <span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Les informations du serveur avec l&#39;alias &quot;</span>
+                    <span class="o">+</span> <span class="n">alias_to_update</span>
+                    <span class="o">+</span> <span class="s2">&quot; ont été mises à jour.&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="c1"># Sinon, afficher un message d&#39;erreur</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Erreur : Aucun serveur trouvé avec l</span><span class="se">\&#39;</span><span class="s1">alias &quot;</span><span class="si">{</span><span class="n">alias_to_update</span><span class="si">}</span><span class="s1">&quot; dans la &#39;</span>
+                    <span class="sa">f</span><span class="s2">&quot;section [servers].&quot;</span>
+                <span class="p">)</span>
+                <span class="n">log</span><span class="p">(</span>
+                    <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Erreur : Aucun serveur trouvé avec l&#39;alias &quot;</span>
+                    <span class="o">+</span> <span class="n">alias_to_update</span>
+                    <span class="o">+</span> <span class="s2">&quot; dans la section [servers].&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="c1"># Sinon, afficher un message d&#39;erreur</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erreur : Section [servers] non trouvée dans le fichier.&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;Erreur : Section [servers] non trouvée dans le fichier.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ServerService.import_server">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server_service.ServerService.import_server">[docs]</a>
+    <span class="k">def</span> <span class="nf">import_server</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Import server from ~/.ssh/config file&quot;&quot;&quot;</span>
+        <span class="n">hosts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_ssh_config_hosts</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">hosts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erreur : Fichier de configuration SSH non trouvé.&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;Erreur : Fichier de configuration SSH non trouvé.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;------------------------------&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Available hosts:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">host</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">hosts</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;---------------&quot;</span><span class="p">)</span>
+        <span class="n">choice</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Select a host number: &quot;</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;------------------------------&quot;</span><span class="p">)</span>
+        <span class="n">config_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ssh_config_info</span><span class="p">(</span><span class="n">hosts</span><span class="p">[</span><span class="n">choice</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">config_info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erreur : Fichier de configuration SSH non trouvé.&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;Erreur : Fichier de configuration SSH non trouvé.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">encrypt</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Encrypt the backups (Y/n): &quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">encrypt</span> <span class="o">==</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span>
+            <span class="n">encrypt</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">encrypt</span> <span class="o">==</span> <span class="s2">&quot;n&quot;</span><span class="p">:</span>
+            <span class="n">encrypt</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">encrypt</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">dst_path</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the destination path of your backup on the remote : &quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_server</span><span class="p">(</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">config_info</span><span class="p">[</span><span class="s2">&quot;address&quot;</span><span class="p">],</span>
+            <span class="n">dst_path</span><span class="p">,</span>
+            <span class="n">config_info</span><span class="p">[</span><span class="s2">&quot;port&quot;</span><span class="p">],</span>
+            <span class="n">encrypt</span><span class="p">,</span>
+            <span class="n">config_info</span><span class="p">[</span><span class="s2">&quot;alias&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="ServerService.extract_existing_servers">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server_service.ServerService.extract_existing_servers">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">extract_existing_servers</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">index_servers</span><span class="p">,</span> <span class="n">index_auto_backups</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract the id of th server&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="n">index_servers</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">index_auto_backups</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mi">4</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ServerService.extract_existing_aliases">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server_service.ServerService.extract_existing_aliases">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">extract_existing_aliases</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">index_servers</span><span class="p">,</span> <span class="n">index_auto_backups</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract the aliases in the server section&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mi">6</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="n">index_servers</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">index_auto_backups</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ServerService.find_line_to_delete">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server_service.ServerService.find_line_to_delete">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">find_line_to_delete</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">index_servers</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">by_alias</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find the line to delete&quot;&quot;&quot;</span>
+        <span class="n">index_auto_backups</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">find_auto_backups_index</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">index_auto_backups</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">index_auto_backups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="n">server_lines</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">index_servers</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">index_auto_backups</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">server_lines</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mi">6</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                <span class="n">line_id</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">line_alias</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mi">6</span> <span class="k">else</span> <span class="kc">None</span>
+                <span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">by_alias</span> <span class="ow">and</span> <span class="n">line_alias</span> <span class="o">==</span> <span class="nb">id</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">by_alias</span> <span class="ow">and</span> <span class="n">line_id</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">i</span> <span class="o">+</span> <span class="n">index_servers</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Erreur : Aucun élément trouvé avec &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;l&#39;</span><span class="si">{</span><span class="s1">&#39;alias&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">by_alias</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;id&#39;</span><span class="si">}</span><span class="s2"> </span><span class="se">\&quot;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> dans la section [servers].&quot;</span>
+        <span class="p">)</span>
+        <span class="n">log</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;Erreur : Aucun élément trouvé dans la section [servers].&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="ServerService.find_line_to_update">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server_service.ServerService.find_line_to_update">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">find_line_to_update</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">index_servers</span><span class="p">,</span> <span class="n">alias_to_update</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find the line to update&quot;&quot;&quot;</span>
+        <span class="n">index_auto_backups</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">find_auto_backups_index</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">index_auto_backups</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">index_auto_backups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="n">server_lines</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">index_servers</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">index_auto_backups</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">server_lines</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mi">6</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">line_alias</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mi">6</span> <span class="k">else</span> <span class="kc">None</span>
+                <span class="p">)</span>
+
+                <span class="c1"># Si l&#39;alias correspond à celui à mettre à jour</span>
+                <span class="k">if</span> <span class="n">line_alias</span> <span class="o">==</span> <span class="n">alias_to_update</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">i</span> <span class="o">+</span> <span class="n">index_servers</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="ServerService.list_ssh_config_hosts">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server_service.ServerService.list_ssh_config_hosts">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">list_ssh_config_hosts</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List all hosts in the SSH config file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~/.ssh/config&quot;</span><span class="p">)):</span>
+            <span class="n">config_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~/.ssh/config&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">config_file</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">[]</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">lines</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+            <span class="n">hosts</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Host &quot;</span><span class="p">)]</span>
+            <span class="k">return</span> <span class="n">hosts</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="ServerService.get_ssh_config_info">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server_service.ServerService.get_ssh_config_info">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_ssh_config_info</span><span class="p">(</span><span class="n">host</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the hostname and username from the SSH config file.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~/.ssh/config&quot;</span><span class="p">)):</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">SSHConfig</span><span class="p">()</span>
+            <span class="n">user_config_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~/.ssh/config&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">user_config_file</span><span class="p">):</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">user_config_file</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">config</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">cfg</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;alias&quot;</span><span class="p">:</span> <span class="n">host</span><span class="p">,</span> <span class="s2">&quot;address&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span> <span class="s2">&quot;credentials&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+            <span class="n">user_config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;hostname&quot;</span> <span class="ow">in</span> <span class="n">user_config</span><span class="p">:</span>
+                <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;address&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_config</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;@&quot;</span> <span class="o">+</span> <span class="n">user_config</span><span class="p">[</span><span class="s2">&quot;hostname&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">&quot;identityfile&quot;</span> <span class="ow">in</span> <span class="n">user_config</span><span class="p">:</span>
+                <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;credentials&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_config</span><span class="p">[</span><span class="s2">&quot;identityfile&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~/.ssh/id_rsa&quot;</span><span class="p">)):</span>
+                    <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;credentials&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~/.ssh/id_rsa&quot;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="s2">&quot;You dosent&#39;s have IdentityFile field in your ssh config file, we use the&quot;</span>
+                        <span class="s2">&quot; default key (id_rsa).&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="s2">&quot;Error: You dosent&#39;s have IdentityFile field in your ssh config file, and&quot;</span>
+                        <span class="s2">&quot; no default key (id_rsa).&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">log</span><span class="p">(</span>
+                    <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Erreur : Aucune champ &#39;identityfile&#39; trouvée dans le&quot;</span>
+                    <span class="s2">&quot; fichier de configuration.&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">log</span><span class="p">(</span>
+                    <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Erreur : Aucune champ &#39;identityfile&#39; trouvée dans le&quot;</span>
+                    <span class="s2">&quot; fichier de configuration.&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="s2">&quot;port&quot;</span> <span class="ow">in</span> <span class="n">user_config</span><span class="p">:</span>
+                <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;port&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_config</span><span class="p">[</span><span class="s2">&quot;port&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">cfg</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, mathias.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

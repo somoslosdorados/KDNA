@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>kdna.parsing package &mdash; kdna 1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=29a6c3e3"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="kdna.read_backups package" href="kdna.read_backups.html" />
+    <link rel="prev" title="kdna.logger package" href="kdna.logger.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            kdna
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">kdna</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="kdna.html">kdna package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="kdna.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="kdna.commands.html">kdna.commands package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kdna.conf_utils.html">kdna.conf_utils package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kdna.connexion_ssh.html">kdna.connexion_ssh package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kdna.encrypt.html">kdna.encrypt package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kdna.logger.html">kdna.logger package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">kdna.parsing package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kdna.read_backups.html">kdna.read_backups package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kdna.server.html">kdna.server package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kdna.ssh.html">kdna.ssh package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kdna.tags.html">kdna.tags package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="kdna.html#module-kdna">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">kdna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">kdna</a></li>
+          <li class="breadcrumb-item"><a href="kdna.html">kdna package</a></li>
+      <li class="breadcrumb-item active">kdna.parsing package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/kdna.parsing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="kdna-parsing-package">
+<h1>kdna.parsing package<a class="headerlink" href="#kdna-parsing-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-kdna.parsing.autobackup">
+<span id="kdna-parsing-autobackup-module"></span><h2>kdna.parsing.autobackup module<a class="headerlink" href="#module-kdna.parsing.autobackup" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="kdna.parsing.autobackup.AutoBackup">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kdna.parsing.autobackup.</span></span><span class="sig-name descname"><span class="pre">AutoBackup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_backup</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_server</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kdna/parsing/autobackup.html#AutoBackup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kdna.parsing.autobackup.AutoBackup" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Classe definissant un backup automatique
+id_backup: str
+frequency: int
+alias: str
+timestamp: int
+id_server: str
+path: str</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kdna.parsing.autobackup.parse">
+<span class="sig-prename descclassname"><span class="pre">kdna.parsing.autobackup.</span></span><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kdna/parsing/autobackup.html#parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kdna.parsing.autobackup.parse" title="Link to this definition"></a></dt>
+<dd><p>Methode permettant de parser un backup automatique</p>
+</dd></dl>
+
+</section>
+<section id="module-kdna.parsing.parser">
+<span id="kdna-parsing-parser-module"></span><h2>kdna.parsing.parser module<a class="headerlink" href="#module-kdna.parsing.parser" title="Link to this heading"></a></h2>
+<p>“Module permettant de parser le fichier de configuration kdna.conf</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="kdna.parsing.parser.cb_autobackup_parser">
+<span class="sig-prename descclassname"><span class="pre">kdna.parsing.parser.</span></span><span class="sig-name descname"><span class="pre">cb_autobackup_parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kdna/parsing/parser.html#cb_autobackup_parser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kdna.parsing.parser.cb_autobackup_parser" title="Link to this definition"></a></dt>
+<dd><p>Callback permettant de parser un backup automatique</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kdna.parsing.parser.cb_server_parser">
+<span class="sig-prename descclassname"><span class="pre">kdna.parsing.parser.</span></span><span class="sig-name descname"><span class="pre">cb_server_parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kdna/parsing/parser.html#cb_server_parser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kdna.parsing.parser.cb_server_parser" title="Link to this definition"></a></dt>
+<dd><p>Callback permettant de parser un serveur</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kdna.parsing.parser.line_is_header">
+<span class="sig-prename descclassname"><span class="pre">kdna.parsing.parser.</span></span><span class="sig-name descname"><span class="pre">line_is_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kdna/parsing/parser.html#line_is_header"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kdna.parsing.parser.line_is_header" title="Link to this definition"></a></dt>
+<dd><p>Verifie si la ligne est un header</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kdna.parsing.parser.parseConfig">
+<span class="sig-prename descclassname"><span class="pre">kdna.parsing.parser.</span></span><span class="sig-name descname"><span class="pre">parseConfig</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kdna/parsing/parser.html#parseConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kdna.parsing.parser.parseConfig" title="Link to this definition"></a></dt>
+<dd><p>Parse le fichier de configuration
+Repère les headers et les lignes associées
+Applique le bon parser en fonction du header si il est présent dans le dictionnaire
+parsers_strategy</p>
+</dd></dl>
+
+</section>
+<section id="module-kdna.parsing.server">
+<span id="kdna-parsing-server-module"></span><h2>kdna.parsing.server module<a class="headerlink" href="#module-kdna.parsing.server" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="kdna.parsing.server.Server">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kdna.parsing.server.</span></span><span class="sig-name descname"><span class="pre">Server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_server</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encrypt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kdna/parsing/server.html#Server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kdna.parsing.server.Server" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Classe definissant un serveur
+id_server: str
+credentials: str
+port: int
+alias: str</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kdna.parsing.server.parseServer">
+<span class="sig-prename descclassname"><span class="pre">kdna.parsing.server.</span></span><span class="sig-name descname"><span class="pre">parseServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kdna/parsing/server.html#parseServer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kdna.parsing.server.parseServer" title="Link to this definition"></a></dt>
+<dd><p>Methode permettant de parser un serveur</p>
+</dd></dl>
+
+</section>
+<section id="module-kdna.parsing">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-kdna.parsing" title="Link to this heading"></a></h2>
+<p>Parsing module for kdna</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="kdna.logger.html" class="btn btn-neutral float-left" title="kdna.logger package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kdna.read_backups.html" class="btn btn-neutral float-right" title="kdna.read_backups package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, mathias.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

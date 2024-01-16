@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>kdna.server.autobackup_service &mdash; kdna 1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=29a6c3e3"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            kdna
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">kdna</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">kdna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">kdna.server.autobackup_service</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for kdna.server.autobackup_service</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">kdna.conf_utils.utils</span> <span class="kn">import</span> <span class="n">Utils</span>
+<span class="kn">from</span> <span class="nn">kdna.logger.logger</span> <span class="kn">import</span> <span class="n">log</span>
+
+
+<div class="viewcode-block" id="create_dic_autobackup">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.autobackup_service.create_dic_autobackup">[docs]</a>
+<span class="k">def</span> <span class="nf">create_dic_autobackup</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="n">li</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ligne</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">dic</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">ligne</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+            <span class="s2">&quot;frequency&quot;</span><span class="p">:</span> <span class="n">ligne</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">ligne</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+            <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">ligne</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+            <span class="s2">&quot;id_server&quot;</span><span class="p">:</span> <span class="n">ligne</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+            <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">ligne</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="n">li</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">li</span></div>
+
+
+
+<div class="viewcode-block" id="AutoBackupService">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.autobackup_service.AutoBackupService">[docs]</a>
+<span class="k">class</span> <span class="nc">AutoBackupService</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># TODO document why this method is empty</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="AutoBackupService.find_all">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.autobackup_service.AutoBackupService.find_all">[docs]</a>
+    <span class="k">def</span> <span class="nf">find_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">read_file_lines</span><span class="p">(</span><span class="n">Utils</span><span class="o">.</span><span class="n">get_config_file_path</span><span class="p">())</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">find_auto_backups_index</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">:]]</span>
+        <span class="n">li</span> <span class="o">=</span> <span class="n">create_dic_autobackup</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">li</span></div>
+
+
+<div class="viewcode-block" id="AutoBackupService.create_auto_backup">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.autobackup_service.AutoBackupService.create_auto_backup">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_auto_backup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">id_server</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new backup&quot;&quot;&quot;</span>
+        <span class="c1"># On ouvre le fichier en mode lecture</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">read_file_lines</span><span class="p">(</span><span class="n">Utils</span><span class="o">.</span><span class="n">config_file</span><span class="p">)</span>
+
+        <span class="c1"># On cherche les indices de [servers] et [auto-backups]</span>
+        <span class="n">index_servers</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">find_servers_index</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="n">index_auto_backups</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">find_auto_backups_index</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+        <span class="c1"># Vérification de l&#39;existence de l&#39;id_server dans la section [servers]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_id_server</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">index_servers</span><span class="p">,</span> <span class="n">index_auto_backups</span><span class="p">,</span> <span class="n">id_server</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Erreur : L&#39;id du serveur </span><span class="se">\&quot;</span><span class="si">{</span><span class="n">id_server</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> de votre auto backup n&#39;existe &quot;</span>
+                <span class="s2">&quot;pas dans la section [servers].&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;Erreur : L&#39;id du serveur &quot;</span><span class="o">+</span> <span class="n">id_server</span>  <span class="o">+</span> <span class="s2">&quot;  de votre auto backup pas dans la &quot;</span>
+                <span class="s2">&quot;section [servers].&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Construction de la nouvelle ligne</span>
+        <span class="n">new_line</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">frequency</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">, &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">id_server</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Ajout de la ligne seulement si l&#39;id_backup est unique</span>
+        <span class="n">existing_backups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_existing_backups</span><span class="p">(</span>
+            <span class="n">lines</span><span class="p">,</span> <span class="n">index_auto_backups</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span> <span class="ow">in</span> <span class="n">existing_backups</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Erreur : L&#39;id de l&#39;auto backup </span><span class="se">\&quot;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> existe déjà dans la &quot;</span>
+                <span class="s2">&quot;section [auto-backups].&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;Erreur : L&#39;id de l&#39;auto backup &quot;</span> <span class="o">+</span> <span class="nb">id</span> <span class="o">+</span> <span class="s2">&quot; existe déjà dans &quot;</span>
+                         <span class="s2">&quot;la section [auto-backups].&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Ajout de la ligne</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;L&#39;auto backup avec l&#39;id </span><span class="se">\&quot;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> a été ajouté dans la section [&quot;</span>
+            <span class="s2">&quot;auto-backups].&quot;</span><span class="p">)</span>
+        <span class="n">log</span><span class="p">(</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="s2">&quot;L&#39;auto backup avec l&#39;id &quot;</span> <span class="o">+</span> <span class="nb">id</span> <span class="o">+</span><span class="s2">&quot; a été ajouté dans la section&quot;</span>
+                    <span class="s2">&quot; [auto-backups].&quot;</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index_auto_backups</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">new_line</span><span class="p">)</span>
+
+        <span class="c1"># Écrire les lignes mises à jour dans le fichier</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">Utils</span><span class="o">.</span><span class="n">config_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AutoBackupService.delete_auto_backup">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.autobackup_service.AutoBackupService.delete_auto_backup">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_auto_backup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete a backup&quot;&quot;&quot;</span>
+        <span class="c1"># On ouvre le fichier en mode lecture</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">read_file_lines</span><span class="p">(</span><span class="n">Utils</span><span class="o">.</span><span class="n">config_file</span><span class="p">)</span>
+
+        <span class="c1"># On cherche les indices de [servers] et [auto-backups]</span>
+        <span class="n">index_auto_backups</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">find_auto_backups_index</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">index_auto_backups</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;Erreur : Section [auto-backups] non trouvé dans le fichier.&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;Erreur : Section [auto-backups] non trouvé dans le&quot;</span>
+                         <span class="s2">&quot; fichier.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># On cherche la ligne à supprimer</span>
+        <span class="n">line_to_delete</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_line_to_delete</span><span class="p">(</span>
+            <span class="n">lines</span><span class="p">,</span> <span class="n">index_auto_backups</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+        <span class="c1"># Si la ligne à supprimer a été trouvée, on la supprime</span>
+        <span class="k">if</span> <span class="n">line_to_delete</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">Utils</span><span class="o">.</span><span class="n">delete_line</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">line_to_delete</span><span class="p">)</span>
+            <span class="n">Utils</span><span class="o">.</span><span class="n">write_file_lines</span><span class="p">(</span><span class="n">Utils</span><span class="o">.</span><span class="n">config_file</span><span class="p">,</span> <span class="n">lines</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;L&#39;auto backup avec l&#39;id </span><span class="se">\&quot;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> a été supprimé de la section [&quot;</span>
+                <span class="s2">&quot;auto-backups].&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="s2">&quot;L&#39;auto backup avec l&#39;id  &quot;</span> <span class="o">+</span> <span class="nb">id</span> <span class="o">+</span> <span class="s2">&quot; a été supprimé de la&quot;</span>
+                        <span class="s2">&quot; section [auto-backups].&quot;</span><span class="p">)</span>
+        <span class="c1"># Sinon on affiche un message d&#39;erreur</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Erreur : Aucun élément trouvé avec l&#39;id </span><span class="se">\&quot;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> dans la section [&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;auto-backups].&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;Erreur : Aucun élément trouvé avec l&#39;id &quot;</span> <span class="o">+</span> <span class="nb">id</span> <span class="o">+</span> <span class="s2">&quot; dans&quot;</span>
+                         <span class="s2">&quot; la section [auto-backups].&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AutoBackupService.update_auto_backup">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.autobackup_service.AutoBackupService.update_auto_backup">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_auto_backup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">new_frequency</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">new_name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">new_timestamp</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">new_path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;update a specific backup&quot;&quot;&quot;</span>
+        <span class="c1"># On ouvre le fichier en mode lecture</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">read_file_lines</span><span class="p">(</span><span class="n">Utils</span><span class="o">.</span><span class="n">config_file</span><span class="p">)</span>
+
+        <span class="c1"># On cherche les indices de [auto-backups]</span>
+        <span class="n">index_auto_backups</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">find_auto_backups_index</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+        <span class="c1"># On regarde si la section [auto-backups] existe</span>
+        <span class="k">if</span> <span class="n">index_auto_backups</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># On cherche la ligne à mettre à jour</span>
+            <span class="n">line_to_update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_line_to_update</span><span class="p">(</span>
+                <span class="n">lines</span><span class="p">,</span> <span class="n">index_auto_backups</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+
+            <span class="c1"># Si la ligne à mettre à jour a été trouvée, on la met à jour</span>
+            <span class="k">if</span> <span class="n">line_to_update</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Récupérer les informations existantes</span>
+                <span class="n">existing_line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">line_to_update</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+                <span class="n">existing_id_backup</span> <span class="o">=</span> <span class="n">existing_line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">existing_frequency</span> <span class="o">=</span> <span class="n">existing_line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">existing_name</span> <span class="o">=</span> <span class="n">existing_line</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">existing_timestamp</span> <span class="o">=</span> <span class="n">existing_line</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">existing_id_server</span> <span class="o">=</span> <span class="n">existing_line</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">existing_path</span> <span class="o">=</span> <span class="n">existing_line</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span>
+                    <span class="n">existing_line</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">6</span> <span class="k">else</span> <span class="kc">None</span>
+
+                <span class="c1"># Mettre à jour les informations si de nouvelles valeurs sont fournies</span>
+                <span class="n">new_frequency</span> <span class="o">=</span> <span class="n">new_frequency</span> <span class="k">if</span> <span class="n">new_frequency</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="n">existing_frequency</span>
+                <span class="n">new_name</span> <span class="o">=</span> <span class="n">new_name</span> <span class="k">if</span> <span class="n">new_name</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="n">existing_name</span>
+                <span class="n">new_timestamp</span> <span class="o">=</span> <span class="n">new_timestamp</span> <span class="k">if</span> <span class="n">new_timestamp</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="n">existing_timestamp</span>
+                <span class="n">new_path</span> <span class="o">=</span> <span class="n">new_path</span> <span class="k">if</span> <span class="n">new_path</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="n">existing_path</span>
+
+                <span class="c1"># Construire la nouvelle ligne mise à jour</span>
+                <span class="n">updated_line</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">existing_id_backup</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">new_frequency</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s2">, &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">new_timestamp</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">existing_id_server</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">new_path</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Mettre à jour la ligne</span>
+                <span class="n">lines</span><span class="p">[</span><span class="n">line_to_update</span><span class="p">]</span> <span class="o">=</span> <span class="n">updated_line</span>
+
+                <span class="c1"># Écrire les lignes mises à jour dans le fichier</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">Utils</span><span class="o">.</span><span class="n">config_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;L&#39;auto backup avec l&#39;id </span><span class="se">\&quot;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> a été mis à jour dans la &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;section [auto-backups].&quot;</span><span class="p">)</span>
+                <span class="n">log</span><span class="p">(</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="s2">&quot;L&#39;auto backup avec l&#39;id &quot;</span> <span class="o">+</span> <span class="nb">id</span> <span class="o">+</span> <span class="s2">&quot; a été mis à jour dans&quot;</span>
+                            <span class="s2">&quot; la section [auto-backups].&quot;</span><span class="p">)</span>
+            <span class="c1"># Sinon, afficher un message d&#39;erreur</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Erreur : Aucun élément trouvé avec l&#39;id </span><span class="se">\&quot;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> dans la section &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;[auto-backups].&quot;</span><span class="p">)</span>
+                <span class="n">log</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;Erreur : Aucun élément trouvé avec l&#39;id &quot;</span> <span class="o">+</span> <span class="nb">id</span> <span class="o">+</span> <span class="s2">&quot;  dans&quot;</span>
+                             <span class="s2">&quot; la section [auto-backups].&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;Erreur : Section [auto-backups] non trouvée dans le fichier.&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;Erreur : Section [auto-backups] non trouvée dans le&quot;</span>
+                         <span class="s2">&quot; fichier.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AutoBackupService.find_line_to_update">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.autobackup_service.AutoBackupService.find_line_to_update">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">find_line_to_update</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">index_auto_backups</span><span class="p">,</span> <span class="n">id_to_update</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;find the line to update&quot;&quot;&quot;</span>
+        <span class="c1"># Fonction pour trouver la ligne à mettre à jour</span>
+        <span class="n">auto_backups_lines</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">index_auto_backups</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">auto_backups_lines</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mi">6</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                <span class="n">line_id</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+                <span class="c1"># Si l&#39;id correspond à celui à mettre à jour</span>
+                <span class="k">if</span> <span class="n">line_id</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">id_to_update</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">i</span> <span class="o">+</span> <span class="n">index_auto_backups</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="AutoBackupService.check_id_server">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.autobackup_service.AutoBackupService.check_id_server">[docs]</a>
+    <span class="k">def</span> <span class="nf">check_id_server</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">index_servers</span><span class="p">,</span> <span class="n">index_auto_backups</span><span class="p">,</span> <span class="n">id_server</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check the id of a specific server&quot;&quot;&quot;</span>
+        <span class="c1"># Fonction pour vérifier l&#39;existence de l&#39;id_server dans la section [servers]</span>
+        <span class="n">existing_servers</span> <span class="o">=</span> \
+            <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="n">index_servers</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span><span class="n">index_auto_backups</span><span class="p">]</span> <span class="k">if</span>
+             <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mi">4</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">id_server</span><span class="p">)</span> <span class="ow">in</span> <span class="n">existing_servers</span></div>
+
+
+<div class="viewcode-block" id="AutoBackupService.extract_existing_backups">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.autobackup_service.AutoBackupService.extract_existing_backups">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">extract_existing_backups</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">index_auto_backups</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract an existing backup&quot;&quot;&quot;</span>
+        <span class="c1"># Fonction pour extraire les id_backup dans la section [auto-backups]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="n">index_auto_backups</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span> <span class="k">if</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mi">6</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span></div>
+
+
+<div class="viewcode-block" id="AutoBackupService.find_line_to_delete">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.autobackup_service.AutoBackupService.find_line_to_delete">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">find_line_to_delete</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">index_auto_backups</span><span class="p">,</span> <span class="n">id_to_delete</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to find the line to delete&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">index_auto_backups</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mi">6</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">id_to_delete</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">i</span> <span class="o">+</span> <span class="n">index_auto_backups</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, mathias.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

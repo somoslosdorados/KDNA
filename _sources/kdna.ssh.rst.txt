@@ -1,0 +1,21 @@
+kdna.ssh package
+================
+
+Submodules
+----------
+
+kdna.ssh.ssh\_client module
+---------------------------
+
+.. automodule:: kdna.ssh.ssh_client
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: kdna.ssh
+   :members:
+   :undoc-members:
+   :show-inheritance:

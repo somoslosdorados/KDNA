@@ -1,9 +1,0 @@
-Package: kdna
-Version: 121223
-Section: base
-Priority: optional
-Architecture: all
-Depends: bash, python3
-Maintainer: Benoit Planche <benoit.planche@etu.umontpellier.fr>
-Description: Créer un exécutable kdna.
-Homepage: :)

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>kdna.commands.autobackup &mdash; kdna 1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=29a6c3e3"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            kdna
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">kdna</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">kdna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">kdna.commands.autobackup</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for kdna.commands.autobackup</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Groupe de commandes auto-backup qui permet de gérer les auto-backups (backups régulières)</span>
+<span class="sd">schedule : Commande pour prévoir une auto-backup</span>
+<span class="sd">delete : Commande pour supprimer une auto-backup</span>
+<span class="sd">update : Commande pour mettre à jour une auto-backup</span>
+<span class="sd">stop : Commande pour stopper une auto-backup</span>
+<span class="sd">list : Commande pour lister les auto-backups</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">click</span>
+<span class="kn">from</span> <span class="nn">tabulate</span> <span class="kn">import</span> <span class="n">tabulate</span>
+<span class="kn">from</span> <span class="nn">kdna.logger.logger</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">kdna.logger.logger</span> <span class="kn">import</span> <span class="n">log</span>
+
+<span class="kn">from</span> <span class="nn">kdna.server.autobackup_service</span> <span class="kn">import</span> <span class="n">AutoBackupService</span>
+
+<span class="c1"># Creation du groupe de commande autobackup</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;auto-backup&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">autobackup</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Commande pour mettre en place un daemon de sauvegarde&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="get_type_cron">
+<a class="viewcode-back" href="../../../kdna.commands.html#kdna.commands.autobackup.get_type_cron">[docs]</a>
+<span class="k">def</span> <span class="nf">get_type_cron</span><span class="p">(</span><span class="n">cron</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">cron</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">char</span> <span class="o">==</span> <span class="s1">&#39;:&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;:&#39;</span>
+        <span class="k">elif</span> <span class="n">char</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;-&#39;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div>
+
+
+
+<div class="viewcode-block" id="is_valid_cron">
+<a class="viewcode-back" href="../../../kdna.commands.html#kdna.commands.autobackup.is_valid_cron">[docs]</a>
+<span class="k">def</span> <span class="nf">is_valid_cron</span><span class="p">(</span><span class="n">cron</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">get_type_cron</span><span class="p">(</span><span class="n">cron</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;:&#39;</span><span class="p">:</span>
+        <span class="n">cron_parts</span> <span class="o">=</span> <span class="n">cron</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cron_parts</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&gt;=</span> <span class="n">cron_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">59</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&gt;=</span> <span class="n">cron_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">23</span> <span class="ow">and</span> <span class="mi">1</span> <span class="o">&gt;=</span> <span class="n">cron_parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">31</span> <span class="ow">and</span> <span class="mi">1</span>
+                <span class="o">&gt;=</span> <span class="n">cron_parts</span><span class="p">[</span>
+            <span class="mi">3</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">12</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">elif</span> <span class="n">get_type_cron</span><span class="p">(</span><span class="n">cron</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+        <span class="n">cron_parts</span> <span class="o">=</span> <span class="n">cron</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cron_parts</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&gt;=</span> <span class="n">cron_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">59</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&gt;=</span> <span class="n">cron_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">23</span> <span class="ow">and</span> <span class="mi">1</span> <span class="o">&gt;=</span> <span class="n">cron_parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">31</span> <span class="ow">and</span> <span class="mi">1</span>
+                <span class="o">&gt;=</span> <span class="n">cron_parts</span><span class="p">[</span>
+            <span class="mi">3</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">12</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="get_custom_cron">
+<a class="viewcode-back" href="../../../kdna.commands.html#kdna.commands.autobackup.get_custom_cron">[docs]</a>
+<span class="k">def</span> <span class="nf">get_custom_cron</span><span class="p">(</span><span class="n">sched_part_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cond_inf</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">cond_sup</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fonction qui récupère auprès de l&#39;utilisateur un morceau de custom_cron.\n</span>
+<span class="sd">    :param sched_part_type: le type de la partie manquante de custom_cron à demander à l&#39;utilisateur</span>
+<span class="sd">     (e.g. &#39;Hour&#39;)\n</span>
+<span class="sd">    :sched_part_type sched_part_type: str\n</span>
+<span class="sd">    :return: le custom_cron partiel\n</span>
+<span class="sd">    :rsched_part_type: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">incorrect</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">while</span> <span class="n">incorrect</span><span class="p">:</span>
+        <span class="n">schedule_part</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&gt;Entrez une valeur numérique comprise entre </span><span class="si">{</span><span class="n">cond_inf</span><span class="si">}</span><span class="s2"> et </span><span class="si">{</span><span class="n">cond_sup</span><span class="si">}</span><span class="s2"> (inclus) pour &#39;&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sched_part_type</span><span class="si">}</span><span class="s2">&#39;, ou entrez &#39;help&#39; pour afficher les correspondances : &quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">schedule_part</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;help&quot;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;Minute (0 - 59)</span><span class="se">\n</span><span class="s2">Heure (0 - 23)</span><span class="se">\n</span><span class="s2">Jour du mois (1 - 31)</span><span class="se">\n</span><span class="s2">Mois (1 - 12)</span><span class="se">\n</span><span class="s2">Jour de la&quot;</span>
+                <span class="s2">&quot; semaine (0 - 6) (dimanche est 0)</span><span class="se">\n</span><span class="s2">Ne rien entrer pour ne pas préciser.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">schedule_part</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="n">cond_inf</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">schedule_part</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">cond_sup</span><span class="p">:</span>
+            <span class="n">incorrect</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Entrée invalide, réessayez S.V.P&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">schedule_part</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="concatenate_custom_cron">
+<a class="viewcode-back" href="../../../kdna.commands.html#kdna.commands.autobackup.concatenate_custom_cron">[docs]</a>
+<span class="k">def</span> <span class="nf">concatenate_custom_cron</span><span class="p">():</span>
+    <span class="n">custom_cron</span> <span class="o">=</span> <span class="n">get_custom_cron</span><span class="p">(</span><span class="s2">&quot;Minute&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">59</span><span class="p">)</span>
+    <span class="n">custom_cron</span> <span class="o">+=</span> <span class="n">get_custom_cron</span><span class="p">(</span><span class="s2">&quot;Heure&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">23</span><span class="p">)</span>
+    <span class="n">custom_cron</span> <span class="o">+=</span> <span class="n">get_custom_cron</span><span class="p">(</span><span class="s2">&quot;Jour du mois&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">31</span><span class="p">)</span>
+    <span class="n">custom_cron</span> <span class="o">+=</span> <span class="n">get_custom_cron</span><span class="p">(</span><span class="s2">&quot;Mois&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+    <span class="n">custom_cron</span> <span class="o">+=</span> <span class="n">get_custom_cron</span><span class="p">(</span><span class="s2">&quot;Jour de la semaine&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">custom_cron</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># Suppression du &#39;:&#39; final</span></div>
+
+
+
+<span class="c1"># Création des commandes du groupe autobackup</span>
+
+<span class="c1"># Création de la commande schedule</span>
+<span class="nd">@autobackup</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="s1">&#39;--idcron&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;entrer l&#39;id du cron&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-n&#39;</span><span class="p">,</span> <span class="s1">&#39;--nameofcron&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;entrer le nom du&quot;</span>
+                                                                 <span class="s2">&quot; cron&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-t&#39;</span><span class="p">,</span> <span class="s1">&#39;--tag&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;entrer le tag&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;cron_schedule&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s1">&#39;daily&#39;</span><span class="p">,</span> <span class="s1">&#39;monthly&#39;</span><span class="p">,</span> <span class="s1">&#39;weekly&#39;</span><span class="p">,</span>
+                                                    <span class="s1">&#39;custom&#39;</span><span class="p">]),</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;custom_cron&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-d&#39;</span><span class="p">,</span> <span class="s1">&#39;--date&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;entrer la date de la &quot;</span>
+                                                           <span class="s2">&quot;première backup [ xxxx-xx-xx ]&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-s&#39;</span><span class="p">,</span> <span class="s1">&#39;--server&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;entrer l&#39;id du serveur&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="s1">&#39;--path&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;entrer le chemin de la&quot;</span>
+                                                           <span class="s2">&quot; backup&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">schedule</span><span class="p">(</span><span class="n">idcron</span><span class="p">,</span> <span class="n">nameofcron</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">cron_schedule</span><span class="p">,</span> <span class="n">custom_cron</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">server</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Commande pour prévoir une auto-backup.\n</span>
+<span class="sd">    Arguments obligatoires :\n</span>
+<span class="sd">        \t- &lt;cron_schedule&gt;: le schedule de la backup (daily, monthly, weekly, custom)\n</span>
+<span class="sd">        \t- &lt;custom_cron&gt;: le schedule personnalisé de l&#39;auto-backup, obligatoire si l&#39;option</span>
+<span class="sd">        custom a été séléctionnée\n</span>
+<span class="sd">        \tSi l&#39;argument n&#39;a pas été saisi, le programme rentre en mode interactif et attend des</span>
+<span class="sd">        entrées de l&#39;utilisateur pour compléter custom_cron.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Name of cron : </span><span class="se">\&quot;</span><span class="si">{</span><span class="n">nameofcron</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cron tag and schedule : </span><span class="se">\&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> </span><span class="se">\&quot;</span><span class="si">{</span><span class="n">cron_schedule</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cron_schedule</span> <span class="o">==</span> <span class="s1">&#39;custom&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">custom_cron</span><span class="p">:</span>  <span class="c1"># custom_cron n&#39;est pas donné en argument</span>
+            <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">&quot;L&#39;argument custom_cron doit être suivi d&#39;un schedule de cron personnalisé.&quot;</span><span class="p">)</span>
+            <span class="n">custom_cron</span> <span class="o">=</span> <span class="n">concatenate_custom_cron</span><span class="p">()</span>  <span class="c1"># le custom_cron est donc demandé en input</span>
+            <span class="c1"># interactif</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Custom cron schedule is :&quot;</span><span class="p">,</span> <span class="n">custom_cron</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="s2">&quot;Custom cron schedule is :&quot;</span> <span class="o">+</span> <span class="n">custom_cron</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Custom cron schedule is :&quot;</span><span class="p">,</span> <span class="n">custom_cron</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">is_valid_cron</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">custom_cron</span><span class="p">)))</span>
+            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="s2">&quot;Custom cron schedule is :&quot;</span> <span class="o">+</span> <span class="n">custom_cron</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cron schedule is :&quot;</span><span class="p">,</span> <span class="n">cron_schedule</span><span class="p">,</span> <span class="s2">&quot;(not custom)&quot;</span><span class="p">)</span>
+        <span class="n">log</span><span class="p">(</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="s2">&quot;Cron schedule is :&quot;</span> <span class="o">+</span> <span class="n">cron_schedule</span> <span class="o">+</span> <span class="s2">&quot;(not custom)&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># Création de la commande delete</span>
+<span class="nd">@autobackup</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="s1">&#39;--idcron&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;entrer l&#39;id du cron à&quot;</span>
+                                                             <span class="s2">&quot; supprimer&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="n">idcron</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Commande pour supprimer une backup régulière</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Deleted cron : </span><span class="se">\&quot;</span><span class="si">{</span><span class="n">idcron</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@autobackup</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="s1">&#39;--idcron&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;entrer l&#39;id du cron à &quot;</span>
+                                                             <span class="s2">&quot;mettre à jour&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-t&#39;</span><span class="p">,</span> <span class="s1">&#39;--tag&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;entrer le tag du cron à &quot;</span>
+                                                           <span class="s2">&quot;mettre à jour et le tag mis à jour&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;cron_schedule&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s1">&#39;daily&#39;</span><span class="p">,</span> <span class="s1">&#39;monthly&#39;</span><span class="p">,</span> <span class="s1">&#39;weekly&#39;</span><span class="p">,</span>
+                                                    <span class="s1">&#39;custom&#39;</span><span class="p">]),</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;custom_cron&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-d&#39;</span><span class="p">,</span> <span class="s1">&#39;--date&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">help</span><span class="o">=</span><span class="s2">&quot;entrer la nouvelle date de la première backup [ xxxx-xx-xx ]&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="s1">&#39;--path&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;entrer le chemin de la&quot;</span>
+                                                            <span class="s2">&quot; nouvelle backup&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">idcron</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">cron_schedule</span><span class="p">,</span> <span class="n">custom_cron</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Commande pour mettre à jour une backup régulière\n</span>
+<span class="sd">            \t- &lt;cron_schedule&gt; : le schedule de l&#39;auto-backup à mettre à jour [&#39;daily&#39;, &#39;monthly&#39;,</span>
+<span class="sd">             &#39;weekly&#39;, &#39;custom&#39;]\n</span>
+<span class="sd">            \t- &lt;custom_cron&gt; : le schedule personnalisé à mettre à jour de l&#39;auto-backup,</span>
+<span class="sd">            obligatoire si l&#39;option custom a été séléctionnée\n</span>
+<span class="sd">            \tSi l&#39;argument n&#39;a pas été saisi, le programme rentre en mode interactif et attend des</span>
+<span class="sd">             entrées de l&#39;utilisateur pour compléter custom_cron.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Name of cron : </span><span class="se">\&quot;</span><span class="si">{</span><span class="n">idcron</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cron tag and schedule : </span><span class="se">\&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> </span><span class="se">\&quot;</span><span class="si">{</span><span class="n">cron_schedule</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cron_schedule</span> <span class="o">==</span> <span class="s1">&#39;custom&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">custom_cron</span><span class="p">:</span>
+            <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">&quot;L&#39;argument custom_cron doit être suivi d&#39;un schedule de cron personnalisé.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Custom cron : </span><span class="se">\&quot;</span><span class="si">{</span><span class="n">custom_cron</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Création de la commande list</span>
+<span class="nd">@autobackup</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">list</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Commande pour lister les backups régulières\n</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">autobackupService</span> <span class="o">=</span> <span class="n">AutoBackupService</span><span class="p">()</span>
+    <span class="n">autobackups</span> <span class="o">=</span> <span class="n">autobackupService</span><span class="o">.</span><span class="n">find_all</span><span class="p">()</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="n">tabulate</span><span class="p">(</span>
+        <span class="p">[[</span><span class="n">data</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">autobackup</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span> <span class="k">for</span> <span class="n">autobackup</span> <span class="ow">in</span> <span class="n">autobackups</span><span class="p">],</span>
+        <span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;timestamp&#39;</span><span class="p">,</span> <span class="s1">&#39;id_server&#39;</span><span class="p">,</span> <span class="s1">&#39;path&#39;</span><span class="p">],</span>
+        <span class="n">tablefmt</span><span class="o">=</span><span class="s2">&quot;grid&quot;</span>
+    <span class="p">)</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, mathias.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

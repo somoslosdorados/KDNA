@@ -1,0 +1,21 @@
+kdna.tags package
+=================
+
+Submodules
+----------
+
+kdna.tags.tags module
+---------------------
+
+.. automodule:: kdna.tags.tags
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: kdna.tags
+   :members:
+   :undoc-members:
+   :show-inheritance:

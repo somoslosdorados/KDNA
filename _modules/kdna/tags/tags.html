@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>kdna.tags.tags &mdash; kdna 1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=29a6c3e3"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            kdna
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">kdna</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">kdna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">kdna.tags.tags</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for kdna.tags.tags</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;We will use connexion instance gathered by the module</span>
+<span class="sd">    If the service is running the tags.conf file could change</span>
+<span class="sd">    </span>
+<span class="sd">    authors: Dorian TETU, Hugo PONTHIEU&quot;&quot;&quot;</span>
+<span class="c1"># mypy: ignore-errors</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">fabric</span> <span class="kn">import</span> <span class="n">Connection</span>
+<span class="kn">from</span> <span class="nn">kdna.logger</span> <span class="kn">import</span> <span class="n">logger</span>
+
+
+<div class="viewcode-block" id="backup_exist">
+<a class="viewcode-back" href="../../../kdna.tags.html#kdna.tags.tags.backup_exist">[docs]</a>
+<span class="k">def</span> <span class="nf">backup_exist</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">:</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">file_to_tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if a backup file exists on the server.</span>
+
+<span class="sd">    :param connection_instance: An instance of the Connection class representing the server</span>
+<span class="sd">    connection.</span>
+<span class="sd">    :type connection_instance: Connection</span>
+
+<span class="sd">    :param project: The name of the project.</span>
+<span class="sd">    :type project: str</span>
+
+<span class="sd">    :param file_to_tag: The name of the file to check for existence.</span>
+<span class="sd">    :type file_to_tag: str</span>
+
+<span class="sd">    :return: True if the backup file exists, False otherwise.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Vérification que la sauvegarde existe sur le serveur</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">connection_instance</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;ls ./kdna/</span><span class="si">{</span><span class="n">project</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">file_to_tag</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">hide</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+            <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Erreur lors de la vérification de l&#39;existence de &quot;</span> <span class="o">+</span> <span class="n">file_to_tag</span> <span class="o">+</span>
+                     <span class="sa">f</span><span class="s2">&quot; pour le project &quot;</span> <span class="o">+</span> <span class="n">project</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="n">e</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+
+<div class="viewcode-block" id="add_tags">
+<a class="viewcode-back" href="../../../kdna.tags.html#kdna.tags.tags.add_tags">[docs]</a>
+<span class="k">def</span> <span class="nf">add_tags</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">:</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">file_to_tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;arguments: ssh instance / name of the project / name of the tags</span>
+<span class="sd">    In the file tag.conf we must identify the tag [tags] to write tags at the end </span>
+<span class="sd">    of the file</span>
+
+<span class="sd">    authors: Dorian TETU, Hugo PONTHIEU&quot;&quot;&quot;</span>
+    <span class="c1"># VERIFIER QUE LES TAGS NE SONT PAS EXISTANT !!!!!!!!!!!!!</span>
+    <span class="c1"># Vérification que la backup existe sur le serveur</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">backup_exist</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span> <span class="n">file_to_tag</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+            <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Erreur lors de l&#39;ajout de &quot;</span> <span class="o">+</span> <span class="n">new_tag</span> <span class="o">+</span> <span class="s2">&quot; pour le project &quot;</span> <span class="o">+</span> <span class="n">project</span> <span class="o">+</span>
+                     <span class="sa">f</span><span class="s2">&quot;, &quot;</span> <span class="o">+</span> <span class="n">file_to_tag</span> <span class="o">+</span> <span class="s2">&quot; n&#39;existe pas&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;Erreur: le fichier n&#39;existe pas&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">tag_exists</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span> <span class="n">new_tag</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+            <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Erreur lors de l&#39;ajout de &quot;</span> <span class="o">+</span> <span class="n">new_tag</span> <span class="o">+</span> <span class="s2">&quot; pour le project &quot;</span> <span class="o">+</span> <span class="n">project</span> <span class="o">+</span>
+                     <span class="sa">f</span><span class="s2">&quot;, &quot;</span> <span class="o">+</span> <span class="n">new_tag</span> <span class="o">+</span> <span class="s2">&quot; existe déjà&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">new_tag</span><span class="si">}</span><span class="s2"> existe déjà&quot;</span><span class="p">)</span>
+
+    <span class="n">dico</span> <span class="o">=</span> <span class="n">get_tag_conf</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">,</span> <span class="n">project</span><span class="p">)</span>
+    <span class="c1"># Ecrire dans le fichier tag.conf le nouveau tag</span>
+    <span class="n">dico</span><span class="p">[</span><span class="n">new_tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_to_tag</span>
+    <span class="n">write_tag_conf</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span> <span class="n">dico</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Le tag &quot;</span> <span class="o">+</span> <span class="n">new_tag</span><span class="o">+</span> <span class="s2">&quot;  a été ajouté au projet &quot;</span> <span class="o">+</span> <span class="n">project</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="delete_tags">
+<a class="viewcode-back" href="../../../kdna.tags.html#kdna.tags.tags.delete_tags">[docs]</a>
+<span class="k">def</span> <span class="nf">delete_tags</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">:</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">old_tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;arguments: oldTag &quot;&quot;&quot;</span>
+    <span class="c1"># Récupération du fichier tag.conf</span>
+    <span class="n">tag_file</span> <span class="o">=</span> <span class="n">get_tag_conf</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">,</span> <span class="n">project</span><span class="p">)</span>
+
+    <span class="c1"># Verification de la présence du tag</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">tag_exists</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span> <span class="n">old_tag</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+            <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Erreur lors de la suppression de &quot;</span> <span class="o">+</span> <span class="n">old_tag</span> <span class="o">+</span> <span class="s2">&quot; pour le project n&#39;existe pas&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">old_tag</span><span class="si">}</span><span class="s2"> n&#39;existe pas&quot;</span><span class="p">)</span>
+    <span class="c1"># Deletion de du tag à enlever</span>
+    <span class="n">tag_file</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">old_tag</span><span class="p">)</span>
+    <span class="c1"># Ecriture dans le fichier</span>
+    <span class="n">write_tag_conf</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span> <span class="n">tag_file</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Le tag &quot;</span> <span class="o">+</span> <span class="n">old_tag</span> <span class="o">+</span> <span class="s2">&quot; a été supprimé du projet &quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="update_tags">
+<a class="viewcode-back" href="../../../kdna.tags.html#kdna.tags.tags.update_tags">[docs]</a>
+<span class="k">def</span> <span class="nf">update_tags</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">:</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">old_tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Update the tags in the tag configuration file for a specific project.</span>
+
+<span class="sd">    :param connection_instance: The connection instance to use for the update.</span>
+<span class="sd">    :type connection_instance: Connection</span>
+<span class="sd">    :param project: The name of the project.</span>
+<span class="sd">    :type project: str</span>
+<span class="sd">    :param old_tag: The old tag to be updated.</span>
+<span class="sd">    :type old_tag: str</span>
+<span class="sd">    :param new_tag: The new tag to replace the old tag.</span>
+<span class="sd">    :type new_tag: str</span>
+<span class="sd">    :raises KeyError: If the old tag does not exist or if the new tag already exists.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tag_file</span> <span class="o">=</span> <span class="n">get_tag_conf</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">,</span> <span class="n">project</span><span class="p">)</span>
+    <span class="n">file_to_tag</span> <span class="o">=</span> <span class="n">tag_file</span><span class="p">[</span><span class="n">old_tag</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">tag_exists</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span> <span class="n">old_tag</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+            <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Erreur lors de l&#39;update de du tag pour le&quot;</span>
+                     <span class="sa">f</span><span class="s2">&quot; project , &quot;</span> <span class="o">+</span>  <span class="n">old_tag</span> <span class="o">+</span> <span class="s2">&quot; n&#39;existe pas&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">old_tag</span><span class="si">}</span><span class="s2"> n&#39;existe pas&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">tag_exists</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span> <span class="n">new_tag</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+            <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Erreur lors de l&#39;update de du tag pour le&quot;</span>
+                     <span class="sa">f</span><span class="s2">&quot; project , &quot;</span> <span class="o">+</span>  <span class="n">new_tag</span> <span class="o">+</span> <span class="s2">&quot;  existe deja&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">new_tag</span><span class="si">}</span><span class="s2"> existe déjà&quot;</span><span class="p">)</span>
+
+    <span class="n">tag_file</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">old_tag</span><span class="p">)</span>
+    <span class="n">tag_file</span><span class="p">[</span><span class="n">new_tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_to_tag</span>
+
+    <span class="n">write_tag_conf</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span> <span class="n">tag_file</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+        <span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Le tag &quot;</span> <span class="o">+</span> <span class="n">old_tag</span> <span class="o">+</span> <span class="s2">&quot;  a été modifié en &quot;</span> <span class="o">+</span> <span class="n">new_tag</span> <span class="o">+</span> <span class="s2">&quot; dans le projet&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_file_name_by_tag">
+<a class="viewcode-back" href="../../../kdna.tags.html#kdna.tags.tags.get_file_name_by_tag">[docs]</a>
+<span class="k">def</span> <span class="nf">get_file_name_by_tag</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">:</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves the file name associated with a given tag in a specific project.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        connection_instance (Connection): An instance of the Connection class.</span>
+<span class="sd">        project (str): The name of the project.</span>
+<span class="sd">        tag (str): The tag to search for.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The file name associated with the given tag.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        FileNotFoundError: If no file is associated with the given tag in the project.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dico</span> <span class="o">=</span> <span class="n">get_tag_conf</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">,</span> <span class="n">project</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">dico</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dico</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span>
+    <span class="c1"># Si aucun fichier n&#39;est trouvé une erreur apparait</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+        <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Aucun fichier n&#39;a été associé au tag </span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2"> dans le project&quot;</span>
+                 <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">project</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Aucun fichier n&#39;a été associé au tag </span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2"> dans le project </span><span class="si">{</span><span class="n">project</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_init_tag_file">
+<a class="viewcode-back" href="../../../kdna.tags.html#kdna.tags.tags.check_init_tag_file">[docs]</a>
+<span class="k">def</span> <span class="nf">check_init_tag_file</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">:</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if the tags.conf file exists in the specified project directory.</span>
+<span class="sd">    If the file does not exist, it will be created.</span>
+
+<span class="sd">    :param connection_instance: An instance of the Connection class.</span>
+<span class="sd">    :type connection_instance: Connection</span>
+<span class="sd">    :param project: The name of the project.</span>
+<span class="sd">    :type project: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">path_to_conf_tag</span> <span class="o">=</span> <span class="s2">&quot;./kdna/&quot;</span><span class="o">+</span><span class="n">project</span><span class="o">+</span><span class="s2">&quot;/tags.conf&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">connection_instance</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;find </span><span class="si">{</span><span class="n">path_to_conf_tag</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">hide</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+            <span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Le fichier </span><span class="si">{</span><span class="n">path_to_conf_tag</span><span class="si">}</span><span class="s2"> n&#39;existe pas, il va être créé&quot;</span><span class="p">)</span>
+        <span class="n">connection_instance</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;echo &#39;[tags]&#39; &gt; </span><span class="si">{</span><span class="n">path_to_conf_tag</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">hide</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="tag_exists">
+<a class="viewcode-back" href="../../../kdna.tags.html#kdna.tags.tags.tag_exists">[docs]</a>
+<span class="k">def</span> <span class="nf">tag_exists</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">:</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if the tag exists in the project&quot;&quot;&quot;</span>
+    <span class="n">dico</span> <span class="o">=</span> <span class="n">get_tag_conf</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">,</span> <span class="n">project</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">dico</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="generate_tag_name">
+<a class="viewcode-back" href="../../../kdna.tags.html#kdna.tags.tags.generate_tag_name">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_tag_name</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">:</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a unique tag name by appending a timestamp to the given prefix.</span>
+
+<span class="sd">    :param connection_instance: An instance of the Connection class representing the connection to</span>
+<span class="sd">     the database.</span>
+<span class="sd">    :type connection_instance: Connection</span>
+<span class="sd">    :param project: The name of the project.</span>
+<span class="sd">    :type project: str</span>
+<span class="sd">    :param prefix: The prefix to be used in the generated tag name.</span>
+<span class="sd">    :type prefix: str</span>
+<span class="sd">    :return: The generated unique tag name.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ct</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">new_tag</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ct</span><span class="p">)</span>
+    <span class="n">new_tag_decorated</span> <span class="o">=</span> <span class="n">new_tag</span>
+
+    <span class="c1"># check if the tag exists</span>
+    <span class="k">if</span> <span class="n">tag_exists</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span> <span class="n">new_tag</span><span class="p">):</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+            <span class="c1"># increment the tag, exemple: tag_1, tag_2, tag_3</span>
+            <span class="n">ct</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">new_tag_decorated</span> <span class="o">=</span> <span class="n">new_tag</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">ct</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">tag_exists</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span> <span class="n">new_tag_decorated</span><span class="p">):</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Le tag </span><span class="si">{</span><span class="n">new_tag_decorated</span><span class="si">}</span><span class="s2"> a été généré&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_tag_decorated</span></div>
+
+
+
+<div class="viewcode-block" id="get_tag_conf">
+<a class="viewcode-back" href="../../../kdna.tags.html#kdna.tags.tags.get_tag_conf">[docs]</a>
+<span class="k">def</span> <span class="nf">get_tag_conf</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">:</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the tag.conf file and return a dictionnary with the tags, exemple: {&quot;tag1&quot;: &quot;file1&quot;,</span>
+<span class="sd">     &quot;tag2&quot;: &quot;file2&quot;}&quot;&quot;&quot;</span>
+    <span class="n">path_to_conf_tag</span> <span class="o">=</span> <span class="s2">&quot;./kdna/&quot;</span><span class="o">+</span><span class="n">project</span><span class="o">+</span><span class="s2">&quot;/tags.conf&quot;</span>
+    <span class="n">check_init_tag_file</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">,</span> <span class="n">project</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">connection_instance</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cat </span><span class="si">{</span><span class="n">path_to_conf_tag</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">hide</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">resultset</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+    <span class="n">resultset</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">dictionnaire</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">resultset</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">line</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="n">dictionnaire</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">dictionnaire</span></div>
+
+
+
+<div class="viewcode-block" id="write_tag_conf">
+<a class="viewcode-back" href="../../../kdna.tags.html#kdna.tags.tags.write_tag_conf">[docs]</a>
+<span class="k">def</span> <span class="nf">write_tag_conf</span><span class="p">(</span><span class="n">connection_instance</span><span class="p">:</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dictionnaire</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write the dictionnary in the tag.conf file&quot;&quot;&quot;</span>
+    <span class="n">path_to_conf_tag</span> <span class="o">=</span> <span class="s2">&quot;./kdna/&quot;</span><span class="o">+</span><span class="n">project</span><span class="o">+</span><span class="s2">&quot;/tags.conf&quot;</span>
+    <span class="n">texte_conf</span> <span class="o">=</span> <span class="s2">&quot;[tags]</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dictionnaire</span><span class="p">:</span>
+        <span class="n">texte_conf</span> <span class="o">+=</span> <span class="n">key</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span> <span class="o">+</span> <span class="n">dictionnaire</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">connection_instance</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;echo </span><span class="se">\&quot;</span><span class="si">{</span><span class="n">texte_conf</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> &gt; </span><span class="si">{</span><span class="n">path_to_conf_tag</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">hide</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+            <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Erreur inconnue lors de l&#39;écriture dans tags.conf: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Erreur inconnue lors de l&#39;écriture dans tags.conf&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, mathias.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

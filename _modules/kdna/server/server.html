@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>kdna.server.server &mdash; kdna 1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=29a6c3e3"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            kdna
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">kdna</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">kdna</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">kdna.server.server</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for kdna.server.server</h1><div class="highlight"><pre>
+<span></span><span class="c1"># mypy: ignore-errors</span>
+<span class="kn">from</span> <span class="nn">fabric</span> <span class="kn">import</span> <span class="n">Connection</span>
+<span class="kn">from</span> <span class="nn">kdna.logger.logger</span> <span class="kn">import</span> <span class="n">log</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">kdna.ssh.ssh_client</span> <span class="kn">import</span> <span class="n">SSHClient</span>
+<span class="kn">from</span> <span class="nn">kdna.tags.tags</span> <span class="kn">import</span> <span class="n">get_file_name_by_tag</span>
+
+
+<div class="viewcode-block" id="Server">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server.Server">[docs]</a>
+<span class="k">class</span> <span class="nc">Server</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class representing a server.</span>
+
+<span class="sd">    :param creds: The credentials required to establish a connection to the server.</span>
+<span class="sd">    :type creds: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">creds</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">:</span> <span class="n">SSHClient</span> <span class="o">=</span> <span class="n">SSHClient</span><span class="p">(</span><span class="n">creds</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">creds</span> <span class="o">=</span> <span class="n">creds</span>
+
+<div class="viewcode-block" id="Server.directory_exists">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server.Server.directory_exists">[docs]</a>
+    <span class="k">def</span> <span class="nf">directory_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if a directory exists at the given path.</span>
+
+<span class="sd">        :param path: A string representing the path to the directory.</span>
+<span class="sd">        :type path: str</span>
+<span class="sd">        :return: True if the directory exists, False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;test -d </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">warn</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">ok</span></div>
+
+
+<div class="viewcode-block" id="Server.upload_file">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server.Server.upload_file">[docs]</a>
+    <span class="k">def</span> <span class="nf">upload_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">remote_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Uploads a file from the local machine to the remote server.</span>
+
+<span class="sd">        :param local_path: The path of the file on the local machine.</span>
+<span class="sd">        :type local_path: str</span>
+<span class="sd">        :param remote_path: The path where the file will be uploaded on the remote server.</span>
+<span class="sd">        :type remote_path: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">directory_exists</span><span class="p">(</span><span class="n">remote_path</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mkdir -p </span><span class="si">{</span><span class="n">remote_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="n">remote</span><span class="o">=</span><span class="n">remote_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Server.get_status">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server.Server.get_status">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the status of the client.</span>
+
+<span class="sd">        :return: The status of the client.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">status</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Server.download_file">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server.Server.download_file">[docs]</a>
+    <span class="k">def</span> <span class="nf">download_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">remote_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Downloads a file from a remote path to a local path.</span>
+
+<span class="sd">        :param local_path: The local path where the file will be downloaded to.</span>
+<span class="sd">        :type local_path: str</span>
+<span class="sd">        :param remote_path: The remote path from where the file will be downloaded.</span>
+<span class="sd">        :type remote_path: str</span>
+<span class="sd">        :raises Exception: If no file is found on the remote path.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mkdir -p </span><span class="si">{</span><span class="n">remote_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">warn</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;Error: no file found on &quot;</span> <span class="o">+</span> <span class="n">remote_path</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: no file found on </span><span class="si">{</span><span class="n">remote_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="n">local_path</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="directory_exists">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server.directory_exists">[docs]</a>
+<span class="k">def</span> <span class="nf">directory_exists</span><span class="p">(</span><span class="n">connection</span><span class="p">:</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if a directory exists on the remote server. Might throw an exception.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;test -d </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">warn</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">ok</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">log</span><span class="p">(</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="s2">&quot;directory_exists: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">t</span></div>
+
+
+
+<div class="viewcode-block" id="upload_file">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server.upload_file">[docs]</a>
+<span class="k">def</span> <span class="nf">upload_file</span><span class="p">(</span><span class="n">connection</span><span class="p">:</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">local_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">remote_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Send a file on a specific path in th/e remote server. Might throw an exception.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">directory_exists</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">remote_path</span><span class="p">):</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mkdir -p </span><span class="si">{</span><span class="n">remote_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">connection</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="n">remote</span><span class="o">=</span><span class="n">remote_path</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="download_file">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server.download_file">[docs]</a>
+<span class="k">def</span> <span class="nf">download_file</span><span class="p">(</span><span class="n">connection</span><span class="p">:</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">local_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">remote_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Receive a file on a specific path from the remote server. Might throw an exception.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check if there is a file like remote_path.enc or remote_path.tar.gz</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ls </span><span class="si">{</span><span class="n">remote_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">warn</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">log</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;Error: no file found on : &quot;</span> <span class="o">+</span> <span class="n">remote_path</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: no file found on </span><span class="si">{</span><span class="n">remote_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="n">local_path</span><span class="p">)</span></div>
+
+
+
+
+<span class="c1"># méthode pour trouver le path d&#39;un backup à partir d&#39;un tag et d&#39;un nom de projet</span>
+
+
+<div class="viewcode-block" id="find_path">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server.find_path">[docs]</a>
+<span class="k">def</span> <span class="nf">find_path</span><span class="p">(</span><span class="n">connection</span><span class="p">:</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">project_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find a path in the remote server. Might throw an exception.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">log</span><span class="p">(</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="s2">&quot;find_path: tag= &quot;</span> <span class="o">+</span> <span class="n">tag</span> <span class="o">+</span> <span class="s2">&quot; project_name= &quot;</span> <span class="o">+</span> <span class="n">project_name</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;find_path: tag=</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">, project_name=</span><span class="si">{</span><span class="n">project_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># vérifier que le dossier du projet existe</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ls ./kdna/</span><span class="si">{</span><span class="n">project_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">log</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;Project &quot;</span> <span class="o">+</span> <span class="n">project_name</span> <span class="o">+</span> <span class="s2">&quot;not found&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Project </span><span class="si">{</span><span class="n">project_name</span><span class="si">}</span><span class="s2"> not found&quot;</span><span class="p">)</span>
+
+    <span class="c1"># récupérer le nom du backup à partir du tag</span>
+    <span class="n">backup_name</span> <span class="o">=</span> <span class="n">get_file_name_by_tag</span><span class="p">(</span>
+        <span class="n">connection</span><span class="p">,</span> <span class="n">project_name</span><span class="p">,</span> <span class="n">tag</span><span class="p">)</span><span class="o">.</span><span class="n">removesuffix</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># vérifie que le backup_name existe dans le projet</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;find ./kdna/</span><span class="si">{</span><span class="n">project_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">backup_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">log</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;Tag &quot;</span> <span class="o">+</span> <span class="n">tag</span> <span class="o">+</span> <span class="s2">&quot;not found in project &quot;</span> <span class="o">+</span> <span class="n">project_name</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tag </span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2"> not found in project </span><span class="si">{</span><span class="n">project_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># renvoie le path du backup</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;./kdna/</span><span class="si">{</span><span class="n">project_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">backup_name</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="find_all_file">
+<a class="viewcode-back" href="../../../kdna.server.html#kdna.server.server.find_all_file">[docs]</a>
+<span class="k">def</span> <span class="nf">find_all_file</span><span class="p">(</span><span class="n">connection</span><span class="p">:</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;return a list of path of backups that or tag with the given tag&quot;&quot;&quot;</span>
+    <span class="c1"># Listing des différents projets</span>
+    <span class="c1"># Listing des différents projets</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">projects</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;ls ./kdna/&quot;</span><span class="p">,</span> <span class="n">hide</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">stdout</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">log</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;Can&#39;t list projects&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Can&#39;t list projects&quot;</span><span class="p">)</span>
+    <span class="c1"># Trier la liste</span>
+    <span class="n">listedProject</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="n">item</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">projects</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)))</span>
+    <span class="n">paths_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Vos sauvegardes: </span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="c1"># Vérifie dans chaque project si il existe une backup associé au tag</span>
+    <span class="k">for</span> <span class="n">project</span> <span class="ow">in</span> <span class="n">listedProject</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">fileName</span> <span class="o">=</span> <span class="n">get_file_name_by_tag</span><span class="p">(</span>
+                <span class="n">connection</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span> <span class="n">tag</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">paths_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">project</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">fileName</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">message</span> <span class="o">+=</span> <span class="s1">&#39;In </span><span class="si">{:&gt;8}</span><span class="s1">:</span><span class="si">{:&gt;8}{:&gt;8}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">fileName</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;No file tagged </span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">project</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; verbose : &quot;</span> <span class="o">+</span> <span class="n">message</span><span class="p">)</span>
+        <span class="n">log</span><span class="p">(</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="s2">&quot;verbose : &quot;</span> <span class="o">+</span> <span class="n">message</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">paths_list</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, mathias.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
